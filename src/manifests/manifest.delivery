@@ -1,0 +1,2 @@
+Main-Class: Viewer/Main
+Class-Path: lib/gnu-aelfred2.jar lib/itext-1.3.jar lib/jdom.jar lib/jgraph.jar

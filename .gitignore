@@ -1,5 +1,7 @@
-data/IMGout/
-data/music/
-data/PDFout/
-data/stats/
-data/TXTout/
+build/
+dist/*.jar
+dist/data/IMGout/
+dist/data/music/
+dist/data/PDFout/
+dist/data/stats/
+dist/data/TXTout/
