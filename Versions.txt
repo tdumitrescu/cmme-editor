@@ -1,0 +1,284 @@
+General version update information:
+
+.96: Format: Added editorial modern text flag (italicized in visualizers).
+     Set default settings in Viewer to modern notation.
+     Editor: added "Open in CMME Viewer" feature.
+     Bug fixes: Mensurstrich display with missing parts.
+                Security access exceptions in JRE 1.6 when trying to open network 
+                connection from applet back to originating host when invoked from 
+                Javascript (fixed with doPrivileged() and code decoupling in Viewer.Main).
+                Re-initialization bugs in JRE (closing and then re-opening an applet calls
+                init() again but retains old objects/data). 
+                MusicXML generator: add empty measures when voice is not in section. (6/11)
+.95: renamed DataStruct.MusicXMLReaderWriter to MusicXMLReader, added 
+     Gfx.MusicXMLGenerator (MusicXML generation is based on score-rendered data)
+     Added MusicXML generator (.955)
+     Viewer:    Added GUI elements for modern note shapes / reduction.
+                Implemented basic modern note shape/tie view.
+                Converted music/measure timing system more completely from double
+                to Proportion.
+                MIDI playback now supports tied notes properly (.956).
+     Bug fixes: now reads MusicXML files with DOCTYPE declaration.
+                added bracket support for German keyboard layout. (.951) (11/10)
+.94: Bug fixes: Respacing after variant rhythmic errors under proportions. (.922)
+                Divide-by-zero bug in PDF-generation with one system per page. (.921)
+                Null pointers when checking rhythms for notes with null rhythmic
+                values (in chant sections).
+                Improved error-handling in file save (as) functions.
+     Revised detection routine for variant accidentals, to avoid marking clef+key-sig
+     repetitions as variant accidentals.
+     Started implementing Text sections.
+     Added basic MusicXML reader (partwise only, limited data). (5/10)
+.92: Lowered default MIDI volume/NOTE_ON velocity (to avoid distortion on some
+     implementations).
+     Editor:    General Information Window: added Insert before/after choice, put
+                scroll pane around voice pane when necessary (to avoid window growing
+                beyond screen limits).
+     Bug fixes: MIDI playback for more than 8 voices used percussion channels; for
+                more than 16 voices used unavailable channel numbers (used one MIDI
+                channel for every voice unnecessarily).
+                MIDI playback did not stop when exiting applet / closing editor window.
+                MIDI playback caused exception/score disappearance when only one measure
+                exists. (9/09)
+.91: Editor:  implemented cut/copy/paste.
+              added several keyboard shortcuts for German keyboard layout.
+              added toolbar buttons for dots and mensurations.
+     Font:    replaced G-clef.
+     Bug fix: Generate parts PDF caused crash. (8/09)
+.9:  Editor: * new keys: Ctrl-. or Mouse Button 2 to display variants.
+             * Fixed several variant-input bugs especially involving multiple
+               variants in one location.
+             * Added GUI elements to variant reading popup (delete version from
+               reading, consolidate identical readings).
+             * Implemented variant-creation for all remaining event modifications
+               (e.g., miscellaneous coloration change, ligature type change).
+             * Fixed file-saving bug where each section was always recorded as
+               having the maximum number of voices.
+             * Positioning of new rests now depends on previous note/rest event.
+             * Automatically consolidates identical variant readings upon saving file.
+             * Requires user confirmation before deleting voices from sections.
+             * Implemented section deletion and combination.
+             * Moved TextEditorFrame from EditorWin to separate class/module; added
+               "Load scrap text from voice" button.
+             * Added Text menu, text delete dialog.
+     Viewer: * Hides Commentary panel when commentary display is turned off.
+             * Voices missing in currently displayed version are displayed in gray.
+             * Encapsulated zoom controls in separate ZoomControl object (used in main
+               window and ScorePagePreviewWin etc.).
+             * Rewrote score renderer to split into two phases (for conceptual clarity
+               and ease of extension; old one-pass system had become too complex for
+               effective modification):
+               1. create rendered event list for each voice, replacing/removing events
+                  as necessary
+               2. assign x-positions to all rendered events to align in score
+             * Added verbose error message when failing to open a file created by a
+               later version of the software.
+             * File menu: added "About this edition..."
+             * Added visualization line for audio playback location.
+             * Finished implementing version selection in Critical Notes Window.
+             * Implemented variant text display to align different source textings on
+               score.
+     Format: * Added optional ID attribute to Events.
+             * Modified DotData to include option of relative staff location and
+               pointer to Note (for dots of addition).
+             * Added PublicNotes element to General Info section.
+             * Added optional PrincipalSource info to Section Attributes.
+             * Dot position described as Pitch instead of staff space.
+             * Editorial accidentals represented as numeric pitch offsets instead of
+               accidental type and number of applications.
+             * Now includes meta-data for "default" variant version.
+             * Added missing voices list to variant version declaration.
+             * Restored Lacuna event type, now with untimed Begin and End markers to be
+               used within variant readings to show source-specific lacunae.
+             * Added Tie information to Note (for ties actually appearing in sources).
+             * Added event attributes "Editorial" and "Error".
+             * Added missing versions list in each music section.
+             * Added (optional) proportions to mensurations for playback/display.
+             * Added flag to mark mensuration sign as not affecting measure structure
+               of overall score.
+     Bug fixes: * Rendering crash when "rhythmic error" variant was followed
+                  directly by another variant.
+                * Adding new version prevented further switching of versions on
+                  score.
+                * File was marked as modified when loading new sections into a
+                  SectionAttribsFrame.
+                * Displacement of variant when creating Multi-Event within variant.
+                * Various crashes when altering/deleting events across variant borders.
+                  Crash when jumping cursor to Home or End if current voice was not used
+                  in first or last section (respectively).
+                * Event Information window incorrectly claimed that items were highlighted
+                  when attempting to grow highlight beyond section boundaries.
+                * Crashes and event-length problems when dealing with dots and ligatures
+                  in variants.
+                * Key signature bug involving clefs in variant versions.
+                * Adding new voice didn't work properly with already-existing chant
+                  sections.
+                * Editor crash when inserting section break in a section with reduced
+                  scoring. (3/09)
+.88: Format: added ligature type Retrorsum.
+     Editor: implemented variant-manipulation functions (create, delete, combine,
+             view with right-click, etc.). (1/08)
+.87: Added load/save functions for plainchant sections.
+     Applied temporary fix for positioning of dots of addition when a long modern
+     text syllable is present on the previous note.
+     Format: added Notes element to General Info section.
+             added VariantVersion structure, replaced EditorialData.
+             added half-coloration support (already in Editor program).
+             added repeat-sign/sizing/positioning info to Barline event.
+     Editor: added VariantVersionInfoFrame for manipulating variant version
+             parameters.
+     Added load/save support for VariantVersion declarations.
+     Fixed minor spacing errors for parts/incipit view and plainchant sections.
+     Created class VariantReading.
+     Moved TacetInfo out of DataStruct.MensuralMusicSection for general use in
+     sections.
+     Fixed PDF-/page-layout-generating functions to avoid crashes in reduced-scoring
+     sections. (12/07)
+.84: Added progress bar while loading scores.
+     Added support for loading scores compressed with GZIP (to reduce network
+     transfer).
+     Viewer GUI icons now load through Classloader (for storage in JAR, to reduce
+     number of network requests).
+     Added classes Util.Analyzer and Gfx.RenderedSonority for automated analysis.
+     Generalized recursive file-listing code from Util.ConvertCMME in module
+     Util.RecursiveFileList.
+     Created abstract class VoiceEventListData for list-based voices in different
+     section types (mensural, chant).
+     Added basic chant-rendering functions.
+     Incorporated section functionality into non-scored displays (parts, incipits).
+     Editor: added support for highlighting events with Shift-arrow.
+             ligature type can now be modified when only final note is selected. 
+     Incipits now use section system to separate incipit and finalis, rather than
+     user-controlled "Ellipsis" event. (9/07)
+.82: Format: introduced MusicSection structure (for differentiating between
+             different types of sections, e.g., mensural polyphony vs. chant).
+             added version attribute.
+             merged corona and signum datatypes.
+     Added class MetaData to package DataStruct.
+     Added class CMMEOldVersionParser (for converting deprecated files
+     incompatible with the current parser).
+     Converter: restructured to allow recursive traversal of subdirectories.
+     Viewer: added toolbar buttons for changing viewing options. (5/07)
+.8:  Replaced parts layout drawing scheme to remove memory-expensive image
+     buffering (replaced by redrawing music at every call to paint()).
+     Converted screen-coordinate calculations to floating point (for accuracy
+     in view-scaling).
+     Fixed various bugs in displaying modern and original key signatures (both
+     displayed together etc.).
+     Rearranged incipit view for better spacing/implemented scaling.
+     Added editorial commentary system. (12/06)
+.79: Editor: added GUI for controlling multi-part mensuration signs.
+             implemented cursor support under different y-locations of score
+             viewscreen (vertical scrolling).
+     Format: added signum congruentiae
+     Viewer: added GUI control for texting style.
+             removed file-table system for selecting scores; now application
+             browses local file system and applet gets filenames from database-
+             connected web system.
+     Replaced music-font-loading/rendering system to use standard Java
+     libraries.
+     Replaced arbitrary view-scaling code with fast implementation (changes 
+     font sizes and scales coordinates while drawing, rather than just scaling
+     final image buffer).
+     OriginalText events at measure borders are now grouped with following
+     measure. (11/06)
+.77: Switched mensuration sign structure to match file format (allowing arbitrary
+     combinations of signs).
+     Now avoids syllable collision.
+     Editor: added support for switching multiple stem directions simultaneously.
+     Format: added Lacuna event;
+             added Editorial flag to Voice;
+             added option for editorially-suggested modern clef for any voice;
+             added OriginalText event for non-modern texting.
+     Added headers and better formatting to scored page layout.
+     Separated options for modern cleffing and modern accidental system.
+     Added support for non-modern key signature interaction with editorial
+     accidentals. (9/06)
+.75: Format: added modern key signature information.
+             added PageEnd marker.
+     Editor: changing clef position now moves dots of addition.
+             added support for modern key signature editing; updated
+             note-accidental system to react to key signature changes. (7/06)
+.74: Fixed minor problems with accidentals/multi-events in modern cleffing.
+     Rests now stay at default locations in modern cleffing.
+     Migrated MIDI importer to minim-based timing.
+     Format: added marker for editorial readings/corrections (EditorialData).
+     Editor: fixed boundary error for parameter changes (coloration etc). (7/06)
+.73: Editor: added basic stem-direction automated choosing (or locking) for
+             note input.
+     Added support for parentheses around modern accidentals ("Optional" flag
+     in format) and display of double(/triple etc)-accidentals.
+     Added score view laid out in pages/staff-systems (print preview).
+     Implemented score-layout PDF generation. (7/06)
+.7:  Moved unscored part renderer to separate public class (out of
+     PartsWin.java).
+     Fixed part-rendering error for recta ligatures with internal dots.
+     Created static default music font instance, to avoid re-creating for
+     every score window.
+     Music windows now unregister all event listeners when closing.
+     Editor now only creates PartsWin when necessary.
+     Added half-coloration support for notes and obliqua ligature components. (4/06)
+.69: Added multi-rest maxima display.
+     Created Ellipsis event to represent skipped music between incipit and
+     finalis in incipit-scores.
+     Editor GUI: added rest buttons;
+                 added clef buttons;
+                 now only loads icon images at start (rather than for each
+                 window). (3/06)
+.68: Converted note/rest-length system from breve to minim base (i.e., now
+     1/1 = 1 minim).
+     Editor: Consolidated separate event editors (coloration, annotations, etc.)
+             into a single event editor frame.
+             Started mensuration editor.
+     Added base-coloration option.
+     Format: added flag for incipit file type. (3/06)
+.67: Fixed minor clef bugs resulting from .66 fixes.
+     Introduced multi-event editing support.
+     Added support for modern texting (syllables attached to notes, text editor
+     window linked to score display for applying text to music). (2/06)
+.66: Parser now always looks for CMME Schema in a standard location (rather than
+     the directory of the document being loaded).
+     Added editor window for general/voice information.
+     Converted simultaneity system from x-location hack to multi-event system.
+     Fixed bugs in clef system (addition of flats to earlier clef set). (2/06)
+.65: Added support for coloration changes.
+     Added support for arbitrary rhythmic proportions.
+     Score-renderer modified to use proportions for time calculations (for
+     precision).
+     Editor: added basic ligature editing functionality;
+             implemented editing in perfect tempus;
+             var. interface additions.
+     Added misc. visual elements: coronae, bar/double-bar, small proportion signs.
+     Added support for simultaneous events at one x-location (e.g., multi-note
+     final chords in one voice).
+     Added support for on-score textual annotations (incl. escape sequences for
+     special symbols).
+     Added basic support for editorial pitch realization with modern accidentals.
+     Basic MIDI-file import functionality implemented. (1/06)
+.61: Implemented basic PDF creator (unscored part view, limited control over
+     layout).
+     Parts view: added event-grouping and original ligature-shape display. (9/05)
+.6:  Basic Editor functionality implemented (adding/deleting events, file
+     functions).
+     Renderer bug fix: now retains double precision for x-coordinate
+     calculations.
+     Implemented unscored parts view.
+     Added multiple ledger line support to note-drawing code.
+     Basic 'analysis' functions implemented (marking dissonances, directed
+     progressions). (7/05)
+.59: First stages of Editor created (overridden menu structures, cursor-based
+     position control).
+     Rendering process revised and updated (now ensures match between event's
+     x-position and measure number, renders proper number of blank measures at
+     piece end when necessary, automatically generates PIECEEND event in each
+     voice). (5/05)
+.58: Package restructuring: Client changed to Viewer; added Editor.
+.57: Format: full ligature info added.
+     Score-viewing GUI restructured (drawing options moved to View menu).
+     View scaling and Y-scrolling added. (4/05)
+.56: Drawing system overhauled and moved completely into package Gfx.
+     Rendering process modified to clean up issues involving measure ends and
+     line ends.
+     Clef/signature automated conversion system rewritten. (4/05)
+.55: Data representation systems converted to XML; removed package Parse. (3/05)
+.5:  State at beginning of 2005 development.

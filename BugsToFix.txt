@@ -1,0 +1,8 @@
+CMME corrections to do:
+
+Editor: ligature entry: S-descS-descB becomes Obliq-Obliq
+File-saving: fault when saving Mens sign w/o Sign (e.g., only "3")
+Wrong stave lengths in Parts Window (2/06)
+Event.musictime is being treated like event length rather than position in voice (2/06)
+Ligature stem control in Editor (9/05)
+File saving: support for clefless StaffLoc information

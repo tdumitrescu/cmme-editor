@@ -1,0 +1,2 @@
+Main-Class: Editor/Main
+Class-Path: lib/gnu-aelfred2.jar lib/itext-1.3.jar lib/jdom.jar lib/xercesImpl.jar lib/xml-apis.jar lib/jgraph.jar

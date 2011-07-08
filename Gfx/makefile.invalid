@@ -1,0 +1,18 @@
+JAVAC=javac
+JFLAGS=
+
+CLASSES=MainApp.class MainWin.class MusicFont.class
+
+all:			${CLASSES}
+
+MainApp.class:		MainApp.java MainWin.class
+			${JAVAC} ${JFLAGS} MainApp.java
+
+MainWin.class:		MainWin.java MusicFont.class
+			${JAVAC} ${JFLAGS} MainWin.java
+
+MusicFont.class:	MusicFont.java
+			${JAVAC} ${JFLAGS} MusicFont.java
+
+clean:
+			rm -f *.class
