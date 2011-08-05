@@ -100,7 +100,7 @@ public class MusicWin extends JFrame implements ActionListener,ItemListener,Wind
   public static final String DEFAULT_PDFDIR="PDFout/",
                              DEFAULT_CRITNOTESDIR="TXTout/";
 
-  public static final int MAX_STACK_TRACE_LEVELS=5;
+  public static final int MAX_STACK_TRACE_LEVELS=8;
 
   public static String BaseDataURL;
   static String        initDir,
@@ -2868,8 +2868,10 @@ Parameters:
 
   public void handleRuntimeError(Exception e)
   {
+System.out.println("hre");
     if (MetaData.CMME_OPT_TESTING)
       {
+System.out.println("hre2");
         String stackTraceStr="";
         for (int i=0; i<e.getStackTrace().length && i<MAX_STACK_TRACE_LEVELS; i++)
           stackTraceStr+=e.getStackTrace()[i]+"\n";

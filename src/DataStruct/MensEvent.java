@@ -70,6 +70,7 @@ Parameters:
 
   public MensEvent(LinkedList<MensSignElement> sl,int ssn,boolean sm,boolean v,Mensuration mi,boolean noScoreSig)
   {
+    super();
     this.eventtype=EVENT_MENS;
     this.signs=sl;
     this.ssnum=ssn;

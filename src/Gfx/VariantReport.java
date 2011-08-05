@@ -55,7 +55,7 @@ public class VariantReport
   public RenderList         renderedVoice;
   public VoiceEventListData voiceEvents;
 
-  public ArrayList<VariantVersionData> defaultVersions;
+  public List<VariantVersionData> defaultVersions;
 
 /*------------------------------------------------------------------------
 Constructor: VariantReport(MeasureInfo m,RenderList rv,int vmi)
@@ -69,10 +69,10 @@ Parameters:
   {
     voiceNum=vnum+1;
     revNum=vmi;
-    varMarker=(VariantMarkerEvent)(rv.getEvent(revNum).getEvent());
-    varFlags=varMarker.getVarTypeFlags();
     renderedVoice=rv;
     voiceEvents=rv.getVoiceEventData();
+    varMarker=(VariantMarkerEvent)(rv.getEvent(revNum).getEvent());
+    varFlags=varMarker.calcVariantTypes(voiceEvents); //.getVarTypeFlags();
     measureNum=m.getMeasureNum()+1;
 
     measureLabel=CriticalNotesWindow.createMeasureString(rv,m,vmi);

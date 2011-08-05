@@ -14,6 +14,7 @@
         Date Started    : 11/26/08
 
         Updates         :
+7/13/2011: split into [Original|Modern]TextDeleteDialog
 
                                                                         */
 /*----------------------------------------------------------------------*/
@@ -31,15 +32,13 @@ import javax.swing.*;
 import DataStruct.*;
 import Gfx.*;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   TextDeleteDialog
 Extends: JDialog
 Purpose: GUI for deleting text from score
 ------------------------------------------------------------------------*/
 
-class TextDeleteDialog extends JDialog implements ActionListener
+abstract class TextDeleteDialog extends JDialog implements ActionListener
 {
 /*----------------------------------------------------------------------*/
 /* Class variables */
@@ -52,7 +51,8 @@ class TextDeleteDialog extends JDialog implements ActionListener
   EditorWin owner;
   PieceData musicData;
 
-  SelectionPanel versionsPanel;
+  LinkedList<Component> allPanels;
+
   JCheckBox[]    voiceCheckBoxes;
   JButton        OKButton,
                  cancelButton;
@@ -74,21 +74,39 @@ Parameters:
     super(owner,"Delete text",true);
     this.owner=owner;
     this.musicData=owner.getMusicData();
+    initLayout();
+  }
 
+  void initLayout()
+  {
     Container cp=getContentPane();
     cp.setLayout(new BoxLayout(cp,BoxLayout.Y_AXIS));
 
-    /* versions panel */
-    versionsPanel=new SelectionPanel("Versions",musicData.getVariantVersionNames(),
-                                     SelectionPanel.CHECKBOX,4);
-    versionsPanel.checkBoxes[0].setSelected(false);
-    versionsPanel.checkBoxes[0].setEnabled(false);
-    for (int i=1; i<versionsPanel.checkBoxes.length; i++)
-      versionsPanel.checkBoxes[i].setSelected(
-        musicData.getVariantVersion(i)==owner.getCurrentVariantVersion());
+    createPanels();
+    addPanelsToLayout(cp);
+    registerListeners();
 
-    /* voices panel */
-    int numVoices=musicData.getVoiceData().length;
+    pack();
+    setLocationRelativeTo(owner);
+    setVisible(true);
+  }
+
+  void createPanels()
+  {
+    allPanels=new LinkedList<Component>();
+    allPanels.add(createVoicesPanel());
+    allPanels.add(createButtonPane());
+  }
+
+  void addPanelsToLayout(Container cp)
+  {
+    for (Component p : allPanels)
+      cp.add(p);
+  }
+
+  JPanel createVoicesPanel()
+  {
+    int numVoices=this.musicData.getVoiceData().length;
     JPanel voicesPanel=new JPanel();
     voicesPanel.setLayout(new BoxLayout(voicesPanel,BoxLayout.Y_AXIS));
 
@@ -120,6 +138,11 @@ Parameters:
       BorderFactory.createTitledBorder("Voices"),
       BorderFactory.createEmptyBorder(5,5,5,5)));
 
+    return voicesPanel;
+  }
+
+  Box createButtonPane()
+  {
     /* action buttons */
     OKButton=new JButton("Delete");
     cancelButton=new JButton("Cancel");
@@ -130,14 +153,7 @@ Parameters:
     buttonPane.add(cancelButton);
     buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-    registerListeners();
-
-    cp.add(versionsPanel);
-    cp.add(voicesPanel);
-    cp.add(buttonPane);
-    pack();
-    setLocationRelativeTo(owner);
-    setVisible(true);
+    return buttonPane;
   }
 
 /*------------------------------------------------------------------------
@@ -149,19 +165,7 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  void deleteText()
-  {
-    ArrayList<VariantVersionData> versionsToDelete=new ArrayList<VariantVersionData>();
-    boolean[]                     voicesToDelete=new boolean[musicData.getVoiceData().length];
-
-    for (int i=0; i<versionsPanel.checkBoxes.length; i++)
-      if (versionsPanel.checkBoxes[i].isSelected())
-        versionsToDelete.add(musicData.getVariantVersions().get(i));
-    for (int i=0; i<voiceCheckBoxes.length; i++)
-      voicesToDelete[i]=voiceCheckBoxes[i].isSelected();
-
-    owner.deleteText(versionsToDelete,voicesToDelete);
-  }
+  abstract void deleteText();
 
 /*------------------------------------------------------------------------
 Method:     void actionPerformed(ActionEvent event)

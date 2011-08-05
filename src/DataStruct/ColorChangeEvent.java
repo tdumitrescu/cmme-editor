@@ -47,6 +47,7 @@ Parameters:
 
   public ColorChangeEvent(Coloration nc)
   {
+    super();
     eventtype=EVENT_COLORCHANGE;
     newcolor=nc;
   }

@@ -55,8 +55,6 @@ import com.jgraph.layout.organic.*;
 
 import DataStruct.*;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   CriticalNotesWindow
 Extends: JFrame
@@ -65,9 +63,6 @@ Purpose: Main window listing notes
 
 public class CriticalNotesWindow extends JFrame implements ActionListener,ItemListener
 {
-/*----------------------------------------------------------------------*/
-/* Class variables */
-
 /*----------------------------------------------------------------------*/
 /* Instance variables */
 
@@ -201,7 +196,7 @@ Parameters:
 
   SelectionPanel versionsPanel;
 
-  static final int VARTYPE_BOXES_PER_ROW=5,
+  static final int VARTYPE_BOXES_PER_ROW=6,
                    VOICE_BOXES_PER_ROW=12;
 
   JPanel createControlsPanel()
@@ -241,7 +236,8 @@ Parameters:
     buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 // TMP DISABLE    
-    panel.add(buttonPane);
+    if (MetaData.CMME_OPT_TESTING)
+      panel.add(buttonPane);
 
     /* variant type selection controls */
     variantTypeCheckBoxes=new JCheckBox[VariantReading.typeNames.length];
@@ -267,6 +263,7 @@ Parameters:
     variantTypeCheckBoxes[VariantReading.varIndex(VariantReading.VAR_COLORATION)].setSelected(true);
     variantTypeCheckBoxes[VariantReading.varIndex(VariantReading.VAR_LIGATURE)].setSelected(true);
     variantTypeCheckBoxes[VariantReading.varIndex(VariantReading.VAR_MENSSIGN)].setSelected(true);
+    variantTypeCheckBoxes[VariantReading.varIndex(VariantReading.VAR_ERROR)].setSelected(true);
 
     if (buttonSelectedVariants.isSelected())
       varTypeFlags=VariantDisplayOptionsFrame.calcVarFlags(variantTypeCheckBoxes);
@@ -383,13 +380,8 @@ Parameters:
         pc.gridx=1; panel.add(vLabel,pc);
 
         /* "default" reading */
-
-        /* create list of versions in default reading: start with all versions,
-           remove any that are in a variant reading */
-        ArrayList<VariantVersionData> defaultVersions=new ArrayList<VariantVersionData>(musicData.getVariantVersions());
-        for (VariantReading vr : vReport.varMarker.getReadings())
-          for (VariantVersionData vvd : vr.getVersions())
-            defaultVersions.remove(vvd);
+        List<VariantVersionData> defaultVersions=vReport.varMarker.getDefaultVersions(
+          musicData.getVariantVersions(),musicData.getVoice(vReport.voiceNum-1),vReport.voiceEvents);
 
         /* remove any versions from "default" which the user doesn't want reported */
         LinkedList<VariantVersionData> defaultRemove=new LinkedList<VariantVersionData>();
@@ -613,6 +605,12 @@ Parameters:
     out.write(HTMLString.getBytes("UTF-8"));
     out.close();
   }
+
+/* Wow. There is some really really never-refactored code hanging out
+   under this point. Mostly written in an overpriced conference hotel during
+   AMS 2009 a day or two before I had to present this stuff to an airless
+   roomfull of musicologists. Be forewarned.
+   Man if I could rewrite this crap in Ruby. */
 
 /*------------------------------------------------------------------------
 Method:  void sourceAnalysis()
@@ -1484,7 +1482,7 @@ System.out.println("!POEvar: m"+vReport.measureLabel+": "+vv1.getID()+"->"+vv2.g
     }
 
     boolean POEmaintained(StemmaNode n1,StemmaNode n2,
-                          ArrayList<VariantVersionData> OKversions,
+                          List<VariantVersionData> OKversions,
                           LinkedList<StemmaNode> inferentialNodesUsed,
                           LinkedList<StemmaNode> inferentialNodesNotallowed)
     {

@@ -419,7 +419,7 @@ Parameters:
     return duplicateEventsInVariant(vvd,vmd,snum,vnum,vi1,vi2);
   }
 
-  void createSeparateReadingForVersion(VariantVersionData vvd,PieceData vmd,int snum,int vnum,int vi)
+  VariantReading createSeparateReadingForVersion(VariantVersionData vvd,PieceData vmd,int snum,int vnum,int vi)
   {
     VoiceEventListData v=vmd.getSection(snum).getVoice(vnum);
     int vmi1=v.getNextEventOfType(Event.EVENT_VARIANTDATA_START,vi,-1),
@@ -427,12 +427,26 @@ Parameters:
     VariantMarkerEvent vm1=(VariantMarkerEvent)v.getEvent(vmi1);
 
     /* copy reading into separate one for this version only */
-    VariantReading newReading=vm1.getVariantReading(vvd).separateVersion(vvd);
+    VariantReading newReading=vm1.getVariantReading(vvd);
+    if (newReading!=null)
+      {
+        newReading=newReading.separateVersion(vvd);
+
+        /* update vmd to reflect new reading */
+        for (int i=vmi1+1; i<vmi2; i++)
+          vmd.replaceEvent(snum,vnum,i,newReading.getEvent(i-vmi1-1));
+      }
+    else
+      {
+        /* this is one of the default versions; copy events directly from vmd */
+        newReading=new VariantReading(snum,vnum,vmi1);
+        for (int i=vmi1+1; i<vmi2; i++)
+          newReading.addEvent(v.getEvent(i));
+        newReading.addVersion(vvd);
+      }
     vm1.addReading(newReading);
 
-    /* update vmd to reflect new reading */
-    for (int i=vmi1+1; i<vmi2; i++)
-      vmd.replaceEvent(snum,vnum,i,newReading.getEvent(i-vmi1-1));
+    return newReading;
   }
 
   public int deleteVariantEvent(VariantVersionData vvd,PieceData vmd,int snum,int vnum,int vi)
@@ -1149,8 +1163,33 @@ Parameters:
   {
     VariantMarkerEvent vme1=(VariantMarkerEvent)getEvent(loc);
     VoiceEventListData defaultV=getSection(loc.sectionNum).getVoice(loc.voiceNum);
+    VariantReading     vr=vme1.getReading(ri);
+    int                vmi2=defaultV.getNextEventOfType(Event.EVENT_VARIANTDATA_END,loc.eventNum+1,1);
 
-System.out.println("Set reading as default pt2");
+    /* Make new reading for newly non-default versions */
+    List<VariantVersionData> defaultVersions=vme1.getDefaultVersions(      this.variantVersions,this.getVoice(loc.voiceNum),defaultV);
+    defaultVersions.remove(0);
+    if (defaultVersions.size()>0)
+      {
+        /* Copy default events into new reading */
+        VariantReading newReading=createSeparateReadingForVersion(defaultVersions.get(0),this,
+          loc.sectionNum,loc.voiceNum,loc.eventNum);
+
+        /* Add all default versions */
+        for (int vi=1; vi<defaultVersions.size(); vi++)
+          newReading.addVersion(defaultVersions.get(vi));
+      }
+
+    /* Delete current default */
+    for (int i=vmi2-1; i>loc.eventNum; i--)
+      deleteEvent(loc.sectionNum,loc.voiceNum,i);
+
+    /* Insert events from new default */
+    int ei=loc.eventNum+1;
+    for (Event e : vr.getEvents().getEvents())
+      addEvent(loc.sectionNum,loc.voiceNum,ei++,e);
+
+    consolidateReadings(loc);
 
     return true;
   }
@@ -1348,6 +1387,41 @@ Parameters:
   }
 
 /*------------------------------------------------------------------------
+Method:  boolean deleteOriginalText(VariantVersionData vvd,boolean delVoices[])
+Purpose: Delete all modern text in given voices
+Parameters:
+  Input:  boolean delVoices[] - voices to delete (true = delete)
+  Output: -
+  Return: whether anything has been deleted
+------------------------------------------------------------------------*/
+
+  public boolean deleteModernText(boolean delVoices[])
+  {
+    boolean modified=false;
+
+    for (int vnum=0; vnum<delVoices.length; vnum++)
+      if (delVoices[vnum])
+        for (int snum=0; snum<getNumSections(); snum++)
+          {
+            VoiceEventListData v=getSection(snum).getVoice(vnum);
+            if (v!=null)
+              for (Event maine : v.getEvents())
+                for (Event e : maine.getSubEvents())
+                  if (e.geteventtype()==Event.EVENT_NOTE)
+                    {
+                      NoteEvent ne=(NoteEvent)e;
+                      if (ne.getModernText()!=null)
+                        {
+                          ne.setModernText(null);
+                          modified=true;
+                        }
+                    }
+          }
+
+    return modified;
+  }
+
+/*------------------------------------------------------------------------
 Method:  boolean setVersionTextAsDefault(VariantVersionData textVersion)
 Purpose: Set original text of one version as the default (moving current
          default text to other matching variant versions)
@@ -1377,7 +1451,7 @@ Parameters:
                     if (e!=null)
                       {
                         VariantMarkerEvent vme=(VariantMarkerEvent)(v.getEvent(ei));
-                        for (VariantVersionData vvd : vme.getDefaultVersions(getVariantVersions()))
+                        for (VariantVersionData vvd : vme.getDefaultVersions(                               this.getVariantVersions(),this.getVoice(vi),v))
                           if (!vvd.isDefault())
                             duplicateEventInVariant(vvd,this,si,vi,ei+1);
                         deleteEvent(si,vi,ei+1);
@@ -1447,7 +1521,7 @@ Parameters:
                         VariantMarkerEvent vme=(VariantMarkerEvent)(v.getEvent(ei));
                         int vmi2=v.getNextEventOfType(Event.EVENT_VARIANTDATA_END,ei+1,1);
 
-                        List defaultVersions=vme.getDefaultVersions(getVariantVersions());
+                        List defaultVersions=vme.getDefaultVersions(                          this.getVariantVersions(),this.getVoice(vi),v);
                         if (defaultVersions.size()==1 || // skip if default is unique
                             defaultVersions.contains(newDefaultVersion))
                           ei=vmi2+1;
@@ -1482,7 +1556,7 @@ Parameters:
 
     /* create new variant */
     VariantReading newReading=new VariantReading();
-    for (VariantVersionData vvd : vme.getDefaultVersions(getVariantVersions()))
+    for (VariantVersionData vvd : vme.getDefaultVersions(      this.getVariantVersions(),this.getVoice(vnum),v))
       if (!vvd.isDefault())
         newReading.addVersion(vvd);
     variantReadings.add(newReading);

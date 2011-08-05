@@ -108,6 +108,7 @@ class VoiceGfxInfo
   public RenderedEvent    mensEvent;     /* current mensuration sign */
   public Proportion       curProportion, /* currently applied rhythmic proportion */
                           tempoProportion; /* tempo/visual proportion */
+  public int              numMinimsInBreve;
   public Coloration       curColoration; /* currently applied coloration scheme */
   public boolean          inEditorialSection; /* whether current events are editorial */
   public boolean          missingInVersion;   /* whether current events are missing in version being rendered */
@@ -128,6 +129,8 @@ class VoiceGfxInfo
 
   public RenderedLigature   ligInfo,        /* current ligature info */
                             tieInfo;        /* tied note info */
+  public int                colorBeginLoc,  /* indices for coloration brackets */
+                            colorEndLoc;
   public RenderedEventGroup varReadingInfo; /* current variant reading start/end */
   public Proportion         varDefaultTimeAdd; /* default length when variant is shroter than default */
   public boolean            respaceAfterVar;   /* whether to respace after variant */
@@ -346,6 +349,7 @@ public class ScoreRenderer
   /* mensuration parameters */
   public Mensuration baseMensuration;
   public int         numMinimsInBreve;
+  Proportion         measureProportion;
   Mensuration        lastMens; /* for determining whether multiple voices are
                                   changing mensuration simultaneously */
   Proportion         lastMensTime;
@@ -725,6 +729,8 @@ Parameters:
 
   void initEvents(MusicSection musicData)
   {
+    initCurDrawingParams();
+
     /* create and initialize voice graphics info array */
     VariantVersionData curVersion=musicData.getVersion();
     numVoices=musicData.getNumVoices();
@@ -758,12 +764,15 @@ Parameters:
           voicegfx[i].evloc=voicegfx[i].revloc=0;
           voicegfx[i].ligInfo=new RenderedLigature(musicData.getVoice(i),eventinfo[i]);
           voicegfx[i].tieInfo=new RenderedLigature(musicData.getVoice(i),eventinfo[i],RenderedLigature.TIE);
+          voicegfx[i].colorBeginLoc=-1;
+          voicegfx[i].colorEndLoc=-1;
           voicegfx[i].varReadingInfo=null;
           voicegfx[i].clefEvents=startingParams[globalVnum].getClefSet();
           voicegfx[i].clefedata=getPrincipalClefData(voicegfx[i]);
           voicegfx[i].mensEvent=startingParams[globalVnum].getMens();
           voicegfx[i].curProportion=Proportion.EQUALITY;
-          voicegfx[i].tempoProportion=Proportion.EQUALITY;
+          voicegfx[i].tempoProportion=measureProportion;
+          voicegfx[i].numMinimsInBreve=numMinimsInBreve;
           voicegfx[i].curColoration=musicData.getBaseColoration();
           voicegfx[i].inEditorialSection=false;
           voicegfx[i].lastNoteEvent=null;
@@ -811,13 +820,14 @@ Parameters:
     if (numVoices>0)
       liststart=voicegfx[musicData.getValidVoicenum(0)];
 
-    initCurDrawingParams();
-
     finalisList=new LinkedList<VoiceGfxInfo>();
 
     /* initialize measure list */
     measures=new MeasureList(numVoices);
-    curmeasure=measures.newMeasure(curMeasureNum,new Proportion(0,1),numMinimsInBreve,Proportion.EQUALITY,BREVESCALE,barxstart);
+    curmeasure=measures.newMeasure(
+      curMeasureNum,new Proportion(0,1),
+      numMinimsInBreve,measureProportion,
+      BREVESCALE,barxstart);
     for (int i=0; i<numVoices; i++)
       if (musicData.getVoice(i)!=null)
         {
@@ -840,6 +850,7 @@ Parameters:
 
     baseMensuration=null;
     numMinimsInBreve=4; /* default to C */
+    measureProportion=Proportion.EQUALITY;
     MINIMSCALE=25;
     BREVESCALE=MINIMSCALE*numMinimsInBreve;
     lastMens=null;
@@ -1181,7 +1192,21 @@ Parameters:
       return e;
 
     if (noteShapeType!=OptionSet.OPT_NOTESHAPE_ORIG)
-      e=makeModernNoteShapes(e,v);
+      {
+        if (e.geteventtype()==Event.EVENT_NOTE)
+          if (e.isColored())
+            {
+              v.colorEndLoc=v.revloc;
+              if (v.colorBeginLoc==-1)
+                v.colorBeginLoc=v.revloc;
+            }
+          else
+            v.colorBeginLoc=-1;
+        else if (e.geteventtype()==Event.EVENT_SECTIONEND)
+          v.colorBeginLoc=-1;
+
+        e=makeModernNoteShapes(e,v);
+      }
 
     if (e.hasSignatureClef())
       {
@@ -1217,15 +1242,21 @@ Parameters:
                simultaneously, use as main mensuration 
             (v.musictime.equals(lastMensTime) && lastMens.equals(mensInfo)))*/
             /* set base mensuration info for score measure structure */
+        MensEvent me=(MensEvent)(e.getFirstEventOfType(Event.EVENT_MENS));
         baseMensuration=mensInfo;
-        numMinimsInBreve=baseMensuration.prolatio*baseMensuration.tempus;
+        v.numMinimsInBreve=baseMensuration.prolatio*baseMensuration.tempus;
+        v.tempoProportion=baseMensuration.tempoChange;
+        if (!me.noScoreSig())
+          {
+            numMinimsInBreve=v.numMinimsInBreve;
+            measureProportion=v.tempoProportion;
+          }
 
         double oldBS=BREVESCALE;
-        BREVESCALE=MINIMSCALE*numMinimsInBreve/baseMensuration.tempoChange.toDouble();
-        v.tempoProportion=baseMensuration.tempoChange;
+        BREVESCALE=MINIMSCALE*numMinimsInBreve/measureProportion.toDouble();
 
         /* change current bar if mensuration takes effect here */
-        if (!((MensEvent)(e.getFirstEventOfType(Event.EVENT_MENS))).noScoreSig() &&
+        if (!me.noScoreSig() &&
             v.musictime.lessThan(curmeasure.getEndMusicTime()))
           {
             if (curmeasure.numMinims!=numMinimsInBreve ||
@@ -1233,7 +1264,7 @@ Parameters:
               {
                 curmeasure.numMinims=numMinimsInBreve;
                 curmeasure.xlength+=BREVESCALE-oldBS;
-                curmeasure.defaultTempoProportion=v.tempoProportion;
+                curmeasure.defaultTempoProportion=measureProportion;
                 curmeasure.scaleSet=true;
               }
             curmeasure.tempoProportion[v.voicenum]=v.tempoProportion;
@@ -1407,10 +1438,22 @@ Parameters:
     if (e.hasSignatureClef())
       {
         v.clefEvents=re.getClefEvents();
-        v.clefedata=getPrincipalClefData(v);
+        /* this is gonna mess up if e is a multi-event with more than a clef */
+        v.clefedata=e;//getPrincipalClefData(v);
+        if (e.hasPrincipalClef() &&
+            v.musictime.equals(curmeasure.startMusicTime))
+          curmeasure.lastBeginClefIndex[v.voicenum]=v.revloc;
       }
     if (e.getMensInfo()!=null)
       v.mensEvent=re;
+
+    if (v.colorBeginLoc==v.revloc)
+      re.addcolorbracket(0);
+    else if (v.colorBeginLoc==-1 && v.colorEndLoc!=-1)
+      {
+        eventinfo[v.voicenum].getEvent(v.colorEndLoc).addcolorbracket(1);
+        v.colorEndLoc=-1;
+      }
   }
 
 /*------------------------------------------------------------------------
@@ -1449,7 +1492,7 @@ Parameters:
     if (curMeasureNum-getFirstMeasureNum()>=measures.size())
       curmeasure=measures.newMeasure(
         curMeasureNum,curmeasure.getEndMusicTime(),
-        numMinimsInBreve,v.tempoProportion,BREVESCALE,0);
+        numMinimsInBreve,measureProportion,BREVESCALE,0);
     else
       curmeasure=measures.get(curMeasureNum-getFirstMeasureNum());
     curmeasure.reventindex[v.voicenum]=v.revloc;
@@ -2416,10 +2459,10 @@ Parameters:
     if (v.clefEvents!=null && e.hasPrincipalClef() &&
         ((useModernClefs &&
           e.getClefSet(useModernAccSystem)!=v.clefedata.getClefSet(useModernAccSystem) &&
-          !e.getClefSet(useModernAccSystem).contradicts(v.clefedata.getClefSet(useModernAccSystem),useModernClefs,v.v.getMetaData().getSuggestedModernClef()))
+          !e.getClefSet(useModernAccSystem).contradicts(v.clefEvents.getLastClefSet(useModernAccSystem),useModernClefs,v.v.getMetaData().getSuggestedModernClef()))
         || (!displayallnewlineclefs &&
             e.hasPrincipalClef() &&
-            !e.getClefSet(useModernAccSystem).contradicts(v.clefedata.getClefSet(useModernAccSystem),useModernClefs,v.v.getMetaData().getSuggestedModernClef()))))
+            !e.getClefSet(useModernAccSystem).contradicts(v.clefEvents.getLastClefSet(useModernAccSystem),useModernClefs,v.v.getMetaData().getSuggestedModernClef()))))
       return calcNumClefEvents(v,ei);
 
     return 0;

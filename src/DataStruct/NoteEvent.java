@@ -156,7 +156,8 @@ public class NoteEvent extends Event
                    tieType,
                    numFlags;
   boolean          wordEnd,
-                   modernDot;
+                   modernDot,
+                   displayAccidental;
   String           modernText;
   boolean          modernTextEditorial;
 
@@ -326,6 +327,7 @@ Parameters:
                    int l,boolean c,int hc,int sd,int ss,int f,String mt,boolean we,boolean modernTextEditorial,
                    int tieType)
   {
+    super();
     eventtype=EVENT_NOTE;
     notetype=nt;
     length=musictime=len==null ? null : new Proportion(len);
@@ -348,6 +350,7 @@ Parameters:
     this.modernTextEditorial=modernTextEditorial;
     this.tieType=tieType;
     this.modernDot=false;
+    this.displayAccidental=true;
   }
 
   public NoteEvent(String nt,Proportion len,Pitch p,ModernAccidental po,
@@ -385,6 +388,15 @@ Parameters:
     return e;
   }
 
+  public void copyEventAttributes(Event other)
+  {
+    super.copyEventAttributes(other);
+
+    NoteEvent ne=(NoteEvent)other;
+    this.modernDot=ne.modernDot;
+    this.displayAccidental=ne.displayAccidental;
+  }
+
 /*------------------------------------------------------------------------
 Method:    LinkedList<Event> makeModernNoteShapes()
 Overrides: Event.makeModernNoteShapes
@@ -401,7 +413,6 @@ Parameters:
                                                 Proportion timeProp,
                                                 boolean useTies)
   {
-//System.out.println("------MMNS-----");
     LinkedList<Event> el=new LinkedList<Event>();
     NoteEvent ne=(NoteEvent)(this.createCopy());
 
@@ -424,19 +435,19 @@ Parameters:
 //if (!mensInfo.tempoChange.equals(Proportion.EQUALITY))
 //System.out.print("TC="+mensInfo.tempoChange+"|TP="+timeProp+"|");
         Proportion  noteTime=Proportion.quotient(this.length,timeProp),
-                    endMeasurePos=Proportion.sum(measurePos,
-                      new Proportion(measureMinims*measureProp.i2,measureProp.i1)),
+                    measureLength=new Proportion(measureMinims*measureProp.i2,measureProp.i1),
+                    endMeasurePos=Proportion.sum(measurePos,measureLength),
                     noPropEndMeasurePos=new Proportion(measurePos.i1+measureMinims,measurePos.i2);
+
+//System.out.println("------MMNS----- timeprop="+timeProp+
+//                   " measureprop="+measureProp+" mi.tempochange="+mensInfo.tempoChange);
+
 if (!measureProp.equals(mensInfo.tempoChange))
 {
   noPropEndMeasurePos=Proportion.sum(measurePos,
     new Proportion(measureMinims*measureProp.i2*mensInfo.tempoChange.i1,measureProp.i1*mensInfo.tempoChange.i2));
-//System.out.print("XXXXXXXX-NPEMP="+noPropEndMeasurePos+"-XXXXXXXXX");
+//System.out.println("XXXXXXXX-NPEMP="+noPropEndMeasurePos+"-XXXXXXXXX");
 }
-        Proportion noPropTimeLeftInMeasure=Proportion.product(
-                      Proportion.difference(endMeasurePos,timePos),
-                      mensInfo.tempoChange),
-                   totalProp=Proportion.product(timeProp,mensInfo.tempoChange);
 
 //if (!timeProp.equals(Proportion.EQUALITY) || !mensInfo.tempoChange.equals(Proportion.EQUALITY))
 //System.out.println("------time="+timePos+" endmeasure="+endMeasurePos+"||");
@@ -449,6 +460,14 @@ System.out.print("nl1="+ne.getLength()+" ");*/
 
             if (ne.getLength().i1==0)
               break;
+
+            Proportion noPropTimeLeftInMeasure=Proportion.product(
+                         Proportion.difference(endMeasurePos,timePos),
+                         mensInfo.tempoChange);
+
+/*System.out.println("  1nt="+noteTime+" tp="+timePos+" emp="+endMeasurePos);
+if (!measureProp.equals(mensInfo.tempoChange))
+System.out.println("XXXXXXXX-NPTLIM="+noPropTimeLeftInMeasure);*/
             /* calcModernNoteTypeAndLength should get measurePos and endMeasurePos
                as if no proportions are applied... */
             ne.calcModernNoteTypeAndLength(noteTime,timeProp,
@@ -477,17 +496,16 @@ System.out.print("nl1="+ne.getLength()+" ");*/
             if (timePos.greaterThanOrEqualTo(endMeasurePos))
               {
                 measurePos.i1+=measureMinims;
-                endMeasurePos.i1+=measureMinims;
-                noPropTimeLeftInMeasure=Proportion.product(
+                endMeasurePos.add(measureLength);
+/*                noPropTimeLeftInMeasure=Proportion.product(
                   new Proportion(measureMinims,1),
-                  mensInfo.tempoChange);
+                  mensInfo.tempoChange);*/
               }
 
-            ne=(NoteEvent)(ne.createCopy());
-            ne.setModernText(null);
-            ne.setEdCommentary(null);
+            ne=ne.makeNextTiedNote();
 //if (!timeProp.equals(Proportion.EQUALITY) || !mensInfo.tempoChange.equals(Proportion.EQUALITY))
 //System.out.println();
+//System.out.println("  2nt="+noteTime+" tp="+timePos+" emp="+endMeasurePos);
           }
       }
     else
@@ -519,6 +537,17 @@ System.out.print("nl1="+ne.getLength()+" ");*/
       }
 
     return el;
+  }
+
+  NoteEvent makeNextTiedNote()
+  {
+    NoteEvent ne=(NoteEvent)(this.createCopy());
+    ne.setModernText(null);
+    ne.setEdCommentary(null);
+    ne.setDisplayAccidental(false);
+    ne.setSignum(null);
+
+    return ne;
   }
 
   /* should not take proportions into account!!! */
@@ -912,6 +941,11 @@ Parameters:
     return wordEnd;
   }
 
+  public boolean displayAccidental()
+  {
+    return this.displayAccidental;
+  }
+
   /* overrides Event methods */
   public int getcolor()
   {
@@ -1015,6 +1049,11 @@ Parameters:
   public void setModernTextEditorial(boolean modernTextEditorial)
   {
     this.modernTextEditorial=modernTextEditorial;
+  }
+
+  public void setDisplayAccidental(boolean displayAccidental)
+  {
+    this.displayAccidental=displayAccidental;
   }
 
   /* overrides Event methods */

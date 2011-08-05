@@ -36,8 +36,6 @@ public class MultiEvent extends Event
 /*----------------------------------------------------------------------*/
 /* Instance variables */
 
-  LinkedList<Event> eventList;
-
   Mensuration mensInfo=null;
   ClefSet     clefset=null,       /* clef group */
               modernclefset=null; /* modern version of clef group */
@@ -56,6 +54,7 @@ Parameters:
 
   public MultiEvent()
   {
+    super();
     eventtype=EVENT_MULTIEVENT;
     eventList=new LinkedList<Event>();
   }
@@ -104,6 +103,65 @@ Parameters:
         return false;
 
     return true;
+  }
+
+/*------------------------------------------------------------------------
+Method:    LinkedList<Event> makeModernNoteShapes()
+Overrides: Event.makeModernNoteShapes
+Purpose:   Make event (copy) in modern notation
+Parameters:
+  Input:  -
+  Output: -
+  Return: copy of this with modern note shape, expanded into multiple
+          events if necessary
+------------------------------------------------------------------------*/
+
+  public LinkedList<Event> makeModernNoteShapes(Proportion timePos,Proportion measurePos,
+                                                int measureMinims,Proportion measureProp,
+                                                Proportion timeProp,
+                                                boolean useTies)
+  {
+    LinkedList<LinkedList<Event>> modLists=new LinkedList<LinkedList<Event>>();
+    int finalLength=0;
+    for (Event e : eventList)
+      {
+        LinkedList<Event> el=e.makeModernNoteShapes(timePos,measurePos,
+                                 measureMinims,measureProp,
+                                 timeProp,useTies);
+        modLists.add(el);
+        if (el.size()>finalLength)
+          finalLength=el.size();
+      }
+
+    /* OK, a weird and temporary solution to get through the cases I currently
+       need to deal with: simply combine the event lists 1:1 */
+    LinkedList<Event> finalList=new LinkedList<Event>();
+    while (modLists.size()>1)
+      {
+        MultiEvent me=new MultiEvent();
+        me.clefset=this.clefset;
+        me.modernclefset=this.modernclefset;
+
+        LinkedList<LinkedList<Event>> removalList=new LinkedList<LinkedList<Event>>();
+        for (LinkedList<Event> el : modLists)
+          {
+            me.addEvent(el.remove(0));
+            if (el.isEmpty())
+              removalList.add(el);
+          }
+        for (LinkedList<Event> el : removalList)
+          modLists.remove(el);
+
+        finalList.add(me);
+      }
+    if (modLists.size()==1)
+      {
+        LinkedList<Event> el=modLists.get(0);
+        while (!el.isEmpty())
+          finalList.add(el.remove(0));
+      }
+
+    return finalList;
   }
 
 /*------------------------------------------------------------------------
@@ -370,9 +428,6 @@ Parameters:
             le=e;
           }
       }
-/*    clefset=le.getClefSet(false);
-    modernclefset=le.getClefSet(true);
-*/
     clefset=le==null ? null : le.getClefSet(false);
     modernclefset=le==null ? null : le.getClefSet(true);
 /*    for (Iterator i=iterator(); i.hasNext();)

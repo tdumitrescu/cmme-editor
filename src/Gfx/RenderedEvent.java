@@ -47,8 +47,6 @@ import com.lowagie.text.pdf.PdfContentByte;
 
 import DataStruct.*;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   RenderedEvent
 Extends: -
@@ -122,9 +120,10 @@ Parameters:
         imgs=null;
         imgxsize=imgXSizeWithoutText=0;
         multiEventList=new LinkedList<RenderedEvent>();
+        musicparams.inMultiEvent=true;
         for (Iterator i=((MultiEvent)e).iterator(); i.hasNext();)
           {
-            RenderedEvent re=new RenderedEvent(d,(Event)i.next(),rp,op);
+            RenderedEvent re=new RenderedEvent(d,(Event)i.next(),musicparams,op);
             multiEventList.add(re);
             if (re.imgxsize>imgxsize)
               imgxsize=re.imgxsize;
@@ -211,6 +210,12 @@ Parameters:
           MensEvent     mense=(MensEvent)e;
           EventGlyphImg ei;
           int           curssnum=mense.getStaffLoc();
+          boolean       smallMens=mense.small();
+          if (modernNoteShapes && !e.isEditorial() && !musicparams.inMultiEvent)
+            {
+              curssnum=4;
+              smallMens=false;
+            }
 
           for (Iterator mei=mense.iterator(); mei.hasNext();)
             {
@@ -222,9 +227,9 @@ Parameters:
                   case MensSignElement.NUMBERS:
                     imgs.add(new EventStringImg(
                       String.valueOf(curSign.number.i1),curssnum-1,
-                      curxoff+MusicFont.CONNECTION_SCREEN_MENSNUMBERX,STAFFPOSSCALE*(curssnum-1)-options.getSTAFFSCALE()*4-1+(mense.small() ? 0 : MusicFont.CONNECTION_SCREEN_MENSNUMBERY),
+                      curxoff+MusicFont.CONNECTION_SCREEN_MENSNUMBERX,STAFFPOSSCALE*(curssnum-1)-options.getSTAFFSCALE()*4-1+(smallMens ? 0 : MusicFont.CONNECTION_SCREEN_MENSNUMBERY),
                       UNSCALEDxoff+MusicFont.CONNECTION_MENSNUMBERX,MusicFont.CONNECTION_MENSNUMBERY,
-                      imgcolor,mense.small() ? (int)MusicFont.DEFAULT_TEXT_FONTSIZE : (int)MusicFont.DEFAULT_TEXT_LARGEFONTSIZE));
+                      imgcolor,smallMens ? (int)MusicFont.DEFAULT_TEXT_FONTSIZE : (int)MusicFont.DEFAULT_TEXT_LARGEFONTSIZE));
                     if (mense.vertical())
                       curssnum-=2;
                     else
@@ -234,7 +239,7 @@ Parameters:
                       }
                     break;
                   default:
-                    int picnum,picoffset=mense.small() ? MusicFont.PIC_MENS_OFFSETSMALL : 0;
+                    int picnum,picoffset=smallMens ? MusicFont.PIC_MENS_OFFSETSMALL : 0;
                     if (curSign.signType==MensSignElement.MENS_SIGN_O)
                       picnum=MusicFont.PIC_MENS_O+picoffset;
                     else if (curSign.signType==MensSignElement.MENS_SIGN_C)
@@ -259,11 +264,11 @@ Parameters:
                         curxoff,ei.yoff,
                         UNSCALEDxoff,0f,imgcolor));
                     if (mense.vertical())
-                      curssnum-=mense.small() ? 2 : 4;
+                      curssnum-=smallMens ? 2 : 4;
                     else
                       {
-                        curxoff+=MusicFont.CONNECTION_SCREEN_MENSSIGNX*(mense.small() ? .5 : 1);
-                        UNSCALEDxoff+=MusicFont.CONNECTION_MENSSIGNX*(mense.small() ? .5 : 1);
+                        curxoff+=MusicFont.CONNECTION_SCREEN_MENSSIGNX*(smallMens ? .5 : 1);
+                        UNSCALEDxoff+=MusicFont.CONNECTION_MENSSIGNX*(smallMens ? .5 : 1);
                       }
                }
             }
@@ -1062,8 +1067,9 @@ Parameters:
     if (ma!=null)
       ma.optional=po.optional;
 
-    if (ma!=null && (options.get_displayedittags() ||
-                     options.get_modacc_type()!=OptionSet.OPT_MODACC_NONE))
+    if (ma!=null && ne.displayAccidental() &&
+        (options.get_displayedittags() ||
+         options.get_modacc_type()!=OptionSet.OPT_MODACC_NONE))
       {
         int     accssnum=10;
         double  leftAccX=0,rightAccX=0,

@@ -1,5 +1,14 @@
-General version update information:
+General version update information:/
 
+.97: Switched to Apache ANT for builds, redid directory structure (src/build/etc).
+     Viewer: Added Error to selection types for variants.
+     Editor: Added "Set reading as default" in variant reading editor.
+             Added "Delete modern text" dialog.
+     Bug fixes: Default version display in variant display frames/critical notes
+                (displayed versions which were missing the current voice or section).
+                Variant accidental detection (false negatives).
+                Var. clef/key signature issues in page rendering.
+                Var. modern notation translation issues. (7/11)
 .96: Format: Added editorial modern text flag (italicized in visualizers).
      Set default settings in Viewer to modern notation.
      Editor: added "Open in CMME Viewer" feature.

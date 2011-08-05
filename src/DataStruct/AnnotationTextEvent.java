@@ -54,6 +54,7 @@ Parameters:
 
   public AnnotationTextEvent(String t,int sl)
   {
+    super();
     eventtype=EVENT_ANNOTATIONTEXT;
     text=new String(t);
     staffloc=sl;
@@ -61,6 +62,7 @@ Parameters:
 
   public AnnotationTextEvent(String t)
   {
+    super();
     eventtype=EVENT_ANNOTATIONTEXT;
     text=new String(t);
     staffloc=DEFAULT_STAFFLOC;

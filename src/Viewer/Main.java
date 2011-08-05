@@ -62,8 +62,7 @@ import java.io.*;
 import DataStruct.CMMEParser;
 import DataStruct.MetaData;
 import Gfx.MusicWin;
-
-/*----------------------------------------------------------------------*/
+import Util.AppContext;
 
 /*------------------------------------------------------------------------
 Class:   Main
@@ -76,18 +75,9 @@ public class Main extends JApplet
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  private static final boolean CMME_OPT_TESTING=false,
-                               CMME_OPT_VALIDATEXML=false;
-
-  public static final String NetBaseDataDomain=CMME_OPT_TESTING ?
-                                                 "test2.cmme.org" :
-                                                 "www.cmme.org",
-                             BaseDataDir="/data/";
-  public static String       BaseDataDomain,BaseDataURL;
-
-  static final String TitleText1=CMME_OPT_TESTING ?
-                                 "CMME Score Viewer (DEBUGGING VERSION "+DataStruct.MetaData.CMME_VERSION+")" :
-                                 "CMME Score Viewer (beta "+DataStruct.MetaData.CMME_VERSION+")",
+  static final String TitleText1=AppContext.CMME_OPT_TESTING ?
+                                 "CMME Score Viewer (DEBUGGING VERSION "+MetaData.CMME_VERSION+")" :
+                                 "CMME Score Viewer (beta "+MetaData.CMME_VERSION+")",
                       TitleText2="Currently viewing:";
   
   public static String StatusStr="CMME System loaded";
@@ -230,37 +220,28 @@ Parameters:
   {
     appletInited=true;
     Main.parentWin=this;
-    MetaData.CMME_OPT_TESTING=this.CMME_OPT_TESTING;
-    MetaData.CMME_OPT_VALIDATEXML=this.CMME_OPT_VALIDATEXML;
+    MetaData.CMME_OPT_TESTING=AppContext.CMME_OPT_TESTING;
+    MetaData.CMME_OPT_VALIDATEXML=AppContext.CMME_OPT_VALIDATEXML;
 
     /* initialize data locations */
-    String initDirectory=null;
-    MusicWin.setViewerWin(this);
-    if (inApplet)
-      BaseDataDomain=getDocumentBase().getHost();
-    else
-      BaseDataDomain=NetBaseDataDomain;
-    if (local)
-      try
-        {
-          BaseDataURL="file:///"+new File(".").getCanonicalPath()+BaseDataDir;
-          initDirectory=new File(".").getCanonicalPath()+BaseDataDir;
-        }
-      catch (Exception e)
-        {
-          showError("Error loading local file locations: "+e);
-        }
-    else
-      BaseDataURL="http://"+BaseDataDomain+BaseDataDir;
-
-    /* load XML parser */
-    DataStruct.XMLReader.initparser(BaseDataURL,CMME_OPT_VALIDATEXML);
-
-    /* initialize graphics/score windowing system */
-    MusicWin.initScoreWindowing(BaseDataURL,initDirectory+"music/",inApplet);
     try
       {
-        Gfx.MusicFont.loadmusicface(BaseDataURL);
+        MusicWin.setViewerWin(this);
+        AppContext.setBaseDataLocations(this,local,inApplet);
+      }
+    catch (Exception e)
+      {
+        showError("Error loading local file locations: "+e);
+      }
+
+    /* load XML parser */
+    DataStruct.XMLReader.initparser(AppContext.BaseDataURL,AppContext.CMME_OPT_VALIDATEXML);
+
+    /* initialize graphics/score windowing system */
+    MusicWin.initScoreWindowing(AppContext.BaseDataURL,AppContext.BaseDataDir+"music/",inApplet);
+    try
+      {
+        Gfx.MusicFont.loadmusicface(AppContext.BaseDataURL);
       }
     catch (Exception e)
       {
@@ -426,7 +407,7 @@ Parameters:
     /* load music data */
     try
       {
-            URL fURL=new URL(BaseDataURL+"music/"+filename+".gz");
+            URL fURL=new URL(AppContext.BaseDataURL+"music/"+filename+".gz");
             int flen=fURL.openConnection().getContentLength();
             GZIPInputStream zipIn=new GZIPInputStream(
               new Util.ProgressInputStream(fURL.openStream(),
@@ -437,10 +418,10 @@ Parameters:
     catch (Exception e)
       {
         JOptionPane.showMessageDialog(parentWin,
-          "Error loading "+filename+"\n\n"+e+"\n\nURL: "+BaseDataURL+"music/"+filename+".gz",
+          "Error loading "+filename+"\n\n"+e+"\n\nURL: "+AppContext.BaseDataURL+"music/"+filename+".gz",
           "Error",JOptionPane.ERROR_MESSAGE);
         lw.dispose();
-        if (CMME_OPT_TESTING)
+        if (AppContext.CMME_OPT_TESTING)
           e.printStackTrace();
         return null;
       }

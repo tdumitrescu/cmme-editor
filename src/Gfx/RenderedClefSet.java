@@ -29,8 +29,6 @@ import DataStruct.*;
 
 import com.lowagie.text.pdf.PdfContentByte;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   RenderedCleftSet
 Extends: java.util.LinkedList
@@ -39,9 +37,6 @@ Purpose: Handles one set of rendered clef events
 
 public class RenderedClefSet extends LinkedList<RenderedEvent>
 {
-/*----------------------------------------------------------------------*/
-/* Instance variables */
-
 /*----------------------------------------------------------------------*/
 /* Instance methods */
 
@@ -112,12 +107,13 @@ Parameters:
   Return: amount of x-space used
 ------------------------------------------------------------------------*/
 
-  public float draw(PDFCreator outp,PdfContentByte cb,float xl,float yl)
+  public float draw(boolean princOnly,
+                    PDFCreator outp,PdfContentByte cb,float xl,float yl)
   {
     float origxl=xl;
 
     for (RenderedEvent re : this)
-//      if ((!princOnly) || re.getEvent().hasPrincipalClef())
+      if ((!princOnly) || re.getEvent().hasPrincipalClef())
         xl+=re.drawClefs(outp,cb,xl,yl);
 
     return xl-origxl;
@@ -180,7 +176,10 @@ Parameters:
 
   public String toString()
   {
-    String strVal="Clef set, num events="+size();
+    String strVal="RenderedClefSet: [ ";
+    for (RenderedEvent re : this)
+      strVal+=re.getEvent()+" ";
+    strVal+="]";
     return strVal;
   }
 }

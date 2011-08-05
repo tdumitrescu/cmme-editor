@@ -54,6 +54,7 @@ Parameters:
 
   public LineEndEvent(boolean pe)
   {
+    super();
     eventtype=EVENT_LINEEND;
     pageEnd=pe;
   }

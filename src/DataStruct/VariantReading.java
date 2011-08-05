@@ -55,6 +55,7 @@ public class VariantReading
                            VAR_COLORATION=    VAR_LINEEND<<1,
                            VAR_LIGATURE=      VAR_COLORATION<<1,
                            VAR_MENSSIGN=      VAR_LIGATURE<<1,
+                           VAR_ERROR=         VAR_MENSSIGN<<1,
                            VAR_ALL=           Long.MAX_VALUE;
 
   public static String[]   typeNames=new String[]
@@ -68,7 +69,8 @@ public class VariantReading
                                "Line-break",
                                "Coloration",
                                "Ligature",
-                               "Mensuration"
+                               "Mensuration",
+                               "Error"
                              };
 
   /* positioning of inserted event within reading */
@@ -292,6 +294,8 @@ Parameters:
       varFlags|=VariantReading.VAR_LIGATURE;
     if (this.hasVariantMensSign(v,varStarti))
       varFlags|=VariantReading.VAR_MENSSIGN;
+    if (this.isError())
+      varFlags|=VariantReading.VAR_ERROR;
 
     return varFlags;
   }
@@ -501,20 +505,25 @@ Parameters:
     Event      e1=null,e2=null;
     Proportion mt1=new Proportion(0,1),mt2=new Proportion(0,1);
 
+//System.out.println("HVA vi="+vi);
     e2=getVarEvent(v,vi);
-    Event   mainClefEvent=e2==null ? null : e2.getClefInfoEvent();
+    Event   mainClefEvent=e2==null ? v.getEvent(vi-1).getClefInfoEvent()
+                                   : e2.getClefInfoEvent();
+//System.out.println("    mce="+mainClefEvent);
     ClefSet mainClefSet=mainClefEvent==null ? null : mainClefEvent.getClefSet();
     boolean fullClefs=this.hasVariantLineEnd(v,vi) ||
                       vi==0 || mainClefSet==null ||
                       v.getEvent(vi-1).getClefInfoEvent()==null ||
-                      mainClefSet.hasPrincipalClef();
+                      (e2!=null && e2.hasPrincipalClef());
 
+//System.out.println("fullClefs="+fullClefs);
     do
       {
         /* find position of next accidental in each list */
         e1=getVarEvent(events,i);
         while (e1!=null && !e1.hasAccidentalClef())
           {
+//System.out.println("HVA1");
             mt1.add(e1.getmusictime());
             e1=getVarEvent(events,++i);
           }

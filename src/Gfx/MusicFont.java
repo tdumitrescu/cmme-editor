@@ -43,8 +43,6 @@ import java.net.*;
 import DataStruct.Coloration;
 import DataStruct.NoteEvent;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   MusicFont
 Extends: -
@@ -56,7 +54,8 @@ public class MusicFont
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  public static final String DisplayFontFileName="cmme.ttf",
+  public static final String FontRelativeDir="fonts/",
+                             DisplayFontFileName="cmme.ttf",
                              ModernFontFileName="cmme-modern.ttf",
                              PrintFontFileName="cmme-printer.ttf";
 
@@ -227,7 +226,7 @@ Parameters:
   public static void loadmusicface(String database) throws Exception
   {
     baseMusicFont=Font.createFont(
-      Font.TRUETYPE_FONT,new URL(database+"fonts/"+DisplayFontFileName).openStream());
+      Font.TRUETYPE_FONT,new URL(database+FontRelativeDir+DisplayFontFileName).openStream());
     defaultMusicFont=baseMusicFont.deriveFont(DEFAULT_MUSIC_FONTSIZE);
     defaultTextFont=new Font(null,Font.PLAIN,(int)DEFAULT_TEXT_FONTSIZE);
     defaultTextItalFont=new Font(null,Font.ITALIC,(int)DEFAULT_TEXT_FONTSIZE);

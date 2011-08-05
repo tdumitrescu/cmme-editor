@@ -32,8 +32,6 @@ import java.util.*;
 
 import DataStruct.*;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   MeasureInfo
 Extends: -
@@ -57,6 +55,7 @@ public class MeasureInfo
   public Proportion      tempoProportion[];
   public RenderedClefSet startClefEvents[];
   public RenderedEvent   startMensEvent[];
+  public int             lastBeginClefIndex[];
 
   int measurenum,
       numvoices;
@@ -96,12 +95,19 @@ Parameters:
     this.startClefEvents=new RenderedClefSet[numvoices];
     this.startMensEvent=new RenderedEvent[numvoices];
     this.tempoProportion=new Proportion[numvoices];
+    this.lastBeginClefIndex=new int[numvoices];
 
     for (int vi=0; vi<this.numvoices; vi++)
       {
         this.reventindex[vi]=-1;
         this.tempoProportion[vi]=vTempoProportion;
+        this.lastBeginClefIndex[vi]=-1;
       }
+  }
+
+  public boolean beginsWithClef(int vnum)
+  {
+    return this.lastBeginClefIndex[vnum]>=0;
   }
 
 /*------------------------------------------------------------------------

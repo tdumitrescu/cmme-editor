@@ -97,23 +97,10 @@ Parameters:
     vrc.gridwidth=1;
     vrc.gridy++;
 
-    /* create array of "unused" versions to be listed with default reading */
+    /* get list of "unused" versions to be listed with default reading */
     PieceData musicData=canvas.getMusicData();
-    ArrayList<VariantVersionData> defaultVersions=new ArrayList<VariantVersionData>(musicData.getVariantVersions());
-    for (VariantReading vr : vStartEvent.getReadings())
-      for (VariantVersionData vvd : vr.getVersions())
-        defaultVersions.remove(vvd);
-
-    /* remove versions from default list if they are missing the current
-       section/voice */
-    for (VariantVersionData vvd : v.getMissingVersions())
-      defaultVersions.remove(vvd);
-    ArrayList<VariantVersionData> versionsToRemove=new ArrayList<VariantVersionData>();
-    for (VariantVersionData vvd : defaultVersions)
-      if (vvd.isVoiceMissing(musicData.getVoice(vnum)))
-        versionsToRemove.add(vvd);
-    for (VariantVersionData vvd : versionsToRemove)
-      defaultVersions.remove(vvd);
+    List<VariantVersionData> defaultVersions=vStartEvent.getDefaultVersions(
+      musicData.getVariantVersions(),musicData.getVoice(vnum),v);
 
     JPanel defaultVersionsPanel=createVersionsPanel(defaultVersions,true),
            defaultVariantPanel=new VariantReadingPanel(
@@ -162,7 +149,7 @@ Parameters:
     return infoPanel;
   }
 
-  protected JPanel createVersionsPanel(ArrayList<VariantVersionData> versions,boolean defaultVersion)
+  protected JPanel createVersionsPanel(List<VariantVersionData> versions,boolean defaultVersion)
   {
     JPanel versionsPanel=new JPanel();
     versionsPanel.setLayout(new BoxLayout(versionsPanel,BoxLayout.Y_AXIS));

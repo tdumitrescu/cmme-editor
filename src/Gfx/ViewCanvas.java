@@ -49,6 +49,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 import javax.swing.*;
 import java.util.*;
+import com.lowagie.text.pdf.PdfContentByte;
 
 import DataStruct.*;
 
@@ -1629,12 +1630,16 @@ Parameters:
   Return: amount of x space taken by sig
 ------------------------------------------------------------------------*/
 
-  float drawModKeySig(Graphics2D g,ModernKeySignature mk,RenderedEvent cre,float xloc,float yloc)
+  static public double drawModKeySig(
+    Graphics2D g,MusicFont MusicGfx,
+    ModernKeySignature mk,RenderedEvent cre,
+    double xloc,double yloc,
+    double VIEWSCALE,boolean displayEditTags,int STAFFSCALE,int STAFFPOSSCALE)
   {
-    float curx=xloc+5*VIEWSCALE;
-    Clef  c=cre.getClef();
-    int   staffApos=c.getApos(),
-          accColor=displayEditTags ? Coloration.BLUE : Coloration.BLACK;
+    double curx=xloc+5*VIEWSCALE;
+    Clef   c=cre.getClef();
+    int    staffApos=c.getApos(),
+           accColor=displayEditTags ? Coloration.BLUE : Coloration.BLACK;
 
     if (staffApos<0)
       staffApos+=7;
@@ -1658,6 +1663,52 @@ Parameters:
       }
 
     return curx-xloc;
+  }
+
+  static public float drawModKeySig(
+    PDFCreator outp,PdfContentByte cb,
+    ModernKeySignature mk,RenderedEvent cre,
+    float xloc,float yloc)
+  {
+    float curx=xloc+5*outp.XEVENTSPACE_SCALE;
+    Clef  c=cre.getClef();
+    int   staffApos=c.getApos();
+
+    if (staffApos<0)
+      staffApos+=7;
+    else if (staffApos>5)
+      staffApos-=7;
+
+    /* draw individual accidentals in signature */
+    for (Iterator i=mk.iterator(); i.hasNext();)
+      {
+        ModernKeySignatureElement kse=(ModernKeySignatureElement)i.next();
+
+        for (int ai=0; ai<kse.accidental.numAcc; ai++)
+          {
+            outp.drawGlyph(
+              MusicFont.PIC_CLEFSTART+Clef.CLEF_MODERNFlat+kse.accidental.accType,
+              curx,yloc,0d,0d,
+              staffApos+kse.calcAOffset(),cb);
+            curx+=MusicFont.CONNECTION_MODACCX*2;
+/*            MusicGfx.drawGlyph(
+              g,MusicFont.PIC_CLEFSTART+Clef.CLEF_MODERNFlat+kse.accidental.accType,
+              curx,yloc+(STAFFSCALE*4-STAFFPOSSCALE*(staffApos+kse.calcAOffset()))*VIEWSCALE,
+              Coloration.AWTColors[accColor]);
+            curx+=(MusicGfx.getGlyphWidth(MusicFont.PIC_CLEFSTART+Clef.CLEF_MODERNFlat+kse.accidental.accType)+
+                   MusicFont.CONNECTION_SCREEN_MODACC_DBLFLAT)*VIEWSCALE;*/
+          }
+      }
+
+    return curx-xloc;
+  }
+
+  double drawModKeySig(Graphics2D g,ModernKeySignature mk,RenderedEvent cre,
+                       double xloc,double yloc)
+  {
+    return ViewCanvas.drawModKeySig(
+             g,MusicGfx,mk,cre,xloc,yloc,
+             VIEWSCALE,displayEditTags,STAFFSCALE,STAFFPOSSCALE);
   }
 
 /*------------------------------------------------------------------------

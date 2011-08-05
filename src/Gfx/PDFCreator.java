@@ -67,7 +67,7 @@ public class PDFCreator
   PrintParams PP;
   BaseFont    CMMEBaseFont,
               PlainFont,
-              TextFont,
+              TextFont,TextItalicFont,
               StaffNameFont,
               ScoreAnnotationFont,
               TitleFont,SubtitleFont;
@@ -195,11 +195,12 @@ Parameters:
 
         /* initialize page/graphics params */
         cb=writer.getDirectContent();
-/* embedded font location: not good! FIX */
-        CMMEBaseFont=BaseFont.createFont("data/fonts/"+MusicFont.PrintFontFileName,
-                                         BaseFont.CP1252,BaseFont.EMBEDDED);
+        CMMEBaseFont=BaseFont.createFont(
+          Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+MusicFont.PrintFontFileName,
+          BaseFont.CP1252,BaseFont.EMBEDDED);
         PlainFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         TextFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+        TextItalicFont=BaseFont.createFont(BaseFont.HELVETICA_OBLIQUE,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         StaffNameFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         ScoreAnnotationFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         TitleFont=BaseFont.createFont(BaseFont.TIMES_ITALIC,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
@@ -471,6 +472,7 @@ Parameters:
     RenderedStaffSystem curSystem=renderedPages.systems.get(sysNum);
     int                 rendererNum=ScoreRenderer.calcRendererNum(renderedPages.scoreData,curSystem.startMeasure);
     ScoreRenderer       curRenderer=renderedPages.scoreData[rendererNum];
+    MeasureInfo         leftMeasure=curRenderer.getMeasure(curSystem.startMeasure);
 
     XEVENTSPACE_SCALE=(PP.STAFFXSIZE-PP.LINEXADJUST)/ScorePagePreviewWin.STAFFXSIZE;//PP.STAFFXSIZE/ScorePagePreviewWin.STAFFXSIZE;
     float clefInfoSize=renderedPages.calcLeftInfoSize(curSystem.startMeasure)*XEVENTSPACE_SCALE,
@@ -506,10 +508,13 @@ Parameters:
           drawClefInfo(renderedPages,v,curSystem.startMeasure,
                        PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE,cury,cb);*/
         float VclefInfoSize=clefInfoSize;
-        if (curRenderer.getStartingParams()[v].clefSet!=null ||
-            curSystem.startMeasure>curRenderer.getFirstMeasureNum())
-          drawClefInfo(renderedPages,v,curSystem.startMeasure,
+        if (!leftMeasure.beginsWithClef(v) &&
+            (curRenderer.getStartingParams()[v].clefSet!=null ||
+             curSystem.startMeasure>curRenderer.getFirstMeasureNum()))
+          drawClefInfo(curRenderer,leftMeasure,v,
                        PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE,cury,cb);
+        else
+          VclefInfoSize=0;
 
         /* calculate which events go on each staff */
         int leftei=curRenderer.getMeasure(curSystem.startMeasure).reventindex[v],
@@ -524,9 +529,11 @@ Parameters:
           {
             re=curRenderer.getEvent(v,ei);
             float xloc=PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
-                       clefInfoSize+(float)re.getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
-            if (ei==0)
+                       VclefInfoSize+(float)re.getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
+
+            if (ei==0 && sysNum==0)
               xloc=PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE; // TMP
+
             if (re.isdisplayed())
               drawEvent(re,xloc,cury,cb);
 
@@ -536,7 +543,7 @@ Parameters:
               {
                 float ligLeftX=ligInfo.firstEventNum<leftei ? PP.XMARGIN-1 :
                   PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
-                  clefInfoSize+(float)curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
+                  VclefInfoSize+(float)curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
                 drawLigature(ligLeftX,xloc,cury+calcLigY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
                              renderedPages.options,cb);
               }
@@ -548,11 +555,21 @@ Parameters:
                 RenderedEvent tre1=curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum);
                 float tieLeftX=tieInfo.firstEventNum<leftei ? PP.XMARGIN-1 :
                   PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
-                  clefInfoSize+(float)curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
+                  VclefInfoSize+(float)curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
 
                 drawTie(tre1.getTieType(),
                         tieLeftX,xloc,cury+calcTieY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
                         renderedPages.options,cb);
+              }
+
+            /* some more clef spacing adjustment, for staves beginning with new clefs */
+            if (ei==leftMeasure.lastBeginClefIndex[v] && ei<rightei)
+              {
+/*                float nextX=calcXLoc(curSystem,VclefInfoSize,
+                                   curRenderer.eventinfo[v].getEvent(ei+1))-
+                          XMARGIN-curSystem.leftX;
+                if (clefInfoSize>nextX)*/
+                  VclefInfoSize=clefInfoSize;
               }
           }
 
@@ -562,7 +579,7 @@ Parameters:
           {
             float ligLeftX=ligInfo.firstEventNum<leftei ? PP.XMARGIN-1 :
               PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
-              clefInfoSize+(float)curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
+              VclefInfoSize+(float)curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
             drawLigature(ligLeftX,PP.XMARGIN+PP.STAFFXSIZE+1,cury+calcLigY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
                          renderedPages.options,cb);
           }
@@ -576,7 +593,7 @@ Parameters:
             int firstEventNum=re.doubleTied() ? rightei : tieInfo.firstEventNum;
             float tieLeftX=firstEventNum<leftei ? PP.XMARGIN-1 :
               PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
-              clefInfoSize+(float)tre1.getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
+              VclefInfoSize+(float)tre1.getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
 
             drawTie(tre1.getTieType(),
                     tieLeftX,PP.XMARGIN+PP.STAFFXSIZE+1,cury+calcTieY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
@@ -631,9 +648,10 @@ Parameters:
           if (evimg instanceof EventGlyphImg)
             {
               EventGlyphImg evgimg=(EventGlyphImg)evimg;
-              cb.setTextMatrix((float)(curx+evgimg.UNSCALEDxoff*PP.XYSCALE),
-                               (float)(cury-PP.STAFFYSIZE+evgimg.staffypos*PP.STAFFYPOSSCALE+evgimg.UNSCALEDyoff*PP.XYSCALE));
-              cb.showText(String.valueOf((char)(MusicFont.PIC_OFFSET+evgimg.imgnum)));
+              drawGlyph(evgimg.imgnum,curx,cury,
+                        evgimg.UNSCALEDxoff,evgimg.UNSCALEDyoff,
+                        evgimg.staffypos,
+                        cb);
             }
 
           else if (evimg instanceof EventShapeImg)
@@ -669,7 +687,9 @@ Parameters:
 
               /* display string without special symbols */
               if (e.getEvent().geteventtype()==Event.EVENT_NOTE)
-                cb.setFontAndSize(TextFont,PP.TextFONTSIZE);
+                cb.setFontAndSize(evsimg.fontStyle==java.awt.Font.ITALIC ? 
+                                    TextItalicFont : TextFont,
+                                  PP.TextFONTSIZE);
               else
                 cb.setFontAndSize(ScoreAnnotationFont,PP.ScoreAnnotationFONTSIZE);
               cb.setTextMatrix((float)basex,(float)basey);
@@ -688,6 +708,26 @@ Parameters:
         }
   }
 
+  public void drawGlyph(int glyphNum,float curx,float cury,
+                        double UNSCALEDxoff,double UNSCALEDyoff,
+                        int staffYPos,
+                        PdfContentByte cb)
+  {
+    cb.setTextMatrix((float)(curx+UNSCALEDxoff*PP.XYSCALE),
+                     (float)(cury-PP.STAFFYSIZE+staffYPos*PP.STAFFYPOSSCALE+UNSCALEDyoff*PP.XYSCALE));
+    cb.showText(String.valueOf((char)(MusicFont.PIC_OFFSET+glyphNum)));
+  }
+
+  public void drawGlyph(char glyphNum,float curx,float cury,
+                        double UNSCALEDxoff,double UNSCALEDyoff,
+                        int staffYPos,
+                        PdfContentByte cb)
+  {
+    drawGlyph((int)glyphNum,curx,cury,
+              UNSCALEDxoff,UNSCALEDyoff,
+              staffYPos,cb);
+  }
+
 /*------------------------------------------------------------------------
 Method:  void drawClefInfo(ScorePageRenderer renderedPages,int vnum,int mnum,
                            float xloc,float yloc,PdfContentByte cb)
@@ -704,15 +744,22 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  void drawClefInfo(ScorePageRenderer renderedPages,int vnum,int mnum,
-                    float xloc,float yloc,PdfContentByte cb)
+  void drawClefInfo(ScoreRenderer renderer,MeasureInfo leftMeasure,
+                    int vnum,float xloc,float yloc,PdfContentByte cb)
   {
-    int             rendererNum=ScoreRenderer.calcRendererNum(renderedPages.scoreData,mnum);
-    MeasureInfo     leftmeasure=renderedPages.scoreData[rendererNum].getMeasure(mnum);
-    RenderedClefSet curCS=renderedPages.scoreData[rendererNum].eventinfo[vnum].getClefEvents(leftmeasure.reventindex[vnum]);
+    int leftEventIndex=leftMeasure.reventindex[vnum];
+    boolean useModernAccSystem=renderedScore.options.getUseModernAccidentalSystem();
 
-    if (curCS!=null)
-      curCS.draw(this,cb,xloc,yloc);
+    /* draw clefs */
+    RenderedClefSet leftCS=renderer.eventinfo[vnum].getClefEvents(leftEventIndex);
+    if (leftCS!=null)
+      xloc+=leftCS.draw(useModernAccSystem,this,cb,xloc,yloc);
+
+    /* modern key signature */
+    ModernKeySignature mk=renderer.eventinfo[vnum].getModernKeySig(leftEventIndex);
+    if (mk.numEls()>0 && leftCS!=null && useModernAccSystem)
+      xloc+=ViewCanvas.drawModKeySig(
+        this,cb,mk,leftCS.getPrincipalClefEvent(),xloc,yloc);
   }
 
 /*------------------------------------------------------------------------

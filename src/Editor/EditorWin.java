@@ -756,7 +756,8 @@ Parameters:
 
   protected JMenuItem TextMenuOpenEditor,
                       TextMenuSetCurrentAsDefault,
-                      TextMenuDeleteText;
+                      TextMenuDeleteOriginalText,
+                      TextMenuDeleteModernText;
 
   protected JMenu createTextMenu()
   {
@@ -768,15 +769,20 @@ Parameters:
 
     TextMenuSetCurrentAsDefault=new JMenuItem("Set current version text as default");
 
-    TextMenuDeleteText=new JMenuItem("Delete text...");
-    TextMenuDeleteText.setMnemonic(KeyEvent.VK_D);
+    TextMenuDeleteOriginalText=new JMenuItem("Delete original text...");
+    TextMenuDeleteOriginalText.setMnemonic(KeyEvent.VK_O);
+
+    TextMenuDeleteModernText=new JMenuItem("Delete modern text...");
+    TextMenuDeleteModernText.setMnemonic(KeyEvent.VK_M);
 
     TM.add(TextMenuOpenEditor);
     TM.add(TextMenuSetCurrentAsDefault);
-    TM.add(TextMenuDeleteText);
+    TM.add(TextMenuDeleteOriginalText);
+    TM.add(TextMenuDeleteModernText);
     TextMenuOpenEditor.addActionListener(this);
-    TextMenuDeleteText.addActionListener(this);
     TextMenuSetCurrentAsDefault.addActionListener(this);
+    TextMenuDeleteOriginalText.addActionListener(this);
+    TextMenuDeleteModernText.addActionListener(this);
 
     return TM;
   }
@@ -2353,7 +2359,7 @@ Parameters:
   }
 
 /*------------------------------------------------------------------------
-Method:  void openTextDeleteDialog()
+Method:  void open[Modern]TextDeleteDialog()
 Purpose: Show text deletion dialog
 Parameters:
   Input:  -
@@ -2361,13 +2367,18 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  void openTextDeleteDialog()
+  void openOriginalTextDeleteDialog()
   {
-    new TextDeleteDialog(this);
+    new OriginalTextDeleteDialog(this);
+  }
+
+  void openModernTextDeleteDialog()
+  {
+    new ModernTextDeleteDialog(this);
   }
 
 /*------------------------------------------------------------------------
-Method:  void deleteText(ArrayList<VariantVersionData> versions,boolean[] voices)
+Method:  void deleteOriginalText(ArrayList<VariantVersionData> versions,boolean[] voices)
 Purpose: Delete original text from a given set of versions/voices
 Parameters:
   Input:  ArrayList<VariantVersionData> versions - versions from which to delete
@@ -2376,13 +2387,23 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  public void deleteText(ArrayList<VariantVersionData> versions,boolean[] voices)
+  public void deleteOriginalText(ArrayList<VariantVersionData> versions,boolean[] voices)
   {
     boolean modified=false;
 
     for (VariantVersionData vvd : versions)
       modified|=musicData.deleteOriginalText(vvd,voices);
     musicData.consolidateAllReadings();
+
+    /* rerender and reset EditScr */
+    if (modified)
+      fileModified();
+    EditScr.resetMusicData();
+  }
+
+  public void deleteModernText(boolean[] voices)
+  {
+    boolean modified=musicData.deleteModernText(voices);
 
     /* rerender and reset EditScr */
     if (modified)
@@ -2529,10 +2550,12 @@ Parameters:
     /* Text Menu */
     else if (item==TextMenuOpenEditor)
       showTextEditorFrame();
-    else if (item==TextMenuDeleteText)
-      openTextDeleteDialog();
     else if (item==TextMenuSetCurrentAsDefault)
       setVersionTextAsDefault(getCurrentVariantVersion());
+    else if (item==TextMenuDeleteOriginalText)
+      openOriginalTextDeleteDialog();
+    else if (item==TextMenuDeleteModernText)
+      openModernTextDeleteDialog();
 
     /* Versions Menu */
     else if (item==VersionsMenuGeneralInfo)
@@ -2922,7 +2945,8 @@ Parameters:
     SectionsMenuDisplaySectionAttribs.removeActionListener(this);
     TextMenuOpenEditor.removeActionListener(this);
     TextMenuSetCurrentAsDefault.removeActionListener(this);
-    TextMenuDeleteText.removeActionListener(this);
+    TextMenuDeleteOriginalText.removeActionListener(this);
+    TextMenuDeleteModernText.removeActionListener(this);
 
     for (int i=0; i<VMVSnumItems.length; i++)
       VMVSnumItems[i].removeActionListener(VSListener);

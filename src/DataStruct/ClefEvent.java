@@ -62,6 +62,7 @@ Parameters:
 
   public ClefEvent(String n,int l,Pitch p,Event le,Event cie,boolean s)
   {
+    super();
     int  cleftype=Clef.CLEF_C;
     Clef displayClef=null;
 
@@ -87,6 +88,7 @@ Parameters:
 
   public ClefEvent(Clef c,Event le,Event cie)
   {
+    super();
     eventtype=EVENT_CLEF;
 
     clef=c;
@@ -363,6 +365,11 @@ Parameters:
 
   public void prettyprint()
   {
-    clef.prettyprint();
+    System.out.println(this.toString());
+  }
+
+  public String toString()
+  {
+    return this.clef.toString();
   }
 }

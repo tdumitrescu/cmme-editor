@@ -29,9 +29,7 @@ import java.io.*;
 
 import DataStruct.CMMEParser;
 import DataStruct.MetaData;
-
-/*----------------------------------------------------------------------*/
-
+import Util.AppContext;
 /*------------------------------------------------------------------------
 Class:   Main
 Extends: -
@@ -43,14 +41,8 @@ public class Main
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  private static final boolean CMME_OPT_TESTING=true,
-                               CMME_OPT_VALIDATEXML=true;
-
-  public static final String BaseDataDir="/data/";
-  public static String       BaseDataURL;
-
   static String initfilename,
-                initdirectory,curdir;
+                curdir;
 
 /*----------------------------------------------------------------------*/
 /* Instance variables */
@@ -115,15 +107,13 @@ Parameters:
 
   static void init()
   {
-    MetaData.CMME_OPT_TESTING=CMME_OPT_TESTING;
-    MetaData.CMME_OPT_VALIDATEXML=CMME_OPT_VALIDATEXML;
+    MetaData.CMME_OPT_TESTING=AppContext.CMME_OPT_TESTING;
+    MetaData.CMME_OPT_VALIDATEXML=AppContext.CMME_OPT_VALIDATEXML;
 
     /* initialize data locations */
     try
       {
-        initdirectory=new File(".").getCanonicalPath()+BaseDataDir;
-        curdir=new File(".").getCanonicalPath();
-        BaseDataURL="file:///"+initdirectory;
+        AppContext.setBaseDataLocations(null,true,false);
       }
     catch (Exception e)
       {
@@ -131,15 +121,15 @@ Parameters:
       }
 
     /* initialize edit window objects */
-    EditorWin.initScoreWindowing(BaseDataURL,initdirectory+"music/",false);
+    EditorWin.initScoreWindowing(AppContext.BaseDataURL,AppContext.BaseDataDir+"music/",false);
 
     /* load XML parser */
-    DataStruct.XMLReader.initparser(BaseDataURL,true);
+    DataStruct.XMLReader.initparser(AppContext.BaseDataURL,true);
 
     /* load base music font */
     try
       {
-        Gfx.MusicFont.loadmusicface(BaseDataURL);
+        Gfx.MusicFont.loadmusicface(AppContext.BaseDataURL);
       }
     catch (Exception e)
       {

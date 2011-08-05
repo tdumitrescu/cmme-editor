@@ -49,12 +49,14 @@ Parameters:
 
   public LacunaEvent(Proportion l)
   {
+    super();
     eventtype=EVENT_LACUNA;
     length=musictime=new Proportion(l);
   }
 
   public LacunaEvent(int eventType)
   {
+    super();
     this.eventtype=eventType;
     length=musictime=new Proportion(0,1);
   }

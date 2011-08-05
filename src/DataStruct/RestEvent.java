@@ -113,6 +113,7 @@ Parameters:
 
   public RestEvent(int nt,Proportion p,int bl,int nl,int ns)
   {
+    super();
     eventtype=EVENT_REST;
     notetype=nt;
     length=musictime=p==null ? null : new Proportion(p);
@@ -168,13 +169,37 @@ Parameters:
     timePos=new Proportion(timePos);
     Mensuration mensInfo=this.getBaseMensInfo();
     Proportion  restTime=Proportion.quotient(this.length,timeProp),
-                endMeasurePos=new Proportion(measurePos.i1+measureMinims,measurePos.i2);
+                measureLength=new Proportion(measureMinims*measureProp.i2,measureProp.i1),
+                endMeasurePos=Proportion.sum(measurePos,measureLength),
+                noPropEndMeasurePos=new Proportion(measurePos.i1+measureMinims,measurePos.i2);
+
+/*System.out.println("REST MMNS tp="+timePos+" resttime="+restTime+
+                   " emp="+endMeasurePos+" timeprop="+timeProp);*/
+
+if (!measureProp.equals(mensInfo.tempoChange))
+{
+  noPropEndMeasurePos=Proportion.sum(measurePos,
+    new Proportion(measureMinims*measureProp.i2*mensInfo.tempoChange.i1,measureProp.i1*mensInfo.tempoChange.i2));
+//System.out.println(" NPEMP="+noPropEndMeasurePos);
+}
+
     while (restTime.i1>0)
       {
+        Proportion noPropTimeLeftInMeasure=Proportion.product(
+                     Proportion.difference(endMeasurePos,timePos),
+                     mensInfo.tempoChange);
+
+//System.out.println("  left in m="+noPropTimeLeftInMeasure);
+//Proportion.product(Proportion.difference(noPropEndMeasurePos,timePos),measureProp).toDouble());
+
         re.notetype=RestEvent.calcLargestRestType(
-          Math.min(Proportion.product(restTime,timeProp).toDouble(),
-                   Proportion.product(Proportion.difference(endMeasurePos,timePos),timeProp).toDouble()),
+          Math.min(restTime.toDouble(),//Proportion.product(restTime,timeProp).toDouble(),
+                   noPropTimeLeftInMeasure.toDouble()),
+/*                   Proportion.product(
+                     Proportion.difference(noPropEndMeasurePos,timePos),
+                     measureProp).toDouble()),*///Proportion.product(Proportion.difference(endMeasurePos,timePos),timeProp).toDouble()),
           mensInfo);
+//System.out.println("  rest type="+NoteEvent.NoteTypeNames[re.notetype]);
         re.setLength(NoteEvent.getTypeLength(re.notetype,mensInfo));
         if (Proportion.quotient(re.getLength(),timeProp).greaterThan(restTime))
           re.setLength(Proportion.product(new Proportion(restTime),timeProp));
@@ -183,11 +208,13 @@ Parameters:
         restTime.subtract(Proportion.quotient(re.getLength(),timeProp));
         timePos.add(Proportion.quotient(re.getLength(),timeProp));
         if (timePos.greaterThanOrEqualTo(endMeasurePos))
-          endMeasurePos.i1+=measureMinims;
+          {
+            timePos=new Proportion(endMeasurePos);
+            endMeasurePos.add(measureLength);
+          }
 
-        re=new RestEvent(NoteEvent.NT_Brevis,Proportion.EQUALITY,1,1,1);
-        re.copyEventAttributes(this);
-//System.out.println("rt="+restTime+" tp="+timePos+" emp="+endMeasurePos);
+        re=makeNextRest();
+//System.out.println("  rt="+restTime+" tp="+timePos+" emp="+endMeasurePos);
       }
 
 /*    int newNoteType=NT_DoubleWhole;
@@ -210,6 +237,15 @@ Parameters:
     ne.notetype=newNoteType;*/
 
     return el;
+  }
+
+  RestEvent makeNextRest()
+  {
+    RestEvent re=new RestEvent(NoteEvent.NT_Brevis,Proportion.EQUALITY,1,1,1);
+    re.copyEventAttributes(this);
+    re.setSignum(null);
+
+    return re;
   }
 
 /*------------------------------------------------------------------------

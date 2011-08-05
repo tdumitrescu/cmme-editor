@@ -31,7 +31,7 @@ public class MetaData
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  public static final String CMME_VERSION="0.96";
+  public static final String CMME_VERSION="0.97";
   public static final float  CMME_VERSION_FLOAT=Float.parseFloat(CMME_VERSION);
 
   public static final String CMME_SOFTWARE_NAME="CMME Editor v"+CMME_VERSION;

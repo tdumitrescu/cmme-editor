@@ -64,7 +64,7 @@ public class VariantReadingPanel extends JPanel
 
   StaffEventData renderedStaff;
   boolean        error;
-  ArrayList<VariantVersionData> displayedVersions;
+  List<VariantVersionData> displayedVersions;
 
 /*----------------------------------------------------------------------*/
 /* Instance methods */

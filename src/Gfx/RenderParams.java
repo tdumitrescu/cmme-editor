@@ -52,6 +52,7 @@ public class RenderParams
   public Proportion       curProportion;
   public Coloration       curColoration;
   public boolean          inEditorialSection;
+  public boolean          inMultiEvent;
   public boolean          missingInVersion;
   public Clef             suggestedModernClef;
 
@@ -120,26 +121,28 @@ Parameters:
     endlig=el;
     this.tieInfo=tieInfo;
     this.doubleTied=false;
+    this.inMultiEvent=false;
     suggestedModernClef=smc;
     this.varReadingInfo=varReadingInfo;
   }
 
   public RenderParams(RenderedClefSet ce)
   {
-    clefEvents=ce;
+    this.clefEvents=ce;
 
-    measurenum=-1;
-    lastEvent=null;
-    mensEvent=null;
-    curProportion=null;
-    curColoration=null;
-    inEditorialSection=false;
-    missingInVersion=false;
-    ligInfo=null;
-    endlig=false;
+    this.measurenum=-1;
+    this.lastEvent=null;
+    this.mensEvent=null;
+    this.curProportion=null;
+    this.curColoration=null;
+    this.inEditorialSection=false;
+    this.inMultiEvent=false;
+    this.missingInVersion=false;
+    this.ligInfo=null;
+    this.endlig=false;
     this.tieInfo=null;
     this.doubleTied=false;
-    suggestedModernClef=null;
+    this.suggestedModernClef=null;
     this.varReadingInfo=null;
   }
 }

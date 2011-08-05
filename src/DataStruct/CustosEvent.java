@@ -50,6 +50,7 @@ Parameters:
 
   public CustosEvent(Pitch p)
   {
+    super();
     eventtype=EVENT_CUSTOS;
     pitch=p;
   }

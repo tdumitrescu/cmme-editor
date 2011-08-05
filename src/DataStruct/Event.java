@@ -95,7 +95,9 @@ public class Event
 /*----------------------------------------------------------------------*/
 /* Instance variables */
 
-  int        eventtype;
+  int               eventtype;
+  LinkedList<Event> eventList; /* to integrate MultiEvents */
+
   Proportion musictime=new Proportion(0,1);
   boolean    verticallyAligned=false, /* for multiple events at the same x-loc */
              colored=false,
@@ -130,6 +132,8 @@ Parameters:
   public Event()
   {
     eventtype=EVENT_BASE;
+    eventList=new LinkedList<Event>();
+    eventList.add(this);
   }
 
 /*------------------------------------------------------------------------
@@ -143,6 +147,7 @@ Parameters:
 
   public Event(int etype)
   {
+    this();
     eventtype=etype;
 
     if (eventtype==EVENT_ELLIPSIS)
@@ -404,6 +409,11 @@ Parameters:
     return variantReading;
   }
 
+  public List<Event> getSubEvents()
+  {
+    return eventList;
+  }
+
   public boolean hasEventType(int etype)
   {
     return eventtype==etype;
@@ -525,14 +535,14 @@ Parameters:
   {
     /* original clefs */
     ClefSet cs=new ClefSet(sigEvent.getClefSet());
-    for (Iterator i=getClefSet().iterator(); i.hasNext();)
-      cs.addclef((Clef)i.next());
+    for (Clef c : this.getClefSet())
+      cs.addclef(c);
     setClefSet(cs,false);
 
     /* modern clefs */
     cs=new ClefSet(sigEvent.getClefSet(true));
-    for (Iterator i=getClefSet(true).iterator(); i.hasNext();)
-      cs.addclef((Clef)i.next());
+    for (Clef c : this.getClefSet(true))
+      cs.addclef(c);
     setClefSet(cs,true);
   }
 

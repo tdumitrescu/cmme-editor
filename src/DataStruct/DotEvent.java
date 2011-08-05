@@ -64,6 +64,7 @@ Parameters:
 
   public DotEvent(int dt,Pitch p,NoteEvent ne)
   {
+    super();
     this.eventtype=EVENT_DOT;
     this.staffLoc=p;
     this.dottype=dt;

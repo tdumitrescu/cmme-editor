@@ -59,6 +59,7 @@ Parameters:
 
   public BarlineEvent(int nl,boolean repeatSign,int bottomLinePos,int numSpaces)
   {
+    super();
     eventtype=EVENT_BARLINE;
     this.numLines=nl;
     this.repeatSign=repeatSign;

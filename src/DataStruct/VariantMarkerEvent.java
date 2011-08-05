@@ -14,6 +14,8 @@
         Date Started    : 11/16/07
 
         Updates         :
+7/11/2011: bug: when calculating default versions list, didn't take into
+           account missing voices/sections in versions
 
                                                                         */
 /*----------------------------------------------------------------------*/
@@ -60,6 +62,7 @@ Parameters:
 
   public VariantMarkerEvent(int eventType,ArrayList<VariantReading> readings)
   {
+    super();
     this.eventtype=eventType;
     this.readings=readings!=null ? readings : new ArrayList<VariantReading>();
     this.defaultLength=new Proportion(0,1);
@@ -141,12 +144,27 @@ Parameters:
     return null;
   }
 
-  public LinkedList<VariantVersionData> getDefaultVersions(List<VariantVersionData> allVersions)
+  public LinkedList<VariantVersionData> getDefaultVersions(
+    List<VariantVersionData> allVersions,Voice v,VoiceEventListData veld)
   {
     LinkedList<VariantVersionData> defaultVersions=new LinkedList<VariantVersionData>();
     for (VariantVersionData vvd : allVersions)
       if (getVariantReading(vvd)==null)
         defaultVersions.add(vvd);
+
+    /* remove versions from default list if they are missing the current
+       section */
+    for (VariantVersionData vvd : veld.getMissingVersions())
+      defaultVersions.remove(vvd);
+
+    /* remove versions which are missing the current voice entirely */
+    LinkedList<VariantVersionData> versionsToRemove=new LinkedList<VariantVersionData>();
+    for (VariantVersionData vvd : defaultVersions)
+      if (vvd.isVoiceMissing(v))
+        versionsToRemove.add(vvd);
+    for (VariantVersionData vvd : versionsToRemove)
+      defaultVersions.remove(vvd);
+
     return defaultVersions;
   }
 

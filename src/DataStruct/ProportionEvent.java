@@ -47,12 +47,14 @@ Parameters:
 
   public ProportionEvent(int i1,int i2)
   {
+    super();
     eventtype=EVENT_PROPORTION;
     proportion=new Proportion(i1,i2);
   }
 
   public ProportionEvent(Proportion p)
   {
+    super();
     eventtype=EVENT_PROPORTION;
     proportion=p;
   }

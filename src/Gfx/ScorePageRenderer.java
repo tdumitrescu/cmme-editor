@@ -31,8 +31,6 @@ import java.awt.*;
 
 import DataStruct.*;
 
-/*----------------------------------------------------------------------*/
-
 /*------------------------------------------------------------------------
 Class:   ScorePageRenderer
 Extends: -
@@ -163,7 +161,8 @@ Parameters:
                         systemStartx=leftInfoSize+
                           (displayVoiceNames ? calcVoiceNamesIndent() : 0),
                         curx=systemStartx,leftx=0;
-    int                 curSystemNum=startSystemNum,numSectionVoices=curSection.getSectionData().getNumVoicesUsed(),//curSection.getNumVoices(),
+    int                 curSystemNum=startSystemNum,
+                        numSectionVoices=curSection.getSectionData().getNumVoicesUsed(),//curSection.getNumVoices(),
                         spacePerSystem=calcSystemSpace(numSectionVoices);
     RenderedStaffSystem curSystem=new RenderedStaffSystem(curSection.getFirstMeasureNum(),
                                                           displayVoiceNames ? (int)(systemStartx-leftInfoSize) : 0,
@@ -253,15 +252,25 @@ Parameters:
 
     ScoreRenderer renderedSection=scoreData[ScoreRenderer.calcRendererNum(scoreData,mnum)];
 
-    MeasureInfo leftmeasure=renderedSection.measures.getMeasure(mnum-renderedSection.getFirstMeasureNum());
+    MeasureInfo leftMeasure=renderedSection.measures.getMeasure(mnum-renderedSection.getFirstMeasureNum());
     double      xloc,maxx=0;
     for (int i=0; i<numVoices; i++)
       if (renderedSection.eventinfo[i]!=null)
       {
         xloc=0;
-        RenderedClefSet leftCS=renderedSection.eventinfo[i].getClefEvents(leftmeasure.reventindex[i]);
-        if (leftCS!=null)
-          xloc+=leftCS.getXSize();
+
+        if (!leftMeasure.beginsWithClef(i))
+          {
+            RenderedClefSet leftCS=renderedSection.eventinfo[i].getClefEvents(leftMeasure.reventindex[i]);
+            if (leftCS!=null)
+              xloc+=leftCS.getXSize();
+          }
+        else
+          {
+            RenderedEvent re=renderedSection.eventinfo[i].getEvent(
+              leftMeasure.lastBeginClefIndex[i]);
+            xloc=re.getxend()-leftMeasure.leftx;
+          }
 
         if (xloc>maxx)
           maxx=xloc;

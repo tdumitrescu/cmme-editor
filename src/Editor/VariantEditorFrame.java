@@ -78,7 +78,7 @@ Parameters:
     this.editorCanvas=(ScoreEditorCanvas)(this.canvas);
   }
 
-  protected JPanel createVersionsPanel(ArrayList<VariantVersionData> versions,boolean defaultVersion)
+  protected JPanel createVersionsPanel(List<VariantVersionData> versions,boolean defaultVersion)
   {
     JPanel versionsPanel=new JPanel();
     versionsPanel.setLayout(new GridBagLayout());

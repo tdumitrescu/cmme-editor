@@ -279,6 +279,7 @@ class ScorePageCanvas extends JComponent
   int               numVoices,
                     curPageNum;
   double            VIEWSCALE;
+  boolean           useModernAccSystem;
 
   /* graphics data */
   BufferedImage canvas,scaledCanvas; /* normal canvas, and scaled display
@@ -311,6 +312,7 @@ Parameters:
     renderedPages=rp;
     curPageNum=0;
     numVoices=musicData.getVoiceData().length;
+    useModernAccSystem=musicOptions.getUseModernAccidentalSystem();
 
     /* create drawing canvas */
     canvasSize=new Dimension(CANVASXSIZE,CANVASYSIZE);
@@ -467,6 +469,7 @@ Parameters:
     int                 clefInfoSize=renderedPages.calcLeftInfoSize(curSystem.startMeasure),
                         rendererNum=ScoreRenderer.calcRendererNum(renderedPages.scoreData,curSystem.startMeasure);
     ScoreRenderer       curRenderer=renderedPages.scoreData[rendererNum];
+    MeasureInfo         leftMeasure=curRenderer.getMeasure(curSystem.startMeasure);
 
     canvasg2d.setColor(Color.black);
     canvasg2d.drawLine(XMARGIN+curSystem.leftX,starty,
@@ -486,11 +489,12 @@ Parameters:
         drawStaff(canvasg2d,cury,5,curSystem.leftX,curSystem.rightX);
 
         int VclefInfoSize=clefInfoSize;
-        if (curRenderer.getStartingParams()[v].clefSet!=null ||
-            curSystem.startMeasure>curRenderer.getFirstMeasureNum())
-          drawClefInfo(canvasg2d,v,curSystem.startMeasure,XMARGIN+curSystem.leftX,cury);
-//        else
-//          VclefInfoSize=0;
+        if (!leftMeasure.beginsWithClef(v) &&
+            (curRenderer.getStartingParams()[v].clefSet!=null ||
+             curSystem.startMeasure>curRenderer.getFirstMeasureNum()))
+          drawClefInfo(canvasg2d,curRenderer,leftMeasure,v,XMARGIN+curSystem.leftX,cury);
+        else
+          VclefInfoSize=0;
 
         /* calculate which events go on each staff */
         int leftei=curRenderer.getMeasure(curSystem.startMeasure).reventindex[v],
@@ -508,9 +512,12 @@ Parameters:
         for (int ei=leftei; ei<=rightei; ei++)
           {
             re=curRenderer.eventinfo[v].getEvent(ei);
-            int xloc=(int)(XMARGIN+curSystem.leftX+VclefInfoSize+re.getxloc()*curSystem.spacingCoefficient);
-            if (ei==0)
-              xloc=(int)(XMARGIN+curSystem.leftX); // TMP
+            int xloc=calcXLoc(curSystem,VclefInfoSize,re);
+
+            /* tmp clef BS for very first system */
+            if (ei==0 && sysNum==0)
+              xloc=(int)(XMARGIN+curSystem.leftX);
+
             if (re.isdisplayed())
               re.draw(canvasg2d,musicGfx,this,xloc,cury);
 
@@ -530,11 +537,21 @@ Parameters:
               {
                 RenderedEvent tre1=curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum);
                 int tieLeftX=tieInfo.firstEventNum<leftei ? XMARGIN-1 :
-                  (int)(XMARGIN+curSystem.leftX+clefInfoSize+4+curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum).getxloc()*curSystem.spacingCoefficient);
+                  (int)(XMARGIN+curSystem.leftX+VclefInfoSize+4+curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum).getxloc()*curSystem.spacingCoefficient);
 
                 drawTie(canvasg2d,tre1.getTieType(),
                         tieLeftX,xloc,
-                        cury+calcTieY(v,re),XMARGIN+clefInfoSize,XMARGIN+STAFFXSIZE);
+                        cury+calcTieY(v,re),XMARGIN+VclefInfoSize,XMARGIN+STAFFXSIZE);
+              }
+
+            /* some more clef spacing adjustment, for staves beginning with new clefs */
+            if (ei==leftMeasure.lastBeginClefIndex[v] && ei<rightei)
+              {
+                int nextX=calcXLoc(curSystem,VclefInfoSize,
+                                   curRenderer.eventinfo[v].getEvent(ei+1))-
+                          XMARGIN-curSystem.leftX;
+                if (clefInfoSize>nextX)
+                  VclefInfoSize=clefInfoSize;//-nextX;
               }
           }
 
@@ -543,7 +560,7 @@ Parameters:
         if (ligInfo!=null && !re.isligend() && ligInfo.firstEventNum!=-1)
           {
             int ligLeftX=ligInfo.firstEventNum<leftei ? XMARGIN-1 :
-                  (int)(XMARGIN+curSystem.leftX+clefInfoSize+4+curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*curSystem.spacingCoefficient);
+                  (int)(XMARGIN+curSystem.leftX+VclefInfoSize+4+curRenderer.eventinfo[v].getEvent(ligInfo.firstEventNum).getxloc()*curSystem.spacingCoefficient);
             drawLigature(canvasg2d,ligLeftX,XMARGIN+STAFFXSIZE,cury+calcLigY(v,re),XMARGIN+clefInfoSize,XMARGIN+STAFFXSIZE);
           }
 
@@ -555,12 +572,20 @@ Parameters:
             RenderedEvent tre1=re.doubleTied() ? re : curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum);
             int firstEventNum=re.doubleTied() ? rightei : tieInfo.firstEventNum;
             int tieLeftX=firstEventNum<leftei ? XMARGIN-1 :
-                  (int)(XMARGIN+curSystem.leftX+clefInfoSize+4+tre1.getxloc()*curSystem.spacingCoefficient);
+                  (int)(XMARGIN+curSystem.leftX+VclefInfoSize+4+tre1.getxloc()*curSystem.spacingCoefficient);
             drawTie(canvasg2d,tre1.getTieType(),tieLeftX,XMARGIN+STAFFXSIZE,cury+calcTieY(v,re),XMARGIN+clefInfoSize,XMARGIN+STAFFXSIZE);
           }
 
         cury+=CANVASYSCALE;
       }
+  }
+
+  int calcXLoc(RenderedStaffSystem curSystem,int VclefInfoSize,RenderedEvent re)
+  {
+    return (int)(XMARGIN+
+                 curSystem.leftX+
+                 VclefInfoSize+
+                 re.getxloc()*curSystem.spacingCoefficient);
   }
 
 /*------------------------------------------------------------------------
@@ -575,14 +600,22 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  void drawClefInfo(Graphics2D g,int vnum,int mnum,int xloc,int yloc)
+  void drawClefInfo(Graphics2D g,ScoreRenderer renderer,MeasureInfo leftMeasure,
+                    int vnum,int xloc,int yloc)
   {
-    int             rendererNum=ScoreRenderer.calcRendererNum(renderedPages.scoreData,mnum);
-    MeasureInfo     leftmeasure=renderedPages.scoreData[rendererNum].getMeasure(mnum);
-    RenderedClefSet leftCS=renderedPages.scoreData[rendererNum].eventinfo[vnum].getClefEvents(leftmeasure.reventindex[vnum]);
+    int leftEventIndex=leftMeasure.reventindex[vnum];
 
+    /* draw clefs */
+    RenderedClefSet leftCS=renderer.eventinfo[vnum].getClefEvents(leftEventIndex);
     if (leftCS!=null)
-      leftCS.draw(false,g,musicGfx,(double)xloc,(double)yloc,1);
+      xloc+=(int)leftCS.draw(useModernAccSystem,g,musicGfx,(double)xloc,(double)yloc,1);
+
+    /* modern key signature */
+    ModernKeySignature mk=renderer.eventinfo[vnum].getModernKeySig(leftEventIndex);
+    if (mk.numEls()>0 && leftCS!=null && useModernAccSystem)
+      xloc+=(int)ViewCanvas.drawModKeySig(
+        g,musicGfx,mk,leftCS.getPrincipalClefEvent(),(double)xloc,(double)yloc,
+        1,false,STAFFSCALE,STAFFPOSSCALE);
   }
 
 /*------------------------------------------------------------------------

@@ -52,6 +52,7 @@ Parameters:
 
   public ModernKeySignatureEvent(ModernKeySignature s)
   {
+    super();
     eventtype=EVENT_MODERNKEYSIGNATURE;
     sig=new ModernKeySignature(s);
   }
