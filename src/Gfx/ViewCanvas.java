@@ -1156,7 +1156,7 @@ Parameters:
     /* draw each section in turn */
     curRendererNum=leftRendererNum;
     curRenderer=renderedSections[leftRendererNum];
-    sectionStartDisplayX=XLEFT-leftMeasure.leftx*VIEWSCALE;
+    displayX=sectionStartDisplayX=XLEFT-leftMeasure.leftx*VIEWSCALE;
     doneSections=false;
     int startv=-1,endv=-1;
     while (!doneSections)
@@ -1219,13 +1219,12 @@ Parameters:
 
                     /* tie notes */
                     tieInfo=e.getTieInfo();
-                    if (tieInfo.firstEventNum!=-1)// && tieInfo.lastEventNum==evloc)
+                    if (tieInfo.firstEventNum!=-1 && tieInfo.lastEventNum==evloc)
                       {
                         RenderedEvent tre1=curRenderer.eventinfo[i].getEvent(tieInfo.firstEventNum);
-                        drawTie(g,tre1.getTieType(),
-                                sectionStartDisplayX+tre1.getxloc()*VIEWSCALE,
-                                displayX,
-                                calcTieY(i,e),XLEFT,viewsize.width);
+                        drawTies(g,tre1,e,i,
+                                 sectionStartDisplayX+tre1.getxloc()*VIEWSCALE,
+                                 displayX,XLEFT,viewsize.width);
                       }
 
                     /* mark variant readings */
@@ -1255,13 +1254,31 @@ Parameters:
                   doneVoice=true;
               }
             e=curRenderer.eventinfo[i].getEvent(evloc);
-            ligInfo=e==null ? null : e.getLigInfo();
+//System.out.println("evloc="+evloc+" e="+e.getEvent()+" tieinfo="+e.getTieInfo());
 
             /* finish any remaining ligature */
+            ligInfo=e==null ? null : e.getLigInfo();
             if (ligInfo!=null && ligInfo.firstEventNum!=-1 &&
                 evloc<curRenderer.eventinfo[i].size()-1)
               drawLigature(g,sectionStartDisplayX+(float)(curRenderer.eventinfo[i].getEvent(ligInfo.firstEventNum).getxloc()+4)*VIEWSCALE,
                            viewsize.width,calcligy(i,e),XLEFT,viewsize.width);
+
+            /* finish any unclosed tie */
+            tieInfo=e==null ? null : e.getTieInfo();
+            if (tieInfo!=null && tieInfo.firstEventNum!=-1)// &&
+//                (tieInfo.lastEventNum!=evloc || e.doubleTied()))
+              {
+//System.out.println("ttt v="+i+" double? "+e.doubleTied()+
+//                   " evloc="+evloc+" tie1="+tieInfo.firstEventNum+" tie2="+tieInfo.lastEventNum);
+                RenderedEvent tre1=curRenderer.eventinfo[i].getEvent(tieInfo.firstEventNum);
+                if (displayX<viewsize.width && e.doubleTied())
+                  tre1=e;
+                int firstEventNum=e.doubleTied() ? evloc : tieInfo.firstEventNum;
+
+                drawTies(g,tre1,curRenderer.eventinfo[i].getEvent(tieInfo.lastEventNum),i,
+                         sectionStartDisplayX+tre1.getxloc()*VIEWSCALE,
+                         displayX,XLEFT,viewsize.width);
+              }
 
             /* finish any remaining variant reading */
             RenderedEventGroup varReadingInfo=e==null ? null : e.getVarReadingInfo();
@@ -1350,7 +1367,7 @@ Parameters:
 
   float calcTieY(int vnum,RenderedEvent e)
   {
-    return calcTieY(e.getTieInfo().reventList.getEvent(e.getTieInfo().yMaxEventNum),
+    return calcTieY(e,//e.getTieInfo().reventList.getEvent(e.getTieInfo().yMaxEventNum),
                     YTOP+vnum*STAFFSCALE*STAFFSPACING*VIEWSCALE,
                     STAFFSCALE,STAFFPOSSCALE,VIEWSCALE);
   }
@@ -1472,6 +1489,23 @@ Parameters:
   public static void drawLigOnCanvas(Graphics2D g,double x1,double x2,double y,double leftx,double rightx)
   {
     drawLigOnCanvas(g,x1,x2,y,leftx,rightx,1);
+  }
+
+  void drawTies(Graphics2D g,RenderedEvent tre1,RenderedEvent tre2,int vi,
+                double x1,double x2,double leftx,double rightx)
+  {
+    List<RenderedEvent> multiEventList=tre1.getEventList();
+    if (multiEventList==null)
+      drawTie(g,tre1.getTieType(),
+              x1,x2,calcTieY(vi,tre2),leftx,rightx);
+    else
+      for (RenderedEvent re : multiEventList)
+        {
+          int tieType=re.getTieType();
+          if (tieType!=NoteEvent.TIE_NONE)
+            drawTie(g,tieType,
+                    x1,x2,calcTieY(vi,re),leftx,rightx);
+        }
   }
 
   void drawTie(Graphics2D g,int tieType,double x1,double x2,double y,double leftx,double rightx)

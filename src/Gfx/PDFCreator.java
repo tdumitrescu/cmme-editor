@@ -557,9 +557,9 @@ Parameters:
                   PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
                   VclefInfoSize+(float)curRenderer.eventinfo[v].getEvent(tieInfo.firstEventNum).getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
 
-                drawTie(tre1.getTieType(),
-                        tieLeftX,xloc,cury+calcTieY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
-                        renderedPages.options,cb);
+                drawTies(tre1,re,v,
+                         tieLeftX,xloc,cury,PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
+                         renderedPages.options,cb);
               }
 
             /* some more clef spacing adjustment, for staves beginning with new clefs */
@@ -595,9 +595,9 @@ Parameters:
               PP.XMARGIN+PP.LINEXADJUST+curSystem.leftX*XEVENTSPACE_SCALE+
               VclefInfoSize+(float)tre1.getxloc()*spacingCoeff*XEVENTSPACE_SCALE;
 
-            drawTie(tre1.getTieType(),
-                    tieLeftX,PP.XMARGIN+PP.STAFFXSIZE+1,cury+calcTieY(v,re),PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
-                    renderedPages.options,cb);
+            drawTies(tre1,curRenderer.eventinfo[v].getEvent(tieInfo.lastEventNum),v,
+                     tieLeftX,PP.XMARGIN+PP.STAFFXSIZE+1,cury,PP.XMARGIN+PP.LINEXADJUST+clefInfoSize,PP.XMARGIN+PP.STAFFXSIZE,
+                     renderedPages.options,cb);
           }
 
         cb.endText();
@@ -791,9 +791,9 @@ Parameters:
   float calcTieY(int vnum,RenderedEvent e)
   {
     RenderedLigature tieInfo=e.getTieInfo();
-    RenderedEvent    tieRE=tieInfo.reventList.getEvent(tieInfo.yMaxEventNum);
+    RenderedEvent    tieRE=e;//tieInfo.reventList.getEvent(tieInfo.yMaxEventNum);
     Clef             tieREclef=tieRE.getClef();
-    DataStruct.Event tieNoteEv=tieInfo.yMaxEvent;
+    DataStruct.Event tieNoteEv=e.getEvent();//tieInfo.yMaxEvent;
 
     return 0-PP.STAFFYSCALE*4+//PP.STAFFYPOSSCALE*2+
            PP.STAFFYPOSSCALE*tieNoteEv.getPitch().calcypos(tieREclef);
@@ -852,12 +852,33 @@ Parameters:
     cb.setFontAndSize(CMMEBaseFont,PP.MusicFONTSIZE);
   }
 
-  void drawTie(int tieType,float x1,float x2,float y,float leftx,float rightx,
-               OptionSet musicOptions,PdfContentByte cb)
+  void drawTies(RenderedEvent tre1,RenderedEvent tre2,int vi,
+                float x1,float x2,float cury,float leftx,float rightx,
+                OptionSet musicOptions,PdfContentByte cb)
   {
     cb.endText();
     cb.setLineWidth(PP.STAFFLINEWIDTH);
 
+    List<RenderedEvent> multiEventList=tre1.getEventList();
+    if (multiEventList==null)
+      drawTie(tre1.getTieType(),x1,x2,cury+calcTieY(vi,tre2),leftx,rightx,
+              musicOptions,cb);
+    else
+      for (RenderedEvent re : multiEventList)
+        {
+          int tieType=re.getTieType();
+          if (tieType!=NoteEvent.TIE_NONE)
+            drawTie(tieType,x1,x2,cury+calcTieY(vi,re),leftx,rightx,
+                    musicOptions,cb);
+        }
+
+    cb.beginText();
+    cb.setFontAndSize(CMMEBaseFont,PP.MusicFONTSIZE);
+  }
+
+  void drawTie(int tieType,float x1,float x2,float y,float leftx,float rightx,
+               OptionSet musicOptions,PdfContentByte cb)
+  {
     double xAdjust=MusicFont.getDefaultPrintGlyphWidth(MusicFont.PIC_NOTESTART+NoteEvent.NOTEHEADSTYLE_SEMIBREVE)*PP.XYSCALE;
     x1=(float)Math.max(x1+xAdjust,leftx-xAdjust/2);
     x2+=4*MusicFont.SCREEN_TO_GLYPH_FACTOR*PP.XYSCALE;
@@ -873,8 +894,6 @@ Parameters:
            arc1,arc2);
 
     cb.stroke();
-    cb.beginText();
-    cb.setFontAndSize(CMMEBaseFont,PP.MusicFONTSIZE);
   }
 
 /*------------------------------------------------------------------------

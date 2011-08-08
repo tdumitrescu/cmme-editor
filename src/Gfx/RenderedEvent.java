@@ -1491,6 +1491,9 @@ Parameters:
   /* calculate tie direction depending on notation options */
   int getTieType()
   {
+    if (e.geteventtype()!=Event.EVENT_NOTE)
+      return NoteEvent.TIE_NONE;
+
     NoteEvent ne=(NoteEvent)e;
     if (!(modernNoteShapes || options.get_usemodernclefs()))
       return ne.getTieType();
