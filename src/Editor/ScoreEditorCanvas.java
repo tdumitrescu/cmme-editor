@@ -1030,7 +1030,7 @@ Parameters:
         firstenum=Cursor.getHighlightBegin(),lastenum=Cursor.getHighlightEnd();
 
     Cursor.hideCursor();
-    Event eds=new Event(Event.EVENT_VARIANTDATA_START),
+/*    Event eds=new Event(Event.EVENT_VARIANTDATA_START),
           ede=new Event(Event.EVENT_VARIANTDATA_END);
     if (inEditorialSection(snum,vnum,firstenum))
       {
@@ -1041,7 +1041,7 @@ Parameters:
       {
         musicData.getSection(snum).getVoice(vnum).addEvent(renderedSections[snum].getVoicedataPlace(vnum,lastenum+1),ede);
         musicData.getSection(snum).getVoice(vnum).addEvent(renderedSections[snum].getVoicedataPlace(vnum,firstenum),eds);
-      }
+      }*/
 
     Cursor.setNoHighlight();
     rerender();
@@ -1076,6 +1076,38 @@ Parameters:
     parentEditorWin.fileModified();
     hl_anchor=eventnum;
     highlightItems(snum,vnum,eventnum,eventnum);
+  }
+
+  void toggleHighlightedEditorial()
+  {
+    int snum=Cursor.getSectionNum(),
+        vnum=Cursor.getVoiceNum(),
+        eventnum=Cursor.getEventNum(),
+        firste=Cursor.getHighlightBegin(),
+        laste=Cursor.getHighlightEnd();
+
+    Event orige=renderedSections[snum].eventinfo[vnum].getEvent(firste).getEvent(),
+          e=getEventsForModification(snum,vnum,firste,laste);
+    if (e==null)
+      return; /* attempt to create invalid variant arrangement */
+
+    firste+=e.getListPlace(!inVariantVersion())-orige.getListPlace(!inVariantVersion());
+    laste+=e.getListPlace(!inVariantVersion())-orige.getListPlace(!inVariantVersion());
+    rerender();
+
+    for (int i=firste; i<=laste; i++)
+      {
+        RenderedEvent re=renderedSections[snum].eventinfo[vnum].getEvent(i);
+        e=re.getEvent();
+        e.setEditorial(!e.isEditorial());
+      }
+
+    rerender();
+    checkVariant(snum,vnum,firste);
+    repaint();
+    parentEditorWin.fileModified();
+    hl_anchor=firste; //eventnum;
+    highlightItems(snum,vnum,firste,laste);
   }
 
   void toggleError()
@@ -4728,10 +4760,8 @@ Parameters:
               highlightAll();
               break;
             case KeyEvent.VK_D:
-              if (Cursor.getHighlightBegin()==-1)
-                insertEditorialDataSection();
-              else
-                toggleEditorialData();
+              if (Cursor.getHighlightBegin()!=-1)
+                toggleHighlightedEditorial();
               break;
             case KeyEvent.VK_I:
               addVoice();

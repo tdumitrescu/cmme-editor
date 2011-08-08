@@ -4,6 +4,8 @@ General version update information:/
       notation.
       Bug fix: partial ties sometimes not displaying at right edge of display
                (edge case!).
+               Outdated Ctrl-D function creating bogus editorial/variant markers;
+               now toggles editorial.
 .97: Switched to Apache ANT for builds, redid directory structure (src/build/etc).
      Viewer: Added Error to selection types for variants.
      Editor: Added "Set reading as default" in variant reading editor.
