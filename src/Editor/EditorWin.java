@@ -1265,8 +1265,8 @@ Parameters:
     eventInfoPanel.add(eventTypeLabel);
 
     /* event proportion fields */
-    eventProportion1=new JSpinner(new SpinnerNumberModel(0,0,999,1));
-    eventProportion2=new JSpinner(new SpinnerNumberModel(0,0,999,1));
+    eventProportion1=new JSpinner(new SpinnerNumberModel(1,1,999,1));
+    eventProportion2=new JSpinner(new SpinnerNumberModel(1,1,999,1));
     JPanel proportionNumberPanel=new JPanel();
     proportionNumberPanel.add(eventProportion1);
     proportionNumberPanel.add(eventProportion2);
@@ -1646,8 +1646,8 @@ Parameters:
     proportionLabel.setText(null);
     eventProportion1.setEnabled(false);
     eventProportion2.setEnabled(false);
-    eventProportion1.setValue(new Integer(0));
-    eventProportion2.setValue(new Integer(0));
+    eventProportion1.setValue(new Integer(1));
+    eventProportion2.setValue(new Integer(1));
   }
 
   boolean proportionPanelEnabled()

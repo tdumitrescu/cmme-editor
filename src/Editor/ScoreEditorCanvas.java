@@ -831,7 +831,8 @@ Parameters:
       oldp=((MensEvent)origEvent).getTempoChange();
     else
       oldp=new Proportion(origEvent.getLength());
-    if (p.equals(oldp) || p.i1<=0)
+ 
+   if (p.i2<=0 || p.i1<=0 || p.equals(oldp))
       return;
 
     Cursor.hideCursor();
