@@ -3006,6 +3006,9 @@ Parameters:
       modifyClef(Clef.CLEF_Frnd,c.getloc());
     else if (ct==Clef.CLEF_Frnd)
       modifyClef(Clef.CLEF_F,c.getloc());
+
+    else if (ct==Clef.CLEF_G)
+      modifyClef(Clef.CLEF_Gamma,c.getloc());
   }
 
   void modifyClefLocation(int offset)

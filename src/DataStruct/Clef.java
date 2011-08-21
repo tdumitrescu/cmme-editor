@@ -292,6 +292,7 @@ Parameters:
             case CLEF_FFull:
             case CLEF_Frnd:
             case CLEF_Fsqr:
+            case CLEF_Gamma:
               modernclef=DefaultModernClefs[CLEF_MODERNF];
               break;
             case CLEF_G:

@@ -1,5 +1,6 @@
 General version update information:/
 
+.97c: Improved gamma clef support.
 .97b: Bug fix: 0 values allowed for numerator and denominator in event length
                (caused fail in file save).
 .97a: Added (naive) support for tying multi-events (divisi notes) in modern
