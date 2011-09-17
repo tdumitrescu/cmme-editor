@@ -1523,7 +1523,7 @@ Parameters:
   /* only for note events */
   int calcModernDotLoc()
   {
-    int noteloc=princlef.calcypos(((NoteEvent)e).getPitch());
+    int noteloc=princlef.calcypos(e.getFirstEventOfType(Event.EVENT_NOTE).getPitch());
     return noteloc+(noteloc%2==0 ? 1 : 0);
   }
 

@@ -1,5 +1,7 @@
 General version update information:/
 
+.97d: Bug fix: exception when rendering multi-events containing dotted notes in
+               modern notation.
 .97c: Improved gamma clef support.
 .97b: Bug fix: 0 values allowed for numerator and denominator in event length
                (caused fail in file save).
