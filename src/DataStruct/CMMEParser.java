@@ -110,7 +110,7 @@ Parameters:
 
   public CMMEParser(String fn,JProgressBar pbar) throws JDOMException,IOException
   {
-    constructPieceData(XMLReader.getparser().build(fn),pbar);
+    constructPieceData(XMLReader.getParser().build(fn),pbar);
   }
 
   public CMMEParser(String fn) throws JDOMException,IOException
@@ -128,7 +128,7 @@ Parameters:
 
   public CMMEParser(URL remoteloc,JProgressBar pbar) throws JDOMException,IOException
   {
-    constructPieceData(XMLReader.getparser().build(remoteloc),pbar);
+    constructPieceData(XMLReader.getParser().build(remoteloc),pbar);
   }
 
   public CMMEParser(URL remoteloc) throws JDOMException,IOException
@@ -138,7 +138,7 @@ Parameters:
 
   public CMMEParser(InputStream musIn,JProgressBar pbar) throws JDOMException,IOException
   {
-    constructPieceData(XMLReader.getparser().build(musIn),pbar);
+    constructPieceData(XMLReader.getParser().build(musIn),pbar);
   }
 
 /*------------------------------------------------------------------------

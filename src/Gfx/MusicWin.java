@@ -573,7 +573,7 @@ Parameters:
     setIconImage(windowIcon);
     cp.setLayout(new BorderLayout());
     optSet=new OptionSet(this);
-    initializeoptions();
+    initializeOptions();
     MusicGfx=new MusicFont((float)optSet.getVIEWSCALE());
 
     /* create menus */
@@ -937,12 +937,20 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  protected void initializeoptions()
+  protected void initializeOptions()
   {
     double newVS=(curWindow!=null) ? curWindow.optSet.getVIEWSCALE() :
                                      (double)DefaultViewScale/100;
-
     optSet.setVIEWSCALE(newVS);
+
+    try
+      {
+        optSet.initConfigFromFile(BaseDataURL);
+      }
+    catch (Exception e)
+      {
+        handleRuntimeError(e);
+      }
   }
 
 /*------------------------------------------------------------------------

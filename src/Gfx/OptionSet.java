@@ -26,7 +26,12 @@ package Gfx;
 /*----------------------------------------------------------------------*/
 /* Imported packages */
 
+import org.jdom.*;
+import java.io.*;
+import java.net.URL;
+
 import DataStruct.VariantReading;
+import DataStruct.XMLReader;
 
 /*------------------------------------------------------------------------
 Class:   OptionSet
@@ -38,6 +43,8 @@ public class OptionSet
 {
 /*----------------------------------------------------------------------*/
 /* Class variables */
+
+  public static final String CONFIG_FILE_NAME="config/cmme-config.xml";
 
   public static final int OPT_BARLINE_NONE=  0,
                           OPT_BARLINE_MENSS= 1,
@@ -177,6 +184,13 @@ Parameters:
 
     markVariants=OPT_VAR_NONE;
     customVariantFlags=VariantReading.VAR_NONE;
+  }
+
+  /* should never be called before XMLReader init functions */
+  public void initConfigFromFile(String BaseDataURL) throws Exception
+  {
+    URL configLoc=(new File(BaseDataURL+CONFIG_FILE_NAME)).toURI().toURL();
+    Document configDoc=XMLReader.getParser().build(configLoc);
   }
 
 /*------------------------------------------------------------------------

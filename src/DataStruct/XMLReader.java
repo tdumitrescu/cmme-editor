@@ -125,7 +125,7 @@ Parameters:
   }
 
 /*------------------------------------------------------------------------
-Method:  SAXBuilder getparser()
+Method:  SAXBuilder getParser()
 Purpose: Return XML parser
 Parameters:
   Input:  -
@@ -153,7 +153,7 @@ Parameters:
     return noEntityBuilder;
   }
 
-  public static SAXBuilder getparser()
+  public static SAXBuilder getParser()
   {
     if (inited)
       return builder;

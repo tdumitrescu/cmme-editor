@@ -73,7 +73,7 @@ Parameters:
 
   public CMMEOldVersionParser(String fn) throws JDOMException,IOException
   {
-    constructPieceData(XMLReader.getparser().build(fn));
+    constructPieceData(XMLReader.getParser().build(fn));
   }
 
 /*------------------------------------------------------------------------
@@ -86,7 +86,7 @@ Parameters:
 
   public CMMEOldVersionParser(URL remoteloc) throws JDOMException,IOException
   {
-    constructPieceData(XMLReader.getparser().build(remoteloc));
+    constructPieceData(XMLReader.getParser().build(remoteloc));
   }
 
 /*------------------------------------------------------------------------
