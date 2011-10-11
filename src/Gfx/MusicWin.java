@@ -1056,6 +1056,9 @@ Parameters:
         FM.add(FileMenuExport);
         FM.add(FileMenuGeneratePDF);
       }
+    /* applet PDF test - figure out security settings to avoid access control exception
+    else if (viewerWin.inApplet)
+      FM.add(FileMenuGeneratePDF);*/
 
     /* handle menu actions */
     FileMenuAbout.addActionListener(this);

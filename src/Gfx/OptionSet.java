@@ -17,6 +17,7 @@ Updates:
 4/26/99: converted GUI to Swing
 4/18/05: converted OptionsWin to OptionSet (to represent option data without
          requiring link to GUI)
+10/7/2011: added initConfigFromFile
 
                                                                         */
 /*----------------------------------------------------------------------*/
@@ -44,7 +45,8 @@ public class OptionSet
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  public static final String CONFIG_FILE_NAME="config/cmme-config.xml";
+  public static final String CONFIG_DIR="config/",
+                             CONFIG_FILE_NAME="cmme-config.xml";
 
   public static final int OPT_BARLINE_NONE=  0,
                           OPT_BARLINE_MENSS= 1,
@@ -187,10 +189,73 @@ Parameters:
   }
 
   /* should never be called before XMLReader init functions */
-  public void initConfigFromFile(String BaseDataURL) throws Exception
+  public void initConfigFromFile(String BaseDataURL)
   {
-    URL configLoc=(new File(BaseDataURL+CONFIG_FILE_NAME)).toURI().toURL();
-    Document configDoc=XMLReader.getParser().build(configLoc);
+    URL      configLoc;
+    Document configDoc;
+
+    try
+      {
+        configLoc=new URL(BaseDataURL+CONFIG_DIR+CONFIG_FILE_NAME);
+        configDoc=XMLReader.getParser().build(configLoc);
+      }
+    catch (Exception e)
+      {
+        System.err.println("Exception loading config file: "+e);
+        return;
+      }
+
+    Namespace cmmens=Namespace.getNamespace("http://www.cmme.org");
+
+/* future refactoring: convert option variables into flags structure */
+
+    /* parse XML options */
+    String mainNodeName=(musicWin instanceof MusicWin) ? "Viewer" : "Editor";
+    Element mainNode=configDoc.getRootElement().getChild(mainNodeName,cmmens);
+    if (mainNode==null)
+      return;
+
+    Element defaultsNode=mainNode.getChild("Defaults",cmmens);
+    String optStr;
+
+    if ((optStr=defaultsNode.getChildText("NoteShapes",cmmens))!=null)
+      if (optStr.equals("original"))
+        this.noteShapeType=OPT_NOTESHAPE_ORIG;
+      else
+        this.noteShapeType=OPT_NOTESHAPE_MOD_1_1;
+
+    if ((optStr=defaultsNode.getChildText("Barlines",cmmens))!=null)
+      if (optStr.equals("tick"))
+        this.barline_type=OPT_BARLINE_TICK;
+      else if (optStr.equals("mensurstrich"))
+        this.barline_type=OPT_BARLINE_MENSS;
+      else if (optStr.equals("modern"))
+        this.barline_type=OPT_BARLINE_MODERN;
+      else
+        this.barline_type=OPT_BARLINE_NONE;
+
+    if ((optStr=defaultsNode.getChildText("Clefs",cmmens))!=null)
+      if (optStr.equals("original"))
+        this.usemodernclefs=false;
+      else
+        this.usemodernclefs=true;
+
+    if ((optStr=defaultsNode.getChildText("AccidentalSystem",cmmens))!=null)
+      if (optStr.equals("original"))
+        this.useModernAccidentalSystem=false;
+      else
+        this.useModernAccidentalSystem=true;
+
+    this.displayOrigText=false;
+    this.displayModText=false;
+    for (Object textElO : defaultsNode.getChildren("Text",cmmens))
+      {
+        Element textEl=(Element)textElO;
+        if (textEl.getText().equals("original"))
+          this.displayOrigText=true;
+        else if (textEl.getText().equals("modern"))
+          this.displayModText=true;
+      }
   }
 
 /*------------------------------------------------------------------------
