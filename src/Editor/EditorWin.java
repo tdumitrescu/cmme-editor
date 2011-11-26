@@ -472,8 +472,8 @@ Parameters:
   }
 
 /*------------------------------------------------------------------------
-Method:    void initializeoptions()
-Overrides: Gfx.MusicWin.initializeoptions
+Method:    void initializeOptions()
+Overrides: Gfx.MusicWin.initializeOptions
 Purpose:   Initialize option set before creating view canvas
 Parameters:
   Input:  -
@@ -481,7 +481,7 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  protected void initializeoptions()
+  protected void initializeOptions()
   {
     double newVS=(curWindow!=null) ? curWindow.optSet.getVIEWSCALE() :
                                      (double)DefaultViewScale/100;

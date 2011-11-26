@@ -929,7 +929,7 @@ Parameters:
   }
 
 /*------------------------------------------------------------------------
-Method:  void initializeoptions()
+Method:  void initializeOptions()
 Purpose: Initialize option set before creating view canvas
 Parameters:
   Input:  -

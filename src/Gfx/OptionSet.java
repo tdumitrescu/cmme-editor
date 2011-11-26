@@ -188,7 +188,6 @@ Parameters:
     customVariantFlags=VariantReading.VAR_NONE;
   }
 
-  /* should never be called before XMLReader init functions */
   public void initConfigFromFile(String BaseDataURL)
   {
     URL      configLoc;
@@ -197,7 +196,7 @@ Parameters:
     try
       {
         configLoc=new URL(BaseDataURL+CONFIG_DIR+CONFIG_FILE_NAME);
-        configDoc=XMLReader.getParser().build(configLoc);
+        configDoc=XMLReader.getNonValidatingParser().build(configLoc);
       }
     catch (Exception e)
       {
