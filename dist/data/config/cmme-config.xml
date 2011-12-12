@@ -4,24 +4,24 @@
             xmlns="http://www.cmme.org"
             elementFormDefault="qualified">
   <Viewer>
-    <!-- original-notation configuration with modern clefs and text
+    <!-- original-notation configuration with modern clefs and text -->
     <Defaults>
       <NoteShapes>original</NoteShapes>
       <Barlines>tick</Barlines>
       <Clefs>modern</Clefs>
       <AccidentalSystem>original</AccidentalSystem>
       <Text>modern</Text>
-    </Defaults> -->
+    </Defaults>
 
     <!-- modern-notation configuration: to use these defaults, delete or comment out the original-notation
-    settings above and uncomment the settings below -->
+    settings above and uncomment the settings below
     <Defaults>
       <NoteShapes>modern</NoteShapes>
       <Barlines>mensurstrich</Barlines>
       <Clefs>modern</Clefs>
       <AccidentalSystem>modern</AccidentalSystem>
       <Text>modern</Text>
-    </Defaults>
+    </Defaults> -->
 
   </Viewer>
 </CMMEConfig>
