@@ -1194,7 +1194,7 @@ Parameters:
     if (noteShapeType!=OptionSet.OPT_NOTESHAPE_ORIG)
       {
         if (e.geteventtype()==Event.EVENT_NOTE)
-          if (e.isColored())
+          if (options.displayColorationBracket(e))
             {
               v.colorEndLoc=v.revloc;
               if (v.colorBeginLoc==-1)

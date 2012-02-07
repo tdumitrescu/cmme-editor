@@ -215,6 +215,11 @@ Parameters:
     return el;
   }
 
+  public boolean isMinorColor()
+  {
+    return false;
+  }
+
 /*------------------------------------------------------------------------
 Methods: boolean equals(Event other)
 Purpose: Check whether the data of this event is exactly equal to another

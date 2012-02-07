@@ -881,6 +881,17 @@ Parameters:
     return numFlags;
   }
 
+  public boolean isMinorColor()
+  {
+    if (!isColored())
+      return false;
+    Mensuration m=getBaseMensInfo();
+	Proportion dtl=getTypeLength(notetype,m);
+    int diffDenominator=Proportion.difference(dtl,length).i2;
+    return !m.ternary(notetype) && length.lessThan(dtl) &&
+           (diffDenominator<3 || diffDenominator==4 || diffDenominator==8);
+  }
+
   public boolean hasStem()
   {
     return notetype==NT_Semifusa ||

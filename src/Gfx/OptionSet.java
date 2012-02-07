@@ -31,6 +31,7 @@ import org.jdom.*;
 import java.io.*;
 import java.net.URL;
 
+import DataStruct.Event;
 import DataStruct.VariantReading;
 import DataStruct.XMLReader;
 
@@ -62,6 +63,10 @@ public class OptionSet
                           OPT_MODACC_NONE=0,
                           OPT_MODACC_ABOVESTAFF=1,
 
+                          OPT_COLORATION_NONE=       0,
+                          OPT_COLORATION_MINOR_COLOR=1 << 0,
+                          OPT_COLORATION_OTHER=      1 << 1,
+
                           OPT_VAR_ALL=0,
                           OPT_VAR_SUBSTANTIVE=1,
                           OPT_VAR_NONE=2,
@@ -90,7 +95,8 @@ public class OptionSet
   /* option variables */
   int      barline_type,
            noteShapeType,
-           modacc_type;
+           modacc_type,
+           colorationDisplayFlags;
   boolean  displayOrigText,
            displayModText,
            usemodernclefs,
@@ -131,6 +137,7 @@ public class OptionSet
     o.set_displayModText(true);
     o.set_usemodernclefs(true);
     o.setUseModernAccidentalSystem(true);
+    o.setColorationDisplayFlags(OPT_COLORATION_MINOR_COLOR & OPT_COLORATION_OTHER);
 
     return o;
   }
@@ -146,6 +153,7 @@ public class OptionSet
     o.set_displayModText(false);
     o.set_usemodernclefs(false);
     o.setUseModernAccidentalSystem(false);
+    o.setColorationDisplayFlags(OPT_COLORATION_NONE);
 
     return o;
   }
@@ -174,6 +182,7 @@ Parameters:
     displayModText=true;
     usemodernclefs=true;
     useModernAccidentalSystem=true;
+    colorationDisplayFlags=OPT_COLORATION_NONE;
     displayallnewlineclefs=false;
     displayorigligatures=false;
     displayligbrackets=true;
@@ -244,6 +253,15 @@ Parameters:
         this.useModernAccidentalSystem=false;
       else
         this.useModernAccidentalSystem=true;
+
+    for (Object colorElO : defaultsNode.getChildren("ColorationBrackets",cmmens))
+      {
+        Element colorEl=(Element)colorElO;
+        if (colorEl.getText().equals("minor"))
+          this.addColorationDisplayFlags(OPT_COLORATION_MINOR_COLOR);
+        else if (colorEl.getText().equals("other"))
+          this.addColorationDisplayFlags(OPT_COLORATION_OTHER);
+      }
 
     this.displayOrigText=false;
     this.displayModText=false;
@@ -363,6 +381,11 @@ Parameters:
     return useModernAccidentalSystem;
   }
 
+  public int getColorationDisplayFlags()
+  {
+    return colorationDisplayFlags;
+  }
+
   public boolean get_displayorigligatures()
   {
     return displayorigligatures;
@@ -416,6 +439,21 @@ Parameters:
   public boolean markCustomVariant(long varFlags)
   {
     return (customVariantFlags&varFlags)>0;
+  }
+
+  public boolean displayColorationType(int ct)
+  {
+    return (colorationDisplayFlags & ct) != 0;
+  }
+
+  public boolean displayColorationBracket(Event e)
+  {
+    if (colorationDisplayFlags == OPT_COLORATION_NONE ||
+        e.geteventtype()!=Event.EVENT_NOTE || !e.isColored())
+      return false;
+    if (e.isMinorColor())
+      return displayColorationType(OPT_COLORATION_MINOR_COLOR);
+    return displayColorationType(OPT_COLORATION_OTHER);
   }
 
 /*------------------------------------------------------------------------
@@ -480,6 +518,16 @@ Parameters:
   public void set_usemodernclefs(boolean newval)
   {
     usemodernclefs=newval;
+  }
+
+  public void addColorationDisplayFlags(long newFlags)
+  {
+    colorationDisplayFlags|=newFlags;
+  }
+
+  public void setColorationDisplayFlags(int newval)
+  {
+    colorationDisplayFlags=newval;
   }
 
   public void setUseModernAccidentalSystem(boolean newval)
