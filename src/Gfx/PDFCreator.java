@@ -363,7 +363,10 @@ Parameters:
     else
       {
         cb.setFontAndSize(PlainFont,PP.PlainFONTSIZE);
-        String smallTitle=musicData.getComposer()+": "+musicData.getTitle();
+        String composer=musicData.getComposer();
+        if (composer!=null && !composer.isEmpty())
+          composer+=": ";
+        String smallTitle=composer+musicData.getTitle();
         if (musicData.getSectionTitle()!=null)
           smallTitle+=" ("+musicData.getSectionTitle()+")";
         cb.setTextMatrix(PP.XMARGIN,PP.PAGEYSIZE-PP.YMARGIN);
