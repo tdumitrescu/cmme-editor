@@ -357,15 +357,24 @@ Parameters:
               imgs.add(new EventGlyphImg(
                 flagpic,ssnum,
                 xoff,yoff,UNSCALEDxoff,UNSCALEDyoff,imgcolor));
-              int yincrdir=stemdir==NoteEvent.STEM_UP ? -1 : 1;
+
+              int numFlags=ne.getNumFlags(), numFlagsLeft,
+                  yincrdir=stemdir==NoteEvent.STEM_UP ? -1 : 1;
               if (notetype==NoteEvent.NT_Semifusa)
+                numFlagsLeft=1;
+              else if (numFlags>0)
+                numFlagsLeft=numFlags-1;
+              else
+                numFlagsLeft=0;
+
+              while (--numFlagsLeft>=0)
                 {
                   UNSCALEDyoff+=yincrdir*MusicFont.CONNECTION_FLAGINTERVAL;
                   yoff+=yincrdir*MusicFont.CONNECTION_SCREEN_FLAGINTERVAL;
                   imgs.add(new EventGlyphImg(
                     flagpic,ssnum,
                     xoff,yoff,UNSCALEDxoff,UNSCALEDyoff,imgcolor));
-                 }
+                }
             }
 
           addNoteOptionImages(ne,origxoff,origyoff,ssnum,stemdir);

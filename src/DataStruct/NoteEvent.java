@@ -582,7 +582,11 @@ System.out.print(" TLIM="+timeLeftInMeasure);*/
           newNoteType=NT_Quarter;
           break;
         case NT_Fusa:
+          this.numFlags=1;
+          newNoteType=NT_Flagged;
+          break;
         case NT_Semifusa:
+          this.numFlags=2;
           newNoteType=NT_Flagged;
           break;
       }
