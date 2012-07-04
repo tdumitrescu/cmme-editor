@@ -362,6 +362,8 @@ Parameters:
                        curMensStartTime=0;
 
             RenderList rl=s.getRenderedVoice(i);
+            if (rl==null)
+              break;
 
             int vnum=-1;
             for (int i1=0; i1<numVoices; i1++)
