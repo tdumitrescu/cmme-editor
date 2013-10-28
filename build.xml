@@ -5,6 +5,7 @@
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
   <property name="manifests" location="${src}/manifests"/>
+  <property name="classpath" location="${dist}/lib"/>
 
   <property name="target-version" value="1.5"/>
 
@@ -15,7 +16,13 @@
 
   <target name="compile" depends="init" description="compile source">
     <javac srcdir="${src}" destdir="${build}" target="${target-version}"
-           debug="true" debuglevel="lines,vars,source"/>
+           debug="true" debuglevel="lines,vars,source">
+      <classpath>
+        <fileset dir="${dist}/lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
     <copy todir="${build}/data"><fileset dir="${dist}/data"/></copy>
   </target>
 
