@@ -1,6 +1,7 @@
 *.log
 build/
 dist/*.cer
+dist/*.jks
 dist/*.jar
 dist/data/IMGout/
 dist/data/music/
