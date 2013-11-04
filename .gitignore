@@ -1,9 +1,10 @@
 *.log
+*.cer
+*.jks
+*.pfx
 build/
-dist/*.cer
-dist/*.jks
 dist/*.jar
-dist/*.pfx
+dist/cmme.properties
 dist/data/IMGout/
 dist/data/music/
 dist/data/PDFout/
