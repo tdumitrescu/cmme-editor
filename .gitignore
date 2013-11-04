@@ -3,6 +3,7 @@ build/
 dist/*.cer
 dist/*.jks
 dist/*.jar
+dist/*.pfx
 dist/data/IMGout/
 dist/data/music/
 dist/data/PDFout/
