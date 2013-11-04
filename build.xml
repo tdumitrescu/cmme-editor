@@ -6,6 +6,7 @@
   <property name="dist" location="dist"/>
   <property name="manifests" location="${src}/manifests"/>
   <property name="classpath" location="${dist}/lib"/>
+  <property file="${dist}/cmme.properties"/>
 
   <property name="target-version" value="1.5"/>
 
@@ -45,6 +46,10 @@
     <jar jarfile="${dist}/cmmeViewer.jar" basedir="${build}"
          manifest="${manifests}/manifest.applet"
          includes="DataStruct/*.class Gfx/*.class Util/*.class Viewer/*.class data/imgs/GUIicons/*.*"/>
+    <signjar jar="${dist}/cmmeViewer.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
   </target>
 
   <target name="clean" description="remove compiled files">
