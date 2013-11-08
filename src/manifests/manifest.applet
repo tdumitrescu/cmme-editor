@@ -1,2 +1,4 @@
 Main-Class: Viewer/Main
 Class-Path: gnu-aelfred2.jar itext-1.3.jar jdom.jar jgraph.jar
+Permissions: all-permissions
+Codebase: *.cmme.org
