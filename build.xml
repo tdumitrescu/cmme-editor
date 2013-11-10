@@ -52,6 +52,20 @@
              storepass="${cmme.certpass}"/>
   </target>
 
+  <target name="generate-keystore"
+          description="create keystore containing PKCS12 certs">
+    <exec executable="keytool">
+      <arg line="-importkeystore"/>
+      <arg line="-srckeystore ${dist}/${cmme.certpfx}"/>
+      <arg line="-srcstoretype pkcs12"/>
+      <arg line="-srcstorepass ${cmme.certpass}"/>
+      <arg line="-destkeystore ${dist}/${cmme.keystore}"/>
+      <arg line="-deststoretype JKS"/>
+      <arg line="-deststorepass ${cmme.certpass}"/>
+      <arg line="-alias ${cmme.certalias}"/>
+    </exec>
+  </target>
+
   <target name="clean" description="remove compiled files">
     <delete includeemptydirs="true">
       <fileset dir="${build}" excludes="data/"/>
