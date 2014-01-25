@@ -1,0 +1,1442 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>CMME Editor: Documentation</title>
+  <style type="text/css">
+h1 {font-family: Arial,Helvetica,sans-serif; font-size: xx-large; font-style: normal; font-weight:normal; text-align: center;}
+h2 {font-family: Arial,Helvetica,sans-serif; font-size: x-large; font-style: normal; font-weight:normal; text-align: center;}</style>
+  <meta name="generator" content="Amaya 9.54, see http://www.w3.org/Amaya/" />
+</head>
+
+<body>
+<p><img alt="CMME logo" src="editor_doc-images/logo.jpg" /> </p>
+
+<h1>CMME Score Editor</h1>
+
+<p>August 2011<br />
+Current version: 0.97a (beta)</p>
+<dl>
+  <dt><a href="#Purpose">Purpose of the CMME Editor</a></dt>
+  <dt><a href="#Recent">Recent Features</a></dt>
+  <dt><a href="#Installati">Installation</a></dt>
+  <dt><a href="#Basic">Basic music input tutorial</a></dt>
+  <dt><a href="#Editing1">Editing/input options</a></dt>
+  <dt><a href="#Texting1">Texting</a></dt>
+  <dt><a href="#Files">Files and file types</a></dt>
+  <dt><a href="#Visualizat">Visualization and output</a></dt>
+  <dt><a href="#Variants">Variants</a></dt>
+  <dt><a href="#ReferenceKeyboardCommands">Reference</a></dt>
+    <dd><dl>
+        <dt><a href="#ReferenceKeyboardCommands">Keyboard commands</a></dt>
+          <dd><dl>
+              <dt><a href="#General1">General commands</a></dt>
+              <dt><a href="#When">When no items are highlighted</a></dt>
+              <dt><a href="#When1">When one item is highlighted</a></dt>
+              <dt><a href="#When2">When multiple items are highlighted</a></dt>
+            </dl>
+          </dd>
+      </dl>
+    </dd>
+    <dd><a href="#ReferenceMenus">Menus</a></dd>
+    <dd><a href="#ReferenceToolbar">Toolbar</a></dd>
+    <dd><dl>
+        <dt><a href="#ReferenceAdditionalCP">Additional control panels</a></dt>
+          <dd><dl>
+              <dt><a href="#Event">Event information window</a></dt>
+              <dt><a href="#General">General score information window</a></dt>
+              <dt><a href="#Section">Section attributes window</a></dt>
+              <dt><a href="#Editing">Editing options window</a></dt>
+              <dt><a href="#Texting">Texting window</a></dt>
+              <dt><a href="#Print">Print preview</a></dt>
+            </dl>
+          </dd>
+      </dl>
+    </dd>
+</dl>
+
+<p></p>
+
+<p><a name="Purpose" id="L19449"></a>The CMME Editor software is a graphical
+tool for creating transcriptions of music written in mensural notation
+(primarily of the 15th-16th centuries), for use with the CMME online
+publication system for early music scores. It is a platform-independent Java
+program which produces music data files in the XML-based CMME format
+(.cmme.xml), in addition to several graphics formats (PDF documents for full
+scores/parts, JPEG images of musical incipits). It is NOT a music engraving
+program, i.e., the software does not provide any sophisticated mechanism for
+controlling the precise visual form of the transcription (exact placement of
+noteheads, etc.), since the CMME Viewer software can produce different
+visualizations of transcriptions according the desires of the end reader. For
+an introduction to the goals and structure of the CMME Project, see the project
+website: <a href="http://www.cmme.org">http://www.cmme.org</a>.</p>
+
+<h2><a name="Recent" id="Recent">Recent features</a></h2>
+
+<p><i>Interface:</i><br />
+Cut/Copy/Paste<br />
+Highlight events with <i>Shift</i>-&larr;, <i>Shift</i>-&rarr;<br />
+Modify event lengths with <i>Ctrl</i>-9, <i>Ctrl</i>-0<br />
+Ligature type can be modified when only final note is selected (with R and
+O)<br />
+Modify vertical position of Barline event with &uarr;, &darr;; modify vertical
+length with <i>Shift</i>-&uarr;, <i>Shift</i>-&darr; <br />
+Insert original text phrases with <b>T</b><br />
+<i>Ctrl</i>-R shows Section Attributes window</p>
+
+<p><b>.88-.97:</b><br />
+<i>[to be completed]</i></p>
+
+<p><b>.88:</b><br />
+Basic variant-manipulation functionality</p>
+
+<p><b>.87</b>:<br />
+Section functionality in non-scored views (parts, incipit)<br />
+Exclusion of voices for reduced-scoring sections<br />
+Plainchant-section editing and rendering<br />
+Incipit-scores now use separate sections for Incipit and Finalis<br />
+"Notes" area added to score meta-data (General Information)</p>
+
+<h2><a name="Installati" id="Installati">Installation</a></h2>
+
+<p>The current version of the CMME Editor is distributed as a ZIP archive which
+can be ...</p>
+
+<h2><a name="Basic" id="Basic">Basic music input tutorial</a></h2>
+
+<p>This section provides step-by-step instructions for making a CMME
+transcription of a short two-voice musical extract from a 16th-century
+manuscript, as an introduction to using the CMME Editor and dealing with some
+idiosyncracies of mensural notation transcriptions. More extensive information
+on available commands and the CMME Editor interface is provided in the <a
+href="#ReferenceKeyboardCommands">Reference</a> section. Note: this manual is
+not a guide to reading and interpreting mensural notation. It is expected that
+users of the CMME Editor will already have some familiarity with early notation
+before beginning their transcriptions. Ted Dumitrescu's <a
+href="http://www.cmme.org/?page=docs#Misc">basic mensural notation reference
+sheet</a> lays out the commonly-encountered features of 15th- and 16th-century
+mensural notation and their interpretation; the best-known introduction to
+reading early notation is still Willi Apel, <i>The Notation of Polyphonic
+Music, 900-1600</i> (Cambridge, MA: Mediaeval Academy of America, 1942).</p>
+
+<h3>Example 1: Basic input</h3>
+
+<p>The two images below contain the incipits of two voices of a chanson
+(Obrecht's setting of <i><a
+href="http://www.cmme.org/?page=database&amp;view=pieces&amp;id=189">Fors
+seulement</a></i>) as printed in Petrucci's collection <i><a
+href="http://www.cmme.org/?page=database&amp;view=sources&amp;id=72">Canti
+C</a></i> (1503-4). This is a very typical example of early 16th-century
+mensural notation, and the following tutorial will demonstrate how to
+transcribe these two fragments into a score.</p>
+
+<p style="text-align: center;"><img alt="Music print example"
+src="editor_doc-images/music-print-ex.jpg" /></p>
+
+<p>To begin transcribing the music, start the CMME Editor. A blank score
+containing one voice appears in a new window. <i>Note: It is recommended that
+you open the image above in a separate window while following this
+tutorial.</i></p>
+
+<p><i>Inputting music: voices, clefs, mensurations</i><br />
+First, begin with the voice on the left (unnamed here, but typically known as
+Superius, Discantus, or Cantus). At the left edge of the image is a large
+calligraphic-style F which opens the text ("FOrseulement"); the first
+<i>musical</i> symbol is the clef, a G on the second staff line from the
+bottom, or "G2" clef. Type <b>X</b> to insert a clef, by default a C clef on
+the bottom staff line, which then remains highlighted (selected); to transform
+this into a G clef, type <b>G</b>. Alternatively, clicking on the G-clef in the
+<a href="#ReferenceToolbar">Toolbar</a> above the score will also insert a G2
+clef at the current cursor position. Now press the right arrow (<b>&rarr;</b>)
+to de-select the clef and move the cursor to the right, ready to input new
+items.</p>
+
+<p>The item to the right of the G-clef, which looks like a flat on the 5th
+staff line (F), was a type of clef in the 15th and 16th centuries, the "round
+b," and this is how it is treated in the CMME system as well. Type <b>X</b> to
+insert a new clef, then <b>B</b> to transform it into a round b. This clef
+defaults to the position just below middle C; to move it up to F, press the up
+arrow (<b>&uarr;</b>) four times. The clef now has the right pitch-letter, but
+is still an octave too low. Instead of pressing the up arrow repeatedly to move
+it all the way up, hold down <i>Shift</i> and press &uarr; again
+(<i>Shift</i>-&uarr;). The round b is now in the correct position; press
+<b>&rarr;</b> to de-select the clef and move the cursor to the right.</p>
+
+<p>Type <b>M</b> to insert a mensuration sign, which is by default C and which
+again remains highlighted. Since the sign in the example above contains a
+stroke, type <b>/</b> (slash) to add (or remove) the stroke. Then type <b>S</b>
+to make the sign smaller (small enough to fit between two staff lines, as in
+the Tenor voice on the right). Now press <b>&rarr;</b> to de-select the sign
+and move the cursor to the right. The clefs and mensuration sign of the first
+voice have been entered.</p>
+
+<p>Type <i>Ctrl</i>-<b>I</b> to insert a new blank voice into the score, for
+transcribing the Tenor part (in the righthand image above). Press <b>&darr;</b>
+to move the cursor down to the new staff. The clef of this staff is C3, so
+insert it similarly to the first voice: <b>X</b> to insert the clef, then
+&uarr; twice to move it to the third staff line, then &rarr; to de-select and
+move the cursor. Insert the mensuration sign the same way as for the first
+voice: <b>M</b>, <b>/</b>, <b>S</b>, then <b>&uarr;</b> to move the sign up one
+space, and finally <b>&rarr;</b>. There are now two voices with clefs and
+mensuration signs in the score:</p>
+
+<p style="text-align: center;"><img alt="Example 1 Transcription 1"
+src="editor_doc-images/ex1-transcription1.jpg" /></p>
+
+<p><i>Inputting music: notes and rests</i><br />
+Click back onto the score to the right of the mensuration sign in the top voice
+to place the cursor there (or simply use the arrow keys to move the cursor).
+The first musical symbol in the top voice is a breve rest. Select breve as the
+type of note/rest for input by typing <b>3</b> or clicking on the breve in the
+toolbar; then type <b>Z</b> to insert a rest of this type. Alternatively,
+simply click on the "Brevis rest" symbol on the toolbar to insert this type of
+rest at the current cursor position. The rest is one staff space lower than in
+the image above, so press &uarr; to move the symbol up, then &rarr; to
+de-select.</p>
+
+<p>The first note is also a breve, so make sure the breve symbol on the toolbar
+is selected (if it's not, press <b>3</b> or click on the breve in the toolbar);
+then type <b>E</b> (the letter of the note's pitch) and a note appears, but an
+octave too low. Type <i>Shift</i>-&uarr; to move it up one octave, then &rarr;.
+The next three notes are semibreves on the same pitch. Select the semibreve
+sign by pressing <b>4</b>. Type <b>E</b> to insert another note with pitch E
+(or simply press the spacebar to insert a note with the same pitch as the last
+note), this time a semibreve, then &rarr;. Insert the next semibreve: <b>E</b>,
+&rarr;. Then type <b>E</b> again to insert the third semibreve E. This note is
+followed by a dot of addition, so press <b>.</b> (period) to insert the dot and
+automatically lengthen the semibreve, then &rarr; to de-select.</p>
+
+<p>Input the next notes following the same principles:</p>
+
+<p>semiminim D: type <b>6</b>, <b>D</b>, <b>&rarr;</b><br />
+semiminim C: type <b>C</b>, <b>&rarr;</b><br />
+semibreve B: type <b>4</b>, <b>B</b>, <b>&rarr;</b><br />
+semibreve B: type <b>B</b>, <b>&rarr;</b><br />
+semibreve D: type <b>D</b>, <b>&rarr;</b><br />
+semibreve D: type <b>D</b>, <b>&rarr;</b><br />
+</p>
+
+<p><i>Inputting the second voice</i><br />
+Press <b>&darr;</b> to move the cursor onto the second staff, or simply click
+somewhere on the second staff with the mouse. Now the techniques used to input
+the first voice can be applied again for the second voice:</p>
+
+<p>breve rest: type <b>3</b>, <b>Z</b>, <b>&uarr;</b>, <b>&rarr;</b><br />
+semibreve rest: type <b>4</b>, <b>Z</b>, <b>&uarr;</b>, <b>&uarr;</b>,
+<b>&rarr;</b><br />
+breve E: type <b>3</b>, <b>E</b>, <b>&rarr;</b><br />
+semibreve E: type <b>4</b>, <b>E</b>, <b>&rarr;</b><br />
+semibreve E: type <b>E</b>, <b>&rarr;</b><br />
+semibreve E and dot: type <b>E</b>, <b>.</b>, <b>&rarr;</b><br />
+semiminim D: type <b>6</b>, <b>D</b>, <b>&rarr;</b><br />
+semiminim C: type <b>C</b>, <b>&rarr;</b><br />
+semibreve B and dot: type <b>B</b>, <b>.</b>, <b>&rarr;</b><br />
+minim C: type <b>C</b>, <b>&rarr;</b><br />
+semibreve D: type <b>4</b>, <b>D</b>, <b>&rarr;</b></p>
+
+<p>Now the next two notes form a ligature ("cum opposita proprietate,"
+translating to two semibreves). Input the first semibreve E as usual (<b>E</b>,
+<b>&rarr;</b>). Type <b>F</b> to enter the next semibreve, then while it is
+still highlighted press <b>L</b> to ligate it to the previous note. The program
+guesses correctly in this case that it will be a "recta" ligature connection
+rather than "obliqua," as can be seen in the <a href="#Event">Event
+information</a> window while this note is highlighted; the type, however, can
+be switched to Obliqua if necessary by pressing <b>O</b> (and <b>R</b> to go
+back to Recta).</p>
+
+<p>There are now two voices with clefs, mensuration signs, notes, and rests:</p>
+
+<p style="text-align: center;"><img alt="Example 1 Transcription 2"
+src="editor_doc-images/ex1-transcription2.jpg" /></p>
+
+<p><i>Text</i><br />
+The original notation of the extract above also contains a small amount of
+text, written out as "FOrseulement" in the Superius and "Forseulement" in the
+Tenor. The CMME System provides two types of texting transcription: 1)
+"Original Texting" which follows the conventions of the 15th/16th centuries,
+with words, phrases, and syllables matched sometimes rather loosely to parts of
+the music; 2) "Modern Texting" which matches each syllable to a specific note
+at which it begins (as in a typical score following modern conventions).</p>
+
+<p>The original text phrase of the Superius is lined up approximately with the
+first note of the music; click to the left of this note to move the cursor
+there. Now open the <a href="#Texting">Texting Window</a> by typing
+<b><i>Ctrl</i>-T</b> (or opening the Edit Menu and clicking on Text...). The
+"Original texting" tab is open by default: in this tab, the "Scrap text area"
+can hold text to be transferred to the score, divided into its original units
+as in the sources. Click on the Scrap Text Area and type (or copy and paste)
+<b>FOrseulement</b>. Now while the cursor is still next to that word, click on
+the "Insert phrase" button and this text phrase will be inserted into the score
+at the current cursor location. Repeat the process for the phrase of the Tenor:
+either type <b>Forseulement</b> into the Scrap Text Area on a different line
+than the Superius text, or simply modify the "FOrseulement" which is already
+there; then make sure the cursor is somewhere in or next to that phrase in the
+Scrap Text Area. The Tenor's text appears to be lined up with the first of its
+rests, and it is possible to position it this way on the CMME score as well:
+click on the score to the left of the first rest in the Tenor to position the
+cursor to the left of the rest, then click on the "Insert phrase" button in the
+Texting Window. (To delete any original text, select the Original Text event in
+the score and press Delete/Backspace.)</p>
+
+<p>Setting the piece's modern texting is a similar process, except that the
+text must be explicitly divided into syllables and these can only be attached
+to specific notes, not placed anywhere on the score. Click on the "Modern
+texting" tab in the <i>Texting Window</i> and type (or paste) the following
+text into the Scrap Text Area: <b>Fors seu-le-ment</b>. (This is a modernized
+version of the text.) Now move the text cursor back to the first syllable
+("Fors"), then click onto the score and highlight the first note of the
+Superius (this can be done by clicking and dragging, or moving the cursor to
+the left of the note and pressing <i>Shift</i>-&rarr;, or moving the cursor to
+the left of the note and pressing the &gt; button in the <i>Texting
+Window</i>). When the note is highlighted, the "Set syllable" button in the
+<i>Texting Window</i> will become enabled; click on it to apply the syllable
+"Fors" to the highlighted note (the modern text appears in blue under the
+note). Now the program automatically highlights the next syllable and the next
+note; click "Set syllable" three more times to place the remaining syllables on
+the next notes. The process can then be repeated for the Tenor: highlight the
+first Tenor note, click anywhere in the syllable "Fors" in the <i>Texting
+Window</i>, then click on "Set syllable" four times to attach the four
+syllables to the first four notes. At any point, you can skip ahead or back in
+the score with the "&gt;" and "&lt;" buttons in the <i>Texting Window</i>, and
+the "Remove syllable" button will remove any text from the currently selected
+note.</p>
+
+<p>At this point you have transcribed an extract of a polyphonic work using the
+CMME Editor, and have encountered the basic tools employed for manipulating
+notes, rests, clefs, mensuration signs, text, etc. </p>
+
+<h3>Example 2: Advanced notational elements</h3>
+
+<p>The following two images, extracted from a folio of an English choirbook of
+<i>c</i>. 1500, present the beginnings of two voices of a polyphonic mass in
+their original notation. It is an example which includes a number of
+complexities commonly encountered in mensural notation:</p>
+
+<p style="text-align: center;"><img alt="Music MS example"
+src="editor_doc-images/music-MS-ex.jpg" /></p>
+
+<p>To begin transcribing the music, start the CMME Editor. A blank score
+containing one voice appears in a new window. <i>Note: It is recommended that
+you open the image above in a separate window while following this
+tutorial.</i></p>
+
+<p><i>Setting basic coloration and meta-data</i><br />
+In this example, the basic notational color is full black (breves and
+semibreves are black and filled in) with full red used for coloration
+(semiminims and "colored" notes are red and filled in). Since the default
+coloration scheme of the CMME Editor is black void - black full (as in most
+sources of polyphony from the mid-15th century onward, sometimes called "white
+mensural notation"), the basic coloration scheme needs to be changed for this
+example; this can be done with the <i><a href="#General">General
+information</a></i> window. To open this window, select <i>General
+information...</i> from the Edit menu, or type <i>Ctrl</i>-<b>G</b>. In the
+Options panel next to "Base coloration", select "Black" and "Full" for Primary
+and "Red" and "Full" for secondary.</p>
+
+<p>Additionally, the <i>General information</i> window can be used for input of
+basic meta-data (composition name, section name, editor, etc.) and naming and
+ordering of voices. These elements will not be used in the present example.</p>
+
+<p><i>Inputting music: voices, clefs, mensurations</i><br />
+Click on <i>Apply</i> to close the <i>General information</i> window and apply
+changes. Before inputting notes, transcribe the clefs and mensuration signs at
+the very left of each staff in the original notation, beginning with the top
+voice. Type <b>X</b> to insert a C1 clef (C clef on the bottom staff line),
+which then remains highlighted (selected); alternatively, clicking on the
+C-clef in the <a href="#ReferenceToolbar">Toolbar</a> above the score will also
+insert a C clef at the current cursor position. To move the clef to the 5th
+line, press the up arrow (<b>&uarr;</b>) four times. Now press the right arrow
+(<b>&rarr;</b>) to de-select the clef and move the cursor to the right, ready
+to input new items. Type <b>M</b> to insert a mensuration sign, which is by
+default C and which again remains highlighted. To change the sign to O as in
+the notation, type <b>O</b>. Then type <b>S</b> to make the sign smaller, and
+press <b>&uarr;</b> three times to move it vertically into the highest staff
+space. Now press <b>&rarr;</b> to de-select the sign and move the cursor to the
+right. The clef and mensuration sign of the first voice have been entered.</p>
+
+<p>Type <i>Ctrl</i>-<b>I</b> to insert a new blank voice into the score, for
+transcribing the part in the second image above. Press <b>&darr;</b> to move
+the cursor down to the new staff. Insert the clef of this staff the same way as
+for the first voice (<b>X</b>, then <b>&uarr;</b> four times, then
+<b>&rarr;</b> to de-select and move the cursor). Insert the mensuration sign
+the same way as for the first voice (<b>M</b>, <b>O</b>, <b>S</b>,
+<b>&uarr;</b> three times, <b>&rarr;</b>). There are now two voices with clefs
+and mensuration signs in the score.</p>
+
+<p><i>Inputting music: notes and rests</i><br />
+The music of the first staff begins with a coloration group lasting six
+semibreves (two perfections or measures under O): two red semibreve rests and
+two red breves. The notational effect of this type of coloration group is to
+make all notes within it imperfect: each of the red breves is worth only two
+semibreves, rather than the default three under O. Prepare to enter a
+coloration group by opening the <a href="#Editing">Editing options</a> window:
+select <i>Display input options</i> from the Edit menu. Change the <i>Current
+coloration type</i> to "Imperfectio" to specify that newly-input colored notes
+will be part of imperfection groups, rather than, e.g., "minor color" groups.
+Now select <i>Coloration</i> in the <i>Note/Rest Input</i> panel to specify
+that newly-input notes will be colored by default.</p>
+
+<p>Click back onto the score to the right of the mensuration sign in the top
+voice to place the cursor there. Type <b>Z</b> to insert a rest of the type
+currently selected on the Toolbar (semibreve). Type <b>&uarr;</b> to move the
+rest up one space, and <b>&rarr;</b> to de-select and move the cursor. Now
+repeat this for the second rest (<b>Z</b>, <b>&rarr;</b>). To input the first
+red breve, first select the breve as the value for new note input either by
+clicking on the breve symbol in the Toolbar or by typing <b>3</b>. Now type the
+pitch letter of the note: <b>F</b>. The note appears an octave too high (since
+no other notes have been input, the program chooses the F closest to the clef),
+so type <i>Shift</i>-<b>&darr;</b> to lower the note's pitch by an octave. Now
+the note is on the correct pitch, and since Imperfection Coloration is turned
+on, it is automatically imperfected rhythmically, as can be verified by
+checking its length displayed in the <a href="#Event">Event information</a>
+window, 4:1 <i>minimae</i>. Type <b>&rarr;</b> to de-select and <b>A</b> to
+input the next breve on the proper pitch, then <b>&rarr;</b> to move the cursor
+again since this note needs no modification. The first coloration group has now
+been input.</p>
+
+<p>In the <i>Editing options</i> window, de-select <i>Coloration</i> to stop
+entering colored notes and click back onto the first staff in the score, to the
+right of the note just input. Type <b>C</b> to add the third breve; although
+uncolored, this note is still imperfected by the two minims following it, so
+type <i>Shift</i>-<b>1</b> to imperfect it (reducing its length from 6 to 4
+minims), then <b>&rarr;</b> to de-select. Type <b>5</b> to select the minim as
+the new input value, then <b>F</b> to insert the first minim,
+<i>Shift</i>-<b>&darr;</b> to lower the note's pitch by an octave, then
+<b>&rarr;</b>. Type <b>G</b> to add the second minim, then <b>&rarr;</b>. Now
+three measures have been input, and the following notes employ the same
+principles:</p>
+
+<p>breve A: type <b>3</b>, <b>A</b>, <i>Shift</i>-<b>1</b>, <b>&rarr;</b><br />
+minim F: type <b>5</b>, <b>F</b>, <b>&rarr;</b><br />
+minim A: type <b>A</b>, <b>&rarr;</b><br />
+semibreve G: type <b>4</b>, <b>G</b>, <b>&rarr;</b><br />
+semibreve G: type <b>G</b>, <b>&rarr;</b><br />
+semibreve C and dot: type <b>C</b>, <b>.</b>, <b>&darr;</b> &darr;(to move the
+dot down one space), <b>&rarr;</b><br />
+minim C: type <b>C</b>, <b>&rarr;</b><br />
+semibreve B: type <b>4,</b> , <b>&rarr;</b><br />
+</p>
+
+<p><i>Ligature, minor color, "accidental"</i><i></i><br />
+Now two ligated semibreves appear in the music. Enter the first one like a
+normal semibreve: type <b>G</b>, <b>&rarr;</b>. Now prepare to enter the "minor
+coloration" pair by clicking on <i>Minor color</i> in the <i>Editing
+options</i> window, and click back onto the score to the right of the last note
+entered. Enter the second semibreve of the ligature: type <b>A</b>, then
+<b>I</b> to make it colored, then <b>L</b> to ligate it to the previous note,
+and <b>&rarr;</b> to de-select. Now enter the colored minim which completes the
+minor color pair: type <b>5</b>, <b>B</b>, <b>I</b>, <b>&rarr;</b>.</p>
+
+<p>The next item to the right of the red minim is a lightly-written
+<i>dyesis</i> sign (#) on the pitch F. This is technically a type of clef, and
+that is how the CMME system treats it. Type <b>X</b> to enter a new clef, by
+default a repetition of the current main clef (C5), then <b>X</b> again to
+transform it into a <i>dyesis</i> sign; alternatively, clicking on the
+<i>dyesis</i> symbol in the Toolbar will insert the sign at the current cursor
+position. The sign appears on the pitch B, so type <b>&darr;</b> three times to
+move it down to F, then <b>&rarr;</b>. Now add several more notes:</p>
+
+<p>semibreve A and dot: type <b>4</b>, <b>A</b>, <b>.</b>, <b>&darr;</b>,
+<b>&rarr;</b><br />
+minim F#: type <b>F</b>, <b>=</b>, <b>&rarr;</b><br />
+semibreve F#: type <b>4</b>, <b>F</b>, <b>=</b>, <b>&rarr;</b><br />
+semibreve A (ligated): type <b>A</b>, <b>L</b>, <b>&rarr;</b> </p>
+
+<p>The transcription now contains much of the first line in the image.</p>
+
+<p><i>Inputting the second voice</i><br />
+Press <b>&darr;</b> to move the cursor onto the second staff, or simply click
+somewhere on the second staff with the mouse. Now the techniques used to input
+the first voice can be applied again for the second voice:</p>
+
+<p>semibreve rest: type <b>4</b>, <b>Z</b>, <b>&uarr;</b>, <b>&rarr;</b><br />
+breve F: type <b>3</b>, <b>F</b>, <i>Shift</i>-<b>&darr;</b>,
+<i>Shift</i>-<b>1</b>, <b>&rarr;</b><br />
+semibreve A: type <b>4</b>, <b>A</b>, <b>&rarr;</b><br />
+breve C: type <b>3</b>, <b>C</b>, <i>Shift</i>-<b>1</b>, <b>&rarr;</b><br />
+semibreve A: type <b>4</b>, <b>A</b>, <b>&rarr;</b><br />
+minim rest: type <b>5</b>, <b>Z</b>, <b>&uarr;</b>, <b>&rarr;</b><br />
+minim F: type <b>F</b>, <b>&rarr;</b><br />
+minim A: type <b>A</b>, <b>&rarr;</b><br />
+minim B: type <b>B</b>, <b>&rarr;</b><br />
+minim C: type <b>C</b>, <b>&rarr;</b><br />
+semibreve D: type <b>4</b>, <b>D</b>, <b>&rarr;</b><br />
+minim C: type <b>5</b>, <b>C</b>, <b>&rarr;</b><br />
+minim A: type <b>A</b>, <b>&rarr;</b><br />
+semibreve C with dot: type <b>4</b>, <b>C</b>, <b>.</b>, <b>&darr;</b>,
+<b>&rarr;</b><br />
+semibreve G: type <b>4</b>, <b>G</b>, <b>&rarr;</b><br />
+breve A: type <b>3</b>, <b>A</b>, <i>Shift</i>-<b>1</b>, <b>&rarr;</b><br />
+semibreve G: type <b>4</b>, <b>G</b>, <b>&rarr;</b><br />
+semibreve G: <b>G</b>, <b>&rarr;</b><br />
+semibreve D with dot: type <b>D</b>, <i>Shift</i>-<b>&uarr;</b>, <b>.</b>,
+<b>&rarr;</b><br />
+minim D: type <b>D</b>, <b>/</b> (to reverse stem direction), <b>&rarr;</b><br
+/>
+semibreve D: type <b>4</b>, <b>D</b>, <b>&rarr;</b><br />
+semibreve D with dot: type <b>D</b>, <b>.</b>, <b>&rarr;</b><br />
+semiminim C: type <b>6</b>, <b>C</b>, <b>&rarr;</b><br />
+semiminim B: <b>B</b>, <b>&rarr;</b><br />
+semibreve A: type <b>4</b>, <b>A</b>, <b>&rarr;</b><br />
+</p>
+
+<p>Most musical passages from the 16th century will be considerably more
+straightforward notationally than the preceding example. It has been chosen
+specifically to illustrate a range of issues which arise occasionally in
+mensural notation even into the late 16th century, and which are considerably
+more common in music from the earlier 15th century. When you are comfortable
+transcribing a passage like this one with the CMME Editor, the majority of of
+15th- and 16th-century scores should pose few problems.</p>
+
+<h2><a name="Editing1" id="Editing1">Editing/input options</a></h2>
+
+<p><i>TBC</i></p>
+
+<h2><a name="Texting1" id="Texting1">Texting</a></h2>
+
+<p><i>TBC</i></p>
+
+<h2><a name="Files" id="Files">Files and file types</a></h2>
+
+<p><i>TBC</i></p>
+
+<h2><a name="Visualizat" id="Visualizat">Visualization and output</a></h2>
+
+<p><i>TBC</i></p>
+
+<h2><a name="Variants" id="Variants">Variants</a></h2>
+
+<p>Quick start:</p>
+<ul>
+  <li>Input default version</li>
+  <li>Create new version(s) with Versions-&gt;Variant Version Information</li>
+  <li>Choose version to edit with Version selector on main toolbar</li>
+  <li>Adding/modifying/deleting events now creates new variant readings
+    automatically</li>
+  <li>Move cursor between green brackets to edit events within variant
+  readings</li>
+  <li>Manipulate readings further to modify/combine/delete as appropriate</li>
+</ul>
+
+<table border="1" cellpadding="5">
+  <caption><i>Variant manipulation commands:</i></caption>
+  <tbody>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td><i>Ctrl-Shift</i>-Delete</td>
+      <td>Delete reading at cursor location</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-1</td>
+      <td>Mark reading at cursor location as error</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-. / <i>Right-click</i></td>
+      <td>Display all readings at location of cursor/click</td>
+    </tr>
+    <tr>
+      <td>V</td>
+      <td>Combine reading at cursor location with following (adjacent)
+      reading</td>
+    </tr>
+  </tbody>
+</table>
+
+<p></p>
+
+<h2><a name="ReferenceKeyboardCommands" id="Reference3">Reference: Keyboard
+commands</a></h2>
+
+<table border="1" cellpadding="5">
+  <caption><i><a name="General1" id="General1">General
+  commands:</a></i></caption>
+  <tbody>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-A</td>
+      <td>Highlight all events in the current voice in the current section</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-E</td>
+      <td>Open editing options window</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-G</td>
+      <td>Open general score information window</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-I</td>
+      <td>Insert new voice</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-N</td>
+      <td>Create new score</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-O</td>
+      <td>Open file</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-P</td>
+      <td><i>Temporarily disabled</i></td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-Q</td>
+      <td>Quit</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-R</td>
+      <td>Open section attributes window</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-S</td>
+      <td>Save file</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-T</td>
+      <td>Open texting window</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-W</td>
+      <td>Close file</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>--, <i>Ctrl</i>-=</td>
+      <td>Zoom out/in</td>
+    </tr>
+  </tbody>
+</table>
+
+<p></p>
+
+<table border="1" cellpadding="5">
+  <caption><i><a name="When" id="When">When no items are
+  highlighted:</a></i></caption>
+  <tbody>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>Arrows (&uarr;,&darr;,&larr;,&rarr;)</td>
+      <td>Move cursor</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-&larr;,&rarr;</td>
+      <td>Select events/lengthen/shorten highlight</td>
+    </tr>
+    <tr>
+      <td><i>Home</i></td>
+      <td>Move cursor to beginning of section</td>
+    </tr>
+    <tr>
+      <td><i>End</i></td>
+      <td>Move cursor to end of section</td>
+    </tr>
+    <tr>
+      <td><i>Backspace</i></td>
+      <td>Delete item to left of cursor</td>
+    </tr>
+    <tr>
+      <td><i>Delete</i></td>
+      <td>Delete item to right of cursor</td>
+    </tr>
+    <tr>
+      <td>A, B, C, D, E, F, G</td>
+      <td>Insert note with currently selected type/length</td>
+    </tr>
+    <tr>
+      <td>Z</td>
+      <td>Insert rest with currently selected type/length</td>
+    </tr>
+    <tr>
+      <td><i>Space</i></td>
+      <td>Insert note with currently selected type/length and same pitch as
+        previous note in melody</td>
+    </tr>
+    <tr>
+      <td>K</td>
+      <td>Insert modern <b>k</b>ey signature change</td>
+    </tr>
+    <tr>
+      <td>L</td>
+      <td>Insert co<b>l</b>oration change</td>
+    </tr>
+    <tr>
+      <td>M</td>
+      <td>Insert <b>m</b>ensuration sign/change</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td>Insert textual a<b>n</b>notation</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>Insert <b>p</b>roportion</td>
+    </tr>
+    <tr>
+      <td>T</td>
+      <td>Insert original <b>t</b>ext phrase</td>
+    </tr>
+    <tr>
+      <td>X</td>
+      <td>Insert clef</td>
+    </tr>
+    <tr>
+      <td>.</td>
+      <td>Insert dot of addition (lengthening note to left of cursor)</td>
+    </tr>
+    <tr>
+      <td>,</td>
+      <td>Insert dot of division/etc.</td>
+    </tr>
+    <tr>
+      <td>;</td>
+      <td>Insert <i>custos</i> on same pitch as previous note in melody</td>
+    </tr>
+    <tr>
+      <td>/</td>
+      <td>Insert source line ending, along with <i>custos</i> and new clefs</td>
+    </tr>
+    <tr>
+      <td>]</td>
+      <td>Insert barline</td>
+    </tr>
+    <tr>
+      <td>1, 2, 3, 4, 5, 6, 7, 8</td>
+      <td>Select note type/length for note input (1 = <i>maxima</i>, 8 =
+        <i>semifusa</i>)</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-I</td>
+      <td>Toggle coloration on/off for note input</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-6</td>
+      <td>Toggle <i>semiminima</i> style for note input (colored or void with
+        flag)</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-\</td>
+      <td>Toggle stem direction for note input (always up; always down;
+        dependent upon staff position)</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-L</td>
+      <td>Insert <b>l</b>acuna</td>
+    </tr>
+  </tbody>
+</table>
+
+<p></p>
+
+<table border="1" cellpadding="5">
+  <caption><i><a name="When1" id="When1">When one item is
+  highlighted:</a></i></caption>
+  <tbody>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: any</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&larr;,&rarr;</td>
+      <td>Unhighlight and move cursor to left or right of item</td>
+    </tr>
+    <tr>
+      <td><i>Home</i></td>
+      <td>Unhighlight and move cursor to beginning of section</td>
+    </tr>
+    <tr>
+      <td><i>End</i></td>
+      <td>Unhighlight and move cursor to end of section</td>
+    </tr>
+    <tr>
+      <td><i>Backspace</i>, <i>Delete</i></td>
+      <td>Delete item</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-D</td>
+      <td>Mark item as editorial</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-L</td>
+      <td>Replace item with Lacuna of equivalent length</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Note</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change pitch (move up or down one step)</td>
+    </tr>
+    <tr>
+      <td><i>Shift-</i>&uarr;,&darr;</td>
+      <td>Change pitch (move up or down one octave)</td>
+    </tr>
+    <tr>
+      <td>A, B, C, D, E, F, G</td>
+      <td>Change pitch (move to closest pitch with lettername typed)</td>
+    </tr>
+    <tr>
+      <td>1, 2, 3, 4, 5, 6, 7, 8</td>
+      <td>Change type/length (1 = <i>maxima</i>, 8 = <i>semifusa</i>)</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-9, 0</td>
+      <td>Shorten or lengthen by 1 minima</td>
+    </tr>
+    <tr>
+      <td>I</td>
+      <td>Toggle coloration</td>
+    </tr>
+    <tr>
+      <td>L</td>
+      <td>Ligate with previous note</td>
+    </tr>
+    <tr>
+      <td>O</td>
+      <td>Change ligature segment type (beginning on this note) to
+        <i>obliqua</i></td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>If editorial accidental is present, toggle parentheses (optional
+        status)</td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>Change ligature segment type (beginning on this note) to
+      <i>recta</i></td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>Toggle presence of <i>signum congruentiae</i></td>
+    </tr>
+    <tr>
+      <td>U</td>
+      <td>If <i>signum congruentiae</i> is present, toggle direction (up/down,
+        above/below note)</td>
+    </tr>
+    <tr>
+      <td>[, ]</td>
+      <td>If <i>signum congruentiae</i> is present, move up/down ([ = up, ] =
+        down)</td>
+    </tr>
+    <tr>
+      <td>;</td>
+      <td>If <i>signum congruentiae</i> is present, cycle horizontal position
+        (left; center; right)</td>
+    </tr>
+    <tr>
+      <td>.</td>
+      <td>Insert dot of addition after note (and lengthen note)</td>
+    </tr>
+    <tr>
+      <td>/</td>
+      <td>Cycle stem direction</td>
+    </tr>
+    <tr>
+      <td>=</td>
+      <td>Add editorial sharp</td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>Add editorial flat</td>
+    </tr>
+    <tr>
+      <td>*</td>
+      <td>Toggle presence of <i>corona</i></td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-I</td>
+      <td>Cycle half-coloration pattern (only for <i>brevis</i> and longer)</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-1</td>
+      <td>Apply imperfection to note</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-2</td>
+      <td>Apply alteration to note</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-3</td>
+      <td>Apply perfection to note</td>
+    </tr>
+    <tr>
+      <td>0, M</td>
+      <td>Make multi-event (align vertically with previous item)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Rest</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one step)</td>
+    </tr>
+    <tr>
+      <td>1, 2, 3, 4, 5, 6, 7, 8</td>
+      <td>Change type/length (1 = <i>maxima</i>, 8 = <i>semifusa</i>)</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-9, 0</td>
+      <td>Shorten or lengthen by 1 minima</td>
+    </tr>
+    <tr>
+      <td>I</td>
+      <td>Toggle coloration</td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>Toggle presence of <i>signum congruentiae</i></td>
+    </tr>
+    <tr>
+      <td>U</td>
+      <td>If <i>signum congruentiae</i> is present, toggle direction (up/down,
+        above/below rest)</td>
+    </tr>
+    <tr>
+      <td>[, ]</td>
+      <td>If <i>signum congruentiae</i> is present, move up/down ([ = up, ] =
+        down)</td>
+    </tr>
+    <tr>
+      <td>;</td>
+      <td>If <i>signum congruentiae</i> is present, cycle horizontal position
+        (left; center; right)</td>
+    </tr>
+    <tr>
+      <td>*</td>
+      <td>Toggle presence of <i>corona</i></td>
+    </tr>
+    <tr>
+      <td>0, M</td>
+      <td>Make multi-event (align vertically with previous item)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Clef</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one line/step)</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>Change type to round b clef; change style of round b clef</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>Change type to C clef</td>
+    </tr>
+    <tr>
+      <td>F</td>
+      <td>Change type to F clef; change style of F clef</td>
+    </tr>
+    <tr>
+      <td>G</td>
+      <td>Change type to G clef</td>
+    </tr>
+    <tr>
+      <td>H</td>
+      <td>Change type to square b clef</td>
+    </tr>
+    <tr>
+      <td>I</td>
+      <td>Toggle coloration</td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>If a less-principal clef (round b, square b, dyesis), toggle
+        signature status</td>
+    </tr>
+    <tr>
+      <td>X</td>
+      <td>Change type to dyesis (#)</td>
+    </tr>
+    <tr>
+      <td>0, M</td>
+      <td>Make multi-event (align vertically with previous item)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Mensuration</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one step)</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>Change main sign to C</td>
+    </tr>
+    <tr>
+      <td>O</td>
+      <td>Change main sign to O</td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>Change main sign to reversed C</td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>Toggle size (small, large)</td>
+    </tr>
+    <tr>
+      <td>.</td>
+      <td>Toggle presence of dot</td>
+    </tr>
+    <tr>
+      <td>/</td>
+      <td>Toggle presence of stroke</td>
+    </tr>
+    <tr>
+      <td>0, M</td>
+      <td>Make multi-event (align vertically with previous item)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Dot</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one space)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Custos</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one step)</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-&uarr;,&darr;</td>
+      <td>Change staff position (move up or down one octave)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Line end</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>Toggle page end status</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Barline</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Move up or down vertically</td>
+    </tr>
+    <tr>
+      <td><i>Shift</i>-&uarr;,&darr;</td>
+      <td>Lengthen or shorten vertically</td>
+    </tr>
+    <tr>
+      <td>1, 2, 3, 4, 5, 6, 7, 8</td>
+      <td>Change number of lines</td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>Toggle repeat-sign status</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Textual annotation</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Move up or down vertically</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Modern key signature</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>-</td>
+      <td>Move signature flatward (add one flat or remove one sharp)</td>
+    </tr>
+    <tr>
+      <td>=</td>
+      <td>Move signature sharpward (add one sharp or remove one flat)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Item type: Multi-event</i></td>
+    </tr>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-&larr;, <i>Ctrl</i>-&rarr;</td>
+      <td>Shift highlight between individual items</td>
+    </tr>
+  </tbody>
+</table>
+
+<p></p>
+
+<table border="1" cellpadding="5">
+  <caption><i><a name="When2" id="When2">When multiple items are
+  highlighted:</a></i></caption>
+  <tbody>
+    <tr>
+      <td><b>Key</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>&larr;,&rarr;</td>
+      <td>Unhighlight and move cursor to left or right of highlighted area</td>
+    </tr>
+    <tr>
+      <td><i>Home</i></td>
+      <td>Unhighlight and move cursor to beginning of section</td>
+    </tr>
+    <tr>
+      <td><i>End</i></td>
+      <td>Unhighlight and move cursor to end of section</td>
+    </tr>
+    <tr>
+      <td><i>Backspace</i>, <i>Delete</i></td>
+      <td>Delete highlighted items</td>
+    </tr>
+    <tr>
+      <td>I</td>
+      <td>Toggle coloration</td>
+    </tr>
+    <tr>
+      <td>L</td>
+      <td>Ligate or un-ligated highlighted notes</td>
+    </tr>
+    <tr>
+      <td>O</td>
+      <td>If first highlighted item is note, change ligation type to
+        <i>obliqua</i></td>
+    </tr>
+    <tr>
+      <td>R</td>
+      <td>If first highlighted item is note, change ligation type to
+        <i>recta</i></td>
+    </tr>
+    <tr>
+      <td>/</td>
+      <td>Change stem directions of highlighted notes</td>
+    </tr>
+    <tr>
+      <td>&uarr;,&darr;</td>
+      <td>Move items up or down vertically, transposing notes and clefs</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-D</td>
+      <td>Mark items as editorial</td>
+    </tr>
+    <tr>
+      <td><i>Ctrl</i>-L</td>
+      <td>Replace items with Lacuna of equivalent length</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><a name="ReferenceMenus" id="Reference2">Reference: Menus</a></h2>
+
+<table border="1" cellpadding="5">
+  <tbody>
+    <tr>
+      <td align="center" colspan="2"><i>File</i></td>
+    </tr>
+    <tr>
+      <td><b>Command</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>New</td>
+      <td>Create empty score in new window</td>
+    </tr>
+    <tr>
+      <td>Open</td>
+      <td>Open score file in new window</td>
+    </tr>
+    <tr>
+      <td>Save</td>
+      <td>Save file</td>
+    </tr>
+    <tr>
+      <td>Save as</td>
+      <td>Specify filename and save</td>
+    </tr>
+    <tr>
+      <td>Generate PDF</td>
+      <td><i>Temporarily disabled; use CMME Viewer for PDF generation</i></td>
+    </tr>
+    <tr>
+      <td>Close</td>
+      <td>Close window</td>
+    </tr>
+    <tr>
+      <td>Exit</td>
+      <td>Quit program</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Edit</i></td>
+    </tr>
+    <tr>
+      <td><b>Command</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>General information</td>
+      <td>Open general score information editor window</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td>Open texting editor window</td>
+    </tr>
+    <tr>
+      <td>Display input options</td>
+      <td>Open input options window</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>View</i></td>
+    </tr>
+    <tr>
+      <td><b>Command</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>View size</td>
+      <td>Change view size: zoom in, zoom out, select view size</td>
+    </tr>
+    <tr>
+      <td>View parts window</td>
+      <td>Open window with unscored separate parts</td>
+    </tr>
+    <tr>
+      <td>Print preview</td>
+      <td>Open window with print/PDF layout (in separate parts)</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2"><i>Sections</i></td>
+    </tr>
+    <tr>
+      <td><b>Command</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td>Insert new section</td>
+      <td><i>Temporarily disabled</i></td>
+    </tr>
+    <tr>
+      <td>Insert section break</td>
+      <td>Split section at current cursor location</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><a name="ReferenceToolbar" id="Reference1">Reference: Toolbar</a></h2>
+
+<table border="1" cellpadding="5">
+  <tbody>
+    <tr>
+      <td><b>Items</b></td>
+      <td><b>Name</b></td>
+      <td><b>Action</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img alt="GUI: Toolbar: Notes"
+        src="editor_doc-images/GUI-toolbar-notes.jpg" /></td>
+      <td valign="middle">Note values</td>
+      <td>Selects note type for future input</td>
+    </tr>
+    <tr>
+      <td align="center"><img alt="GUI: Toolbar: Rests"
+        src="editor_doc-images/GUI-toolbar-rests.jpg" /></td>
+      <td valign="middle">Rest values</td>
+      <td>Inserts rest (of selected type) into score at current cursor position
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><img alt="GUI: Toolbar: Clefs"
+        src="editor_doc-images/GUI-toolbar-clefs.jpg" /></td>
+      <td valign="middle">Clef types</td>
+      <td>Inserts clef (of selected type) into score at current cursor
+      position</td>
+    </tr>
+    <tr>
+      <td align="center"><img alt="GUI: Toolbar: Viewsize tool"
+        src="editor_doc-images/GUI-toolbar-viewsize.jpg" /></td>
+      <td valign="middle">View size tool</td>
+      <td>Changes view size: zoom in and out with magnifying glass, or type
+        size into text field</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><a name="ReferenceAdditionalCP" id="Reference">Reference: Additional
+control panels</a></h2>
+
+<h3><a name="Event" id="Event">Event information window</a></h3>
+
+<p>Automatically displayed whenever a new score is open, the <i>Event
+information</i> window offers information and controls for whichever event is
+currently highlighted in the score. <i>Note: In the current version of the CMME
+Editor, not all event types have been implemented yet in the Event information
+window; for most events, keyboard commands are the preferred method of
+manipulation.</i> At the top of the panel, the Type of the currently
+highlighted item is displayed. If the currently highlighted item has a musical
+length (Note/Rest/Lacuna), the two numerical fields in the upper right are
+enabled and allow arbitrary manipulation of the event's length, using a
+<i>minima</i>-based timing system. The ratio 1:1 represents one <i>minima</i>,
+2:1 is two <i>minimae</i>, 3:2 is one and a half <i>minimae</i>, etc. In most
+cases, manual manipulation of note- and rest-lengths is unnecessary, but it can
+be useful for unusual forms of imperfection and complex mensural situations.</p>
+
+<p>Individual event controls:</p>
+
+<p><i>Mensuration</i><br />
+The <i>Sign</i> panel controls the appearance of the mensuration sign, allowing
+arbitrary addition and deletion of signs and numbers as well as control over
+sign attributes (dot, stroke, reversal). The white field at the top of the
+<i>Sign</i> panel shows all elements within the highlighted mensuration sign;
+to modify or delete an individual element, click on it within this field and it
+will become highlighted. The <i>Mensuration information</i> panel allows
+arbitrary control over mensural effect (setting which mensural levels are
+binary and ternary), regardless of the visual appearance of the sign.</p>
+
+<p><i>Proportion</i><br />
+The numerical fields at the upper right of the window allow specification of
+the proportion, represented as a ratio of the left and right numbers.</p>
+
+<p><i>Coloration change</i><br />
+The selection lists for Primary and Secondary coloration types operate as in
+the Base coloration selection in the <i><a href="#General">General
+information</a></i> window.</p>
+
+<p><i>Textual annotation</i><br />
+The text field allows input of text to be placed on the score. Clicking outside
+the text field will update the score window with the new text.</p>
+
+<h3><a name="General" id="General">General score information window</a></h3>
+
+<p><img alt="GUI: Window: General information"
+src="editor_doc-images/GUI-window-general_info.jpg" /></p>
+
+<p>The <b>Composition information</b> panel contains text fields for entering
+basic meta-data: Title, Section (e.g., "Kyrie"), Composer, etc.</p>
+
+<p>Each row in the <b>Voices</b> panel contains controls for manipulating
+information about one voice in the score: enter the voice name in the
+<i>Name</i> text area, select <i>Editorial</i> if the voice is an editorial
+reconstruction, use <i>Move up</i> and <i>Move down</i> to change voice
+positions within the list, and <i>Insert</i> and <i>Delete</i> to add and
+remove voices.</p>
+
+<p>In the <b>Options</b> panel, select <i>Incipit-score</i> if this is an
+incipit file rather than a full transcription. For choosing the base coloration
+style of the score, each base coloration type has a color (Black, Red, etc.)
+and a style (Void or Full); the Primary coloration is the color used by normal
+<i>maximae</i>, <i>longae</i>, <i>breves</i>, <i>semibreves</i>, and
+<i>minimae</i>, while the Secondary coloration is used by normal
+<i>semiminimae</i>, <i>fusae</i>, and <i>semifusae</i>, and by "colored"
+<i>breves</i>, <i>semibreves</i>, etc.</p>
+
+<p><i>Apply</i> makes changes and closes the dialog; <i>Cancel</i> closes the
+dialog without applying changes.</p>
+
+<h3><a name="Section" id="Section">Section attributes window</a></h3>
+
+<h3><a name="Editing" id="Editing">Editing options window</a></h3>
+
+<p><img alt="GUI: Window: Editing options"
+src="editor_doc-images/GUI-window-editing_options.jpg" /></p>
+
+<p>The <i>Coloration</i> checkbox controls whether new notes (not yet added to
+the score) are colored or not. <i>Current Coloration Type</i> specifies the
+effect of coloration on the length of new notes: <i>Minor color</i> turns
+coloration groups (usually two notes) into dotted rhythmic patterns;
+<i>Sesquialtera</i> makes notes worth 2/3 their normal value;
+<i>Imperfectio</i> makes ternary note values always imperfect (and has no
+effect on binary note values).</p>
+
+<h3><a name="Texting" id="Texting">Texting window</a></h3>
+
+<p><img alt="GUI: Window: Texting (original)"
+src="editor_doc-images/GUI-window-texting_orig.jpg" /></p>
+
+<p>In the <i>Original texting</i> tab, the Scrap text area can hold text which
+is to be inserted into the score as phrases of original text (i.e., aligned
+phrase by phrase with music phrases roughly as transmitted in the sources,
+rather than aligned syllable-to-note as in a modern score). Text phrases in the
+scrap area are separated by the character @ and by line breaks. <i>Insert
+phrase</i> takes the text phrase where the cursor currently is and inserts it
+into the score (as an OriginalText event) wherever the cursor currently is in
+the score window. The next text phrase is then automatically highlighted.</p>
+
+<p><img alt="GUI: Window: Texting (modern)"
+src="editor_doc-images/GUI-window-texting_mod.jpg" /></p>
+
+<p>In the <i>Modern texting</i> tab, the Scrap text area can hold text which is
+to be attached to notes, syllable by syllable. Syllables in the text area are
+separated by dashes (-) and by line breaks. If a single note is currently
+highlighted in the score window, the <i>Set Syllable</i> button is enabled and
+can attach one syllable in the text area (wherever the cursor currently is) to
+the highlighted note. The next note and next text syllable are then
+automatically highlighted. If the currently highlighted note already has a
+syllable, the <i>Remove Syllable</i> button is enabled and can remove the
+syllable from the highlighted note. The arrows (&lt; and &gt;) on either side
+of the <i>Note</i> label highlight the note either before or after the current
+cursor position in the score window.</p>
+
+<h3><a name="Print" id="Print">Print preview</a></h3>
+
+<p>Currently in the CMME Editor, the <i>Print preview</i> window always shows
+unscored music in separate parts (the CMME Viewer contains a Print Preview
+feature with score layout). For incipit scores, the <i>Print preview</i> window
+contains a <i>Generate image file...</i> button which can be used for saving a
+JPEG image containing all voices.</p>
+</body>
+</html>
