@@ -1,0 +1,627 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.cmme.org"
+           xmlns="http://www.cmme.org"
+           elementFormDefault="qualified">
+
+<xs:element name="Piece"><xs:complexType>
+<xs:sequence>
+  <xs:element name="GeneralData"><xs:complexType><xs:sequence>
+    <xs:group ref="GeneralDataGroup"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="VoiceData"><xs:complexType><xs:sequence>
+    <xs:group ref="VoiceDataGroup"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="MusicSection" minOccurs="1" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+    <xs:group ref="MusicSectionDataGroup"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence>
+
+<xs:attribute name="CMMEversion" type="xs:decimal" use="required"/>
+
+</xs:complexType></xs:element>
+
+
+<!-- major structures -->
+
+<xs:group name="GeneralDataGroup"><xs:sequence>
+  <xs:element name="Incipit" minOccurs="0" maxOccurs="1"/>
+
+  <xs:element name="Title" type="xs:string"/>
+  <xs:element name="Section" type="xs:string" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Composer" type="xs:string"/>
+  <xs:element name="Editor" type="xs:string"/>
+  <xs:element name="PublicNotes" type="xs:string" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Notes" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+  <xs:element name="VariantVersion" minOccurs="0" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+    <xs:element name="Default" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="ID" type="xs:string"/>
+    <xs:element name="Source" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+      <xs:group ref="SourceInfo"/>
+    </xs:sequence></xs:complexType></xs:element>
+    <xs:element name="Editor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="MissingVoices"  minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+      <xs:element name="VoiceNum" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="BaseColoration" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="ColorationData"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="SourceInfo"><xs:sequence>
+    <xs:element name="Name" type="xs:string"/>
+    <xs:element name="ID" type="xs:integer"/>
+</xs:sequence></xs:group>
+
+<xs:group name="VoiceDataGroup"><xs:sequence>
+  <xs:element name="NumVoices" type="xs:unsignedInt"/>
+  <xs:element name="Voice" minOccurs="0" maxOccurs="unbounded">
+  <xs:complexType><xs:sequence>
+    <xs:group ref="SingleVoiceData"/>
+  </xs:sequence></xs:complexType>
+  </xs:element>
+</xs:sequence></xs:group>
+
+<!-- basic voice meta-data -->
+<xs:group name="SingleVoiceData"><xs:sequence>
+  <xs:element name="Name" type="xs:string"/>
+  <xs:element name="Editorial" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="CanonResolutio" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="SuggestedModernClef" type="ClefNameData" minOccurs="0" maxOccurs="1"/>
+</xs:sequence></xs:group>
+
+<!-- music data -->
+<xs:group name="MusicSectionDataGroup"><xs:sequence>
+  <xs:element name="Editorial" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="PrincipalSource" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="SourceInfo"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:choice>
+    <xs:element name="MensuralMusic"><xs:complexType><xs:sequence>
+      <xs:group ref="MensuralMusicData"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <xs:element name="Plainchant"><xs:complexType><xs:sequence>
+      <xs:group ref="PlainchantSectionData"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <xs:element name="Text"><xs:complexType><xs:sequence>
+      <xs:group ref="TextSectionData"/>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:choice>
+
+</xs:sequence></xs:group>
+
+<xs:group name="MensuralMusicData"><xs:sequence>
+  <xs:element name="NumVoices" type="xs:unsignedInt"/>
+  <xs:element name="BaseColoration" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="ColorationData"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="TacetInstruction" minOccurs="0" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+    <xs:group ref="TacetData"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="Voice" minOccurs="0" maxOccurs="unbounded">
+    <xs:complexType><xs:sequence>
+      <xs:group ref="SingleVoiceMensuralSectionData"/>
+    </xs:sequence></xs:complexType>
+  </xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="PlainchantSectionData"><xs:sequence>
+  <xs:element name="NumVoices" type="xs:unsignedInt"/>
+  <xs:element name="BaseColoration" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="ColorationData"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="TacetInstruction" minOccurs="0" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+    <xs:group ref="TacetData"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="Voice" minOccurs="1" maxOccurs="unbounded">
+    <xs:complexType><xs:sequence>
+      <xs:group ref="SingleVoiceChantSectionData"/>
+    </xs:sequence></xs:complexType>
+  </xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="TextSectionData"><xs:sequence>
+  <xs:element name="Content" type="xs:string"/>
+</xs:sequence></xs:group>
+
+
+<!-- music of individual voice parts -->
+
+<xs:group name="SingleVoiceMensuralSectionData"><xs:sequence>
+  <xs:element name="VoiceNum" type="xs:integer"/>
+  <xs:element name="CanonResolutio" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="MissingVersionID" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+  <xs:element name="EventList"><xs:complexType><xs:sequence>
+    <xs:group ref="EventListData" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="SingleVoiceChantSectionData"><xs:sequence>
+  <xs:element name="VoiceNum" type="xs:integer"/>
+  <xs:element name="MissingVersionID" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+  <xs:element name="EventList"><xs:complexType><xs:sequence>
+    <xs:group ref="EventListData" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+
+<xs:group name="EventListData"><xs:choice>
+
+  <!-- standard event -->
+  <xs:group ref="SingleOrMultiEventData"/>
+
+  <!-- variant segment -->
+  <xs:element name="VariantReadings"><xs:complexType><xs:sequence>
+    <xs:element name="Reading" minOccurs="2" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+      <xs:element name="VariantVersionID" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="PreferredReading" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Error" minOccurs="0" maxOccurs="1"/>
+      <xs:choice>
+        <xs:element name="Lacuna"/>
+        <xs:element name="Music"><xs:complexType><xs:sequence>
+          <xs:group ref="SingleOrMultiEventData" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType></xs:element>
+      </xs:choice>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <!-- "editorial" data, for backwards compatibility -->
+  <xs:element name="EditorialData"><xs:complexType><xs:sequence>
+    <xs:element name="NewReading"><xs:complexType><xs:sequence>
+      <xs:group ref="SingleOrMultiEventData" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence></xs:complexType></xs:element>
+    <xs:element name="OriginalReading"><xs:complexType><xs:sequence>
+      <xs:choice>
+        <xs:element name="Lacuna"/>
+        <xs:element name="Error"><xs:complexType><xs:sequence>
+          <xs:group ref="SingleOrMultiEventData" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType></xs:element>
+      </xs:choice>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:sequence></xs:complexType></xs:element>
+
+</xs:choice></xs:group>
+
+<xs:group name="SingleOrMultiEventData"><xs:choice>
+  <xs:group ref="SingleEventData"/>
+  <xs:element name="MultiEvent"><xs:complexType><xs:sequence>
+    <xs:group ref="SingleEventData" minOccurs="2" maxOccurs="unbounded"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:choice></xs:group>
+
+<xs:group name="SingleEventData"><xs:choice>
+
+  <!-- events representing original notational elements -->
+
+  <xs:element name="Clef"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="ClefData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Mensuration"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="MensurationData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Rest"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="RestData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Note"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="NoteData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Dot"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="DotData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="OriginalText"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="OriginalTextData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Proportion"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="ProportionData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="ColorChange"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="ColorChangeData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="Custos"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="CustosData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="LineEnd"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="LineEndData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <xs:element name="MiscItem"><xs:complexType>
+  <xs:sequence>
+    <xs:group ref="MiscItemData"/>
+  </xs:sequence>
+  <xs:attribute name="ID" type="xs:decimal" use="optional"/>
+  </xs:complexType></xs:element>
+
+  <!-- events representing purely modern interpretational elements -->
+
+  <xs:element name="ModernKeySignature"><xs:complexType><xs:sequence>
+    <xs:group ref="ModernKeySignatureData"/>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <!-- default -->
+
+  <xs:element name="Event"/>
+</xs:choice></xs:group>
+
+<xs:group name="ClefData"><xs:sequence>
+  <xs:element name="Appearance" type="ClefNameData"/>
+  <xs:element name="StaffLoc" type="xs:integer"/>
+  <xs:element name="Pitch"><xs:complexType><xs:sequence>
+    <xs:group ref="Locus"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="Signature" minOccurs="0" maxOccurs="1"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="MensurationData"><xs:sequence>
+  <xs:choice minOccurs="0" maxOccurs="unbounded">
+    <xs:element name="Sign"><xs:complexType><xs:sequence>
+      <xs:element name="MainSymbol"><xs:simpleType><xs:restriction base="xs:string">
+        <xs:pattern value="O|C"/>
+      </xs:restriction></xs:simpleType></xs:element>
+      <xs:element name="Orientation" minOccurs="0"><xs:simpleType><xs:restriction base="xs:string">
+        <xs:pattern value="Reversed|90CW|90CCW"/>
+      </xs:restriction></xs:simpleType></xs:element>
+      <xs:element name="Strokes" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Dot" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <xs:element name="Number"><xs:complexType><xs:sequence>
+      <xs:group ref="Proportion"/>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:choice>
+
+  <xs:element name="StaffLoc" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Orientation" type="Orientation" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Small" minOccurs="0" maxOccurs="1"/>
+
+  <xs:element name="MensInfo" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:element name="Prolatio"   type="MensBinTerChoice"/>
+    <xs:element name="Tempus"     type="MensBinTerChoice"/>
+    <xs:element name="ModusMinor" type="MensBinTerChoice"/>
+    <xs:element name="ModusMaior" type="MensBinTerChoice"/>
+    <xs:element name="TempoChange" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+      <xs:group ref="Proportion"/>
+    </xs:sequence></xs:complexType></xs:element>
+  </xs:sequence></xs:complexType></xs:element>
+
+  <xs:element name="NoScoreEffect" minOccurs="0" maxOccurs="1"/>
+
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="RestData"><xs:sequence>
+  <xs:group ref="NoteInfoData"/>
+  <xs:element name="BottomStaffLine" type="xs:integer"/>
+  <xs:element name="NumSpaces" type="xs:unsignedInt"/>
+  <xs:element name="Corona" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="SignumData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="Signum" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="SignumData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="NoteData"><xs:sequence>
+  <xs:group ref="NoteInfoData"/>
+  <xs:group ref="StaffPitchData"/>
+  <xs:element name="ModernAccidental" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="ModernAccidentalData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="Flagged" minOccurs="0" maxOccurs="1">
+    <xs:complexType><xs:sequence>
+      <xs:element name="NumFlags" type="xs:integer" minOccurs="0"/>
+    </xs:sequence></xs:complexType>
+  </xs:element>
+  <xs:element name="Lig" type="LigType" minOccurs="0"/>
+  <xs:element name="Tie" type="TieType" minOccurs="0"/>
+  <xs:element name="Stem" minOccurs="0" maxOccurs="unbounded">
+    <xs:complexType><xs:sequence>
+      <xs:element name="Dir" type="Direction"/>
+      <xs:element name="Side" type="StemSide" minOccurs="0"/>
+    </xs:sequence></xs:complexType>
+  </xs:element>
+  <xs:element name="HalfColoration" type="HalfColorationType" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Corona" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="SignumData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="Signum" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="SignumData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="ModernText" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="ModernTextData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="DotData"><xs:sequence>
+  <xs:choice>
+    <xs:element name="Pitch"><xs:complexType><xs:sequence>
+      <xs:group ref="StaffPitchData"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <!-- older dot position options for backwards compatibility -->
+    <xs:element name="StaffLoc" type="xs:integer"/>
+    <xs:sequence>
+      <xs:element name="RelativeStaffLoc" type="xs:integer"/>
+      <xs:element name="NoteEventID" type="xs:integer"/>
+    </xs:sequence>
+  </xs:choice>
+
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="OriginalTextData"><xs:sequence>
+  <xs:element name="Phrase" type="xs:string"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="ProportionData"><xs:sequence>
+  <xs:group ref="Proportion"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="ColorChangeData"><xs:sequence>
+  <xs:group ref="ColorationData"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="CustosData"><xs:sequence>
+  <xs:group ref="StaffPitchData"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="LineEndData"><xs:sequence>
+  <xs:element name="PageEnd" minOccurs="0" maxOccurs="1"/>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="MiscItemData"><xs:sequence>
+  <xs:choice>
+
+    <xs:element name="Barline"><xs:complexType><xs:sequence>
+      <xs:element name="NumLines" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="RepeatSign" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="BottomStaffLine" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NumSpaces" type="xs:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <!-- text annotation escape sequences:
+         \\m[O|C]r?\|?.? = mensuration sign (O or C, reverse, stroke, dot) -->
+    <xs:element name="TextAnnotation"><xs:complexType><xs:sequence>
+      <xs:element name="Text" type="xs:string"/>
+      <xs:element name="StaffLoc" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <xs:element name="Lacuna"><xs:complexType><xs:sequence>
+      <xs:choice>
+        <xs:element name="Length"><xs:complexType><xs:sequence>
+          <xs:group ref="Proportion"/>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="Begin"/>
+        <xs:element name="End"/>
+      </xs:choice>
+    </xs:sequence></xs:complexType></xs:element>
+
+    <xs:element name="Ellipsis"/>
+
+  </xs:choice>
+  <xs:group ref="EventAttributes"/>
+</xs:sequence></xs:group>
+
+<xs:group name="ModernKeySignatureData"><xs:sequence>
+  <xs:element name="SigElement" minOccurs="0" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+    <xs:group ref="ModernKeySignatureElement"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+
+<!-- basic type definitions -->
+
+<xs:group name="EventAttributes"><xs:sequence>
+  <xs:element name="Colored"   minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Ambiguous" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Editorial" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Error"     minOccurs="0" maxOccurs="1"/>
+  <xs:element name="EditorialCommentary" type="xs:string" minOccurs="0" maxOccurs="1"/>
+</xs:sequence></xs:group>
+
+<xs:group name="Locus"><xs:sequence>
+  <xs:element name="LetterName" type="PitchLetter"/>
+  <xs:element name="OctaveNum" type="xs:integer"/>
+</xs:sequence></xs:group>
+
+<xs:simpleType name="PitchLetter">
+  <xs:restriction base="xs:string"><xs:pattern value="[A-G]"/></xs:restriction>
+</xs:simpleType>
+
+<xs:group name="StaffPitchData"><xs:choice>
+  <xs:element name="StaffLoc" type="xs:integer"/>
+  <xs:group ref="Locus"/>
+</xs:choice></xs:group>
+
+<xs:simpleType name="ClefNameData">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="A|[C-G]|Bmol|Bqua|Diesis|BmolDouble|Fis|Frnd|Fsqr|Gamma|MODERNG|MODERNG8|MODERNF|MODERNC"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:group name="ModernKeySignatureElement"><xs:sequence>
+  <xs:element name="Pitch" type="PitchLetter"/>
+  <xs:element name="Octave" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Accidental"><xs:complexType><xs:sequence>
+    <xs:group ref="ModernAccidentalData"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="ModernAccidentalData"><xs:sequence>
+  <xs:choice>
+    <!-- note accidentals -->
+    <xs:element name="PitchOffset" type="xs:integer"/>
+
+    <!-- signature accidentals -->
+    <xs:sequence>
+      <xs:element name="AType" type="ModernAccidentalType"/>
+      <xs:element name="Num" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:choice>
+
+  <xs:element name="Optional" minOccurs="0" maxOccurs="1"/>
+</xs:sequence></xs:group>
+
+<xs:simpleType name="ModernAccidentalType">
+  <xs:restriction base="xs:string"><xs:pattern value="Flat|Natural|Sharp"/></xs:restriction>
+</xs:simpleType>
+
+<xs:group name="ModernTextData"><xs:sequence>
+  <xs:element name="Syllable" type="xs:string"/>
+  <xs:element name="WordEnd" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Editorial" minOccurs="0" maxOccurs="1"/>
+</xs:sequence></xs:group>
+
+<xs:group name="ColorationData"><xs:sequence>
+  <xs:element name="PrimaryColor"><xs:complexType><xs:sequence>
+    <xs:group ref="ColorAndFillData"/>
+  </xs:sequence></xs:complexType></xs:element>
+  <xs:element name="SecondaryColor" minOccurs="0"><xs:complexType><xs:sequence>
+    <xs:group ref="ColorAndFillData"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="ColorAndFillData"><xs:sequence>
+  <xs:element name="Color" type="ColorType" minOccurs="0"/>
+  <xs:element name="Fill" type="ColorFillType" minOccurs="0"/>
+</xs:sequence></xs:group>
+
+<xs:simpleType name="ColorType">
+  <xs:restriction base="xs:string"><xs:pattern value="Black|Red|Blue|Green|Yellow"/></xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="ColorFillType">
+  <xs:restriction base="xs:string"><xs:pattern value="Void|Full"/></xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="HalfColorationType">
+  <xs:restriction base="xs:string"><xs:pattern value="PrimarySecondary|SecondaryPrimary"/></xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="MensBinTerChoice">
+  <xs:restriction base="xs:string"><xs:pattern value="2|3"/></xs:restriction>
+</xs:simpleType>
+
+<xs:group name="NoteInfoData"><xs:sequence>
+  <xs:element name="Type" type="NoteTypeName"/>
+  <xs:element name="Length" minOccurs="0" maxOccurs="1"><xs:complexType><xs:sequence>
+    <xs:group ref="Proportion"/>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:sequence></xs:group>
+
+<xs:group name="SignumData"><xs:sequence>
+  <xs:element name="Offset" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+  <xs:element name="Orientation" minOccurs="0" maxOccurs="1">
+    <xs:simpleType><xs:restriction base="xs:string">
+      <xs:pattern value="Up|Down"/>
+    </xs:restriction></xs:simpleType>
+  </xs:element>
+  <xs:element name="Side" type="StemSide" minOccurs="0" maxOccurs="1"/>
+</xs:sequence></xs:group>
+
+<xs:group name="TacetData"><xs:sequence>
+  <xs:element name="VoiceNum" type="xs:unsignedInt"/>
+  <xs:element name="TacetText" type="xs:string"/>
+</xs:sequence></xs:group>
+
+<xs:simpleType name="NoteTypeName">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Semifusa|Fusa|Semiminima|Minima|Semibrevis|Brevis|Longa|Maxima"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="StemSide">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Left|Right"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="LigType">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Recta|Obliqua|Retrorsum"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="TieType">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Over|Under"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Direction">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Up|Down|Left|Right|Barline"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Orientation">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="Horizontal|Vertical"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:group name="Proportion"><xs:sequence>
+  <xs:element name="Num" type="xs:integer"/>
+  <xs:element name="Den" type="xs:integer"/>
+</xs:sequence></xs:group>
+
+</xs:schema>
