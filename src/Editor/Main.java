@@ -29,7 +29,8 @@ import java.io.*;
 
 import DataStruct.CMMEParser;
 import DataStruct.MetaData;
-import Util.AppContext;
+import Util.AppContext;
+
 /*------------------------------------------------------------------------
 Class:   Main
 Extends: -
@@ -124,7 +125,8 @@ Parameters:
     EditorWin.initScoreWindowing(AppContext.BaseDataURL,AppContext.BaseDataDir+"music/",false);
 
     /* load XML parser */
-    DataStruct.XMLReader.initparser(AppContext.BaseDataURL,true);
+    //TODO: make a command line option to specify schema location.
+    DataStruct.XMLReader.initparser(null,true);
 
     /* load base music font */
     try

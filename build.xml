@@ -4,6 +4,7 @@
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
+  <property name="resources" location="resources"/>
   <property name="manifests" location="${src}/manifests"/>
   <property name="classpath" location="${dist}/lib"/>
   <property file="${dist}/cmme.properties"/>
@@ -38,9 +39,10 @@
 
   <target name="dist-editor" depends="dist-viewer"
           description="generate editor distribution">
+    <copy file="${resources}/cmme.xsd" todir="${build}/DataStruct"/>
     <jar jarfile="${dist}/CMME-Editor.jar" basedir="${build}"
          manifest="${manifests}/manifest.editor"
-         includes="DataStruct/*.class Gfx/*.class Util/*.class Viewer/*.class Editor/*.class data/imgs/GUIicons/*.*"/>
+         includes="DataStruct/*.class DataStruct/cmme.xsd Gfx/*.class Util/*.class Viewer/*.class Editor/*.class data/imgs/GUIicons/*.*"/>
   </target>
 
   <target name="dist-applet" depends="compile"

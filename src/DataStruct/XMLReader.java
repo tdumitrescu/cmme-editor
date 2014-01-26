@@ -90,9 +90,21 @@ Parameters:
 
     public InputSource resolveEntity(String publicId,String systemId)
     {
-      if (systemId.matches(".*cmme\\.xsd"))
-        return new InputSource(database+"music/cmme.xsd");
-      return null;
+      InputSource inputSource;
+      if (systemId.matches(".*cmme\\.xsd")) {
+        String schemaFileName = "cmme.xsd";
+        if (database == null) {
+          java.io.InputStream inputStream = getClass().getResourceAsStream(schemaFileName);
+          inputSource = new InputSource(inputStream);
+        }
+        else {
+          inputSource = new InputSource(database+"music/" + schemaFileName);
+        }
+      }
+      else {
+        inputSource = null;
+      }
+      return inputSource;
     }
   }
 
