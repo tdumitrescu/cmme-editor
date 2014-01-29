@@ -25,6 +25,8 @@ package Editor;
 
 import javax.swing.*;
 import java.net.*;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.io.*;
 
 import DataStruct.CMMEParser;
@@ -62,8 +64,41 @@ Parameters:
 
   public static void main(String args[])
   {
+    setProperties();
     parsecmdline(args);
     init();
+  }
+
+/*------------------------------------------------------------------------
+Method:  void setProperties()
+Purpose: load properties from the cmme.properties file, 
+         and make them globally available
+Parameters:
+  Input:  -
+  Output: -
+  Return: -
+------------------------------------------------------------------------*/
+  static void setProperties()
+  {
+    String dir = System.getProperty("user.dir");
+    System.out.println("Info: loading properties from: " + dir);
+    File file = new File(dir, "cmme.properties");
+    Properties properties = new Properties();
+    try {
+      properties.load( new FileInputStream(file) );
+      Enumeration<?> names = properties.propertyNames();
+      String name, value;
+      while (names.hasMoreElements()) {
+        name = (String)names.nextElement();
+        value = properties.getProperty( name );
+        System.setProperty( name, value );
+        
+      }
+    } catch ( FileNotFoundException e ) {
+      e.printStackTrace();
+    } catch ( IOException e ) {
+      e.printStackTrace();
+    }
   }
 
 /*------------------------------------------------------------------------
@@ -74,7 +109,6 @@ Parameters:
   Output: -
   Return: -
 ------------------------------------------------------------------------*/
-
   static void parsecmdline(String args[])
   {
     if (args.length>1)

@@ -49,23 +49,22 @@ public class MIDIPlayer
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  static final float DEFAULT_BPM=80,
-                     DEFAULT_MPQ=800000;
+  static final float DEFAULT_BPM=Float.parseFloat(System.getProperty( "midi.bpm", "80")),
+                     DEFAULT_MPQ=Float.parseFloat(System.getProperty( "midi.mpq", "800000"));
 
-  static final int TICKS_PER_BEAT=96,
+  static final int TICKS_PER_BEAT=Integer.parseInt(System.getProperty("midi.ticksPerBeat", "96")),
                    TICKS_PER_MINIM=TICKS_PER_BEAT/2,
 
-                   REST_BETWEEN_SECTIONS=2,
-
-                   PATCH_TROMBONE=57,
+                   REST_BETWEEN_SECTIONS=Integer.parseInt(System.getProperty("midi.restBetweenSections", "2")),
+                   DEFAULT_INSTRUMENT=Integer.parseInt(System.getProperty("midi.defaultInstrument", "52")),
                    MAX_NORMAL_CHANNELS=7,
                    VOLUME_CONTROLLER=7,
-                   DEFAULT_VELOCITY=50,
+                   DEFAULT_VELOCITY=Integer.parseInt(System.getProperty("midi.defaultVelocity", "50")),
 
                    MIDI_EVENT_MARKER=    6,
                    MIDI_EVENT_ENDOFTRACK=47;
 
-  static final double DEFAULT_GAIN=0.9;
+  static final double DEFAULT_GAIN=Double.parseDouble(System.getProperty( "midi.defaultGain", "0.9"));
 
 /*----------------------------------------------------------------------*/
 /* Instance variables */
@@ -155,7 +154,7 @@ Parameters:
     for (int vi=0; vi<musicData.getVoiceData().length; vi++)
       {
         MIDImsg=new ShortMessage();
-        MIDImsg.setMessage(ShortMessage.PROGRAM_CHANGE,vi%MAX_NORMAL_CHANNELS,PATCH_TROMBONE,0);
+        MIDImsg.setMessage(ShortMessage.PROGRAM_CHANGE,vi%MAX_NORMAL_CHANNELS,DEFAULT_INSTRUMENT,0);
         t[vi].add(new MidiEvent(MIDImsg,0));
       }
 
