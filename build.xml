@@ -70,6 +70,34 @@
     </exec>
   </target>
 
+  <target name="sign-libs"
+          description="sign 3rd-party libraries">
+    <signjar jar="${dist}/lib/gnu-aelfred2.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+    <signjar jar="${dist}/lib/itext-1.3.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+    <signjar jar="${dist}/lib/jdom.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+    <signjar jar="${dist}/lib/jgraph.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+    <signjar jar="${dist}/lib/xercesImpl.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+    <signjar jar="${dist}/lib/xml-apis.jar"
+             keystore="${dist}/${cmme.keystore}"
+             alias="${cmme.certalias}"
+             storepass="${cmme.certpass}"/>
+  </target>
+
   <target name="clean" description="remove compiled files">
     <delete includeemptydirs="true">
       <fileset dir="${build}" excludes="data/"/>
