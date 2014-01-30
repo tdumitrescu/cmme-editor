@@ -5,6 +5,7 @@
 build/
 dist/*.jar
 dist/cmme.properties
+dist/data/config/cmme-config.xml
 dist/data/IMGout/
 dist/data/music/
 dist/data/PDFout/
