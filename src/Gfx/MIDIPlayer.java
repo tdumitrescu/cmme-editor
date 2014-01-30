@@ -50,30 +50,25 @@ public class MIDIPlayer
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  static final float DEFAULT_BPM=80,
-                     DEFAULT_MPQ=800000;
-
-  static final int TICKS_PER_BEAT=96,
-                   TICKS_PER_MINIM=TICKS_PER_BEAT/2,
-
-                   REST_BETWEEN_SECTIONS=2,
-
-                   PATCH_TROMBONE=57,
-                   MAX_NORMAL_CHANNELS=7,
-                   VOLUME_CONTROLLER=7,
-                   DEFAULT_VELOCITY=50,
-
+  static final int TICKS_PER_BEAT=       96,
+                   TICKS_PER_MINIM=      TICKS_PER_BEAT/2,
+                   MAX_NORMAL_CHANNELS=  7,
+                   VOLUME_CONTROLLER=    7,
                    MIDI_EVENT_MARKER=    6,
                    MIDI_EVENT_ENDOFTRACK=47;
 
-  static final double DEFAULT_GAIN=0.9;
+  static final String PATCH_TROMBONE="57";
 
   static final HashMap<String, String> DEFAULTS;
   static
   {
     DEFAULTS = new HashMap<String, String>();
-    DEFAULTS.put("BPM", "80"    );
-    DEFAULTS.put("MPQ", "800000");
+    DEFAULTS.put("BPM",                 "80"          );
+    DEFAULTS.put("MPQ",                 "800000"      );
+    DEFAULTS.put("RestBetweenSections", "2"           );
+    DEFAULTS.put("Instrument",          PATCH_TROMBONE);
+    DEFAULTS.put("Velocity",            "50"          );
+    DEFAULTS.put("Gain",                "0.9"         );
   }
 
   static String configVal(String key)
@@ -170,7 +165,8 @@ Parameters:
     for (int vi=0; vi<musicData.getVoiceData().length; vi++)
       {
         MIDImsg=new ShortMessage();
-        MIDImsg.setMessage(ShortMessage.PROGRAM_CHANGE,vi%MAX_NORMAL_CHANNELS,PATCH_TROMBONE,0);
+        MIDImsg.setMessage(ShortMessage.PROGRAM_CHANGE,vi%MAX_NORMAL_CHANNELS,
+          Integer.parseInt(configVal("Instrument")),0);
         t[vi].add(new MidiEvent(MIDImsg,0));
       }
 
@@ -200,7 +196,8 @@ Parameters:
 
         /* insert beat of rest between sections */
         params.sectionStartTime=Proportion.sum(
-          sectionEndTime,new Proportion(REST_BETWEEN_SECTIONS,1));
+          sectionEndTime,
+          new Proportion(Integer.parseInt(configVal("RestBetweenSections")),1));
       }
 
     return s;
@@ -211,7 +208,8 @@ Parameters:
     if (!(params.doubleTied || params.endTie))
       {
         ShortMessage MIDImsg=new ShortMessage();
-        MIDImsg.setMessage(ShortMessage.NOTE_ON,params.vnum%MAX_NORMAL_CHANNELS,e.getMIDIPitch(),DEFAULT_VELOCITY);
+        MIDImsg.setMessage(ShortMessage.NOTE_ON,params.vnum%MAX_NORMAL_CHANNELS,e.getMIDIPitch(),
+          Integer.parseInt(configVal("Velocity")));
         t.add(new MidiEvent(MIDImsg,(long)(params.curTime.toDouble()*TICKS_PER_MINIM)));
       }
 
@@ -220,7 +218,8 @@ Parameters:
     if (!(params.beginTie || params.doubleTied))
       {
         ShortMessage MIDImsg=new ShortMessage();
-        MIDImsg.setMessage(ShortMessage.NOTE_OFF,params.vnum%MAX_NORMAL_CHANNELS,e.getMIDIPitch(),DEFAULT_VELOCITY);
+        MIDImsg.setMessage(ShortMessage.NOTE_OFF,params.vnum%MAX_NORMAL_CHANNELS,e.getMIDIPitch(),
+          Integer.parseInt(configVal("Velocity")));
         t.add(new MidiEvent(MIDImsg,(long)(params.curTime.toDouble()*TICKS_PER_MINIM)));
       }
   }
@@ -414,11 +413,13 @@ Parameters:
         sequencer.setTickPosition(TICKS_PER_MINIM*calcNumMinims(measureNum));
         sequencer.setTempoFactor(1.0f);
         sequencer.setTempoInBPM(Float.parseFloat(configVal("BPM")));
-//        sequencer.setTempoInMPQ(DEFAULT_MPQ);
+//        sequencer.setTempoInMPQ(Float.parseFloat(configVal("MPQ")));
 
         /* set volume */
         for (MidiChannel mc : synthesizer.getChannels())
-          mc.controlChange(VOLUME_CONTROLLER,(int)(DEFAULT_GAIN*127.0));
+          mc.controlChange(
+            VOLUME_CONTROLLER,
+            (int)(Double.parseDouble(configVal("Gain"))*127.0));
 
         sequencer.start();
         currentlyPlaying++;
@@ -463,7 +464,7 @@ Parameters:
             MeasureInfo m=rs.getMeasure(mi);
             totalMinims+=(long)(m.numMinims/m.defaultTempoProportion.toDouble());
           }
-        totalMinims+=REST_BETWEEN_SECTIONS;
+        totalMinims+=Integer.parseInt(configVal("RestBetweenSections"));
       }
 
     return totalMinims;

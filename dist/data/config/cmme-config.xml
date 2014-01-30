@@ -29,6 +29,10 @@
   <!-- override MIDI defaults -->
   <MIDI>
     <BPM>80</BPM>
+    <RestBetweenSections>2</RestBetweenSections>
+    <Instrument>57</Instrument>
+    <Velocity>50</Velocity>
+    <Gain>0.9</Gain>
   </MIDI>
 
 </CMMEConfig>
