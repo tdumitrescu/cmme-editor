@@ -34,6 +34,7 @@ import java.net.URL;
 import DataStruct.Event;
 import DataStruct.VariantReading;
 import DataStruct.XMLReader;
+import Util.GlobalConfig;
 
 /*------------------------------------------------------------------------
 Class:   OptionSet
@@ -45,9 +46,6 @@ public class OptionSet
 {
 /*----------------------------------------------------------------------*/
 /* Class variables */
-
-  public static final String CONFIG_DIR="config/",
-                             CONFIG_FILE_NAME="cmme-config.xml";
 
   public static final int OPT_BARLINE_NONE=  0,
                           OPT_BARLINE_MENSS= 1,
@@ -197,42 +195,18 @@ Parameters:
     customVariantFlags=VariantReading.VAR_NONE;
   }
 
-  public void initConfigFromFile(String BaseDataURL)
+  public void initFromGlobalConfig()
   {
-    URL      configLoc;
-    Document configDoc;
+    String ns = ((musicWin instanceof MusicWin) ? "Viewer" : "Editor") + "/Defaults/",
+           optStr;
 
-    try
-      {
-        configLoc=new URL(BaseDataURL+CONFIG_DIR+CONFIG_FILE_NAME);
-        configDoc=XMLReader.getNonValidatingParser().build(configLoc);
-      }
-    catch (Exception e)
-      {
-        System.err.println("Exception loading config file: "+e);
-        return;
-      }
-
-    Namespace cmmens=Namespace.getNamespace("http://www.cmme.org");
-
-/* future refactoring: convert option variables into flags structure */
-
-    /* parse XML options */
-    String mainNodeName=(musicWin instanceof MusicWin) ? "Viewer" : "Editor";
-    Element mainNode=configDoc.getRootElement().getChild(mainNodeName,cmmens);
-    if (mainNode==null)
-      return;
-
-    Element defaultsNode=mainNode.getChild("Defaults",cmmens);
-    String optStr;
-
-    if ((optStr=defaultsNode.getChildText("NoteShapes",cmmens))!=null)
+    if ((optStr = GlobalConfig.get(ns + "NoteShapes")) != null)
       if (optStr.equals("original"))
         this.noteShapeType=OPT_NOTESHAPE_ORIG;
       else
         this.noteShapeType=OPT_NOTESHAPE_MOD_1_1;
 
-    if ((optStr=defaultsNode.getChildText("Barlines",cmmens))!=null)
+    if ((optStr = GlobalConfig.get(ns + "Barlines")) != null)
       if (optStr.equals("tick"))
         this.barline_type=OPT_BARLINE_TICK;
       else if (optStr.equals("mensurstrich"))
@@ -242,35 +216,33 @@ Parameters:
       else
         this.barline_type=OPT_BARLINE_NONE;
 
-    if ((optStr=defaultsNode.getChildText("Clefs",cmmens))!=null)
+    if ((optStr = GlobalConfig.get(ns + "Clefs")) != null)
       if (optStr.equals("original"))
         this.usemodernclefs=false;
       else
         this.usemodernclefs=true;
 
-    if ((optStr=defaultsNode.getChildText("AccidentalSystem",cmmens))!=null)
+    if ((optStr = GlobalConfig.get(ns + "AccidentalSystem")) != null)
       if (optStr.equals("original"))
         this.useModernAccidentalSystem=false;
       else
         this.useModernAccidentalSystem=true;
 
-    for (Object colorElO : defaultsNode.getChildren("ColorationBrackets",cmmens))
+    if ((optStr = GlobalConfig.get(ns + "ColorationBrackets")) != null)
       {
-        Element colorEl=(Element)colorElO;
-        if (colorEl.getText().equals("minor"))
+        if (optStr.equals("minor") || optStr.equals("all"))
           this.addColorationDisplayFlags(OPT_COLORATION_MINOR_COLOR);
-        else if (colorEl.getText().equals("other"))
+        if (optStr.equals("other") || optStr.equals("all"))
           this.addColorationDisplayFlags(OPT_COLORATION_OTHER);
       }
 
     this.displayOrigText=false;
     this.displayModText=false;
-    for (Object textElO : defaultsNode.getChildren("Text",cmmens))
+    if ((optStr = GlobalConfig.get(ns + "Text")) != null)
       {
-        Element textEl=(Element)textElO;
-        if (textEl.getText().equals("original"))
+        if (optStr.equals("original") || optStr.equals("all"))
           this.displayOrigText=true;
-        else if (textEl.getText().equals("modern"))
+        if (optStr.equals("modern") || optStr.equals("all"))
           this.displayModText=true;
       }
   }

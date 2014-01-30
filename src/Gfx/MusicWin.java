@@ -945,7 +945,7 @@ Parameters:
 
     try
       {
-        optSet.initConfigFromFile(BaseDataURL);
+        optSet.initFromGlobalConfig();
       }
     catch (Exception e)
       {
