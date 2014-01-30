@@ -37,6 +37,7 @@ import javax.sound.midi.*;
 import javax.swing.*;
 
 import DataStruct.*;
+import Util.GlobalConfig;
 
 /*------------------------------------------------------------------------
 Class:   MIDIPlayer
@@ -66,6 +67,20 @@ public class MIDIPlayer
                    MIDI_EVENT_ENDOFTRACK=47;
 
   static final double DEFAULT_GAIN=0.9;
+
+  static final HashMap<String, String> DEFAULTS;
+  static
+  {
+    DEFAULTS = new HashMap<String, String>();
+    DEFAULTS.put("BPM", "80"    );
+    DEFAULTS.put("MPQ", "800000");
+  }
+
+  static String configVal(String key)
+  {
+    String val = GlobalConfig.get("MIDI/" + key);
+    return val != null ? val : DEFAULTS.get(key);
+  }
 
 /*----------------------------------------------------------------------*/
 /* Instance variables */
@@ -398,7 +413,7 @@ Parameters:
 
         sequencer.setTickPosition(TICKS_PER_MINIM*calcNumMinims(measureNum));
         sequencer.setTempoFactor(1.0f);
-        sequencer.setTempoInBPM(DEFAULT_BPM);
+        sequencer.setTempoInBPM(Float.parseFloat(configVal("BPM")));
 //        sequencer.setTempoInMPQ(DEFAULT_MPQ);
 
         /* set volume */

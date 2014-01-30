@@ -25,4 +25,10 @@
     </Defaults>
 
   </Viewer>
+
+  <!-- override MIDI defaults -->
+  <MIDI>
+    <BPM>80</BPM>
+  </MIDI>
+
 </CMMEConfig>
