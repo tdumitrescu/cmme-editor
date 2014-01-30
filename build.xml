@@ -21,6 +21,7 @@
   <target name="compile" depends="init" description="compile source">
     <javac srcdir="${src}" destdir="${build}" target="${target-version}" source="${source-version}"
            debug="true" debuglevel="lines,vars,source">
+      <!-- <compilerarg value="-Xlint:unchecked"/> -->
       <classpath>
         <fileset dir="${dist}/lib">
           <include name="**/*.jar"/>
