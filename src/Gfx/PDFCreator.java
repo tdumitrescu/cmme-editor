@@ -154,15 +154,7 @@ Parameters:
 
   PrintParams createPrintParams(ArrayList[] renderer)
   {
-    PrintParams p=new PrintParams(PrintParams.DEFAULT_BookExample1);
-
-    int numstaves=0;
-    for (int i1=0; i1<renderer.length; i1++)
-      for (Iterator i2=renderer[i1].iterator(); i2.hasNext(); i2.next())
-        numstaves++;
-
-    p.PAGEYSIZE=p.YMARGIN*2+p.STAFFYSPACE*numstaves;
-    return p;
+	return new PrintParams(PrintParams.DEFAULT_A4ScorePortrait);
   }
 
   PrintParams createPrintParams(ScorePageRenderer renderer)
@@ -266,6 +258,15 @@ Parameters:
       {
         if (renderer[vnum].size()>0)
           {
+            if(vnum != 0) {
+              /* Start every voice on a new page */
+              outPDF.newPage();
+              /* Reset page parameters*/
+              cury=PP.PAGEYSIZE-(PP.YMARGIN+PP.STAFFYSCALE*3);
+              XEVENTSPACE_SCALE=PP.STAFFXSIZE/PartsWin.getDefaultSTAFFXSIZE();
+              lastNoteX=0f;
+            }
+
             String vname=((RenderList)renderer[vnum].get(0)).getVoiceData().getName();
             float  namexsize=StaffNameFont.getWidthPoint(vname,PP.StaffNameFONTSIZE),
                    nameysize=StaffNameFont.getAscentPoint(vname,PP.StaffNameFONTSIZE);
@@ -663,7 +664,7 @@ Parameters:
               cb.setLineWidth(PP.STEMWIDTH);
 
               EventShapeImg evsimg=(EventShapeImg)evimg;
-              float basex=curx+PP.LINEXADJUST,basey=cury-PP.STAFFYSIZE+evimg.staffypos*PP.STAFFYPOSSCALE;
+              float basex=curx+new PrintParams(PrintParams.DEFAULT_BookExample1).LINEXADJUST,basey=cury-PP.STAFFYSIZE+evimg.staffypos*PP.STAFFYPOSSCALE;
               cb.moveTo(basex+evsimg.printshapex[0]*PP.XYSCALE,basey+evsimg.printshapey[0]*PP.XYSCALE);
 
               for (int psi=1; psi<evsimg.printshapex.length; psi++)
