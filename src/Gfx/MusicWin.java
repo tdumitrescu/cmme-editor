@@ -1860,7 +1860,7 @@ Parameters:
 
     if (genParts)
       {
-        PartsWin PDFPartsWin=new PartsWin(ViewScr.getMusicData(),MusicGfx,this,false);//true);
+        PartsWin PDFPartsWin=new PartsWin(ViewScr.getMusicData(),MusicGfx,this,true);
         renderedParts=PDFPartsWin.getRenderLists();
         PDFPartsWin.closewin();
         pdfName=windowFileName.replaceFirst("\\.cmme\\.xml","-parts.pdf");
@@ -2011,7 +2011,7 @@ Parameters:
       setTexting(false,false);
 
     else if (item==ViewMenuViewParts)
-      openPartsLayout(false);
+      openPartsLayout(true);
     else if (item==VMPPParts)
       openPartsLayout(true);
     else if (item==VMPPScore)
