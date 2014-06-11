@@ -34,9 +34,11 @@ package Gfx;
 
 import java.io.*;
 import java.util.*;
+
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.Document;
 
 import DataStruct.*;
 
@@ -154,15 +156,7 @@ Parameters:
 
   PrintParams createPrintParams(ArrayList[] renderer)
   {
-    PrintParams p=new PrintParams(PrintParams.DEFAULT_BookExample1);
-
-    int numstaves=0;
-    for (int i1=0; i1<renderer.length; i1++)
-      for (Iterator i2=renderer[i1].iterator(); i2.hasNext(); i2.next())
-        numstaves++;
-
-    p.PAGEYSIZE=p.YMARGIN*2+p.STAFFYSPACE*numstaves;
-    return p;
+	return new PrintParams(PrintParams.DEFAULT_A4PartLandscape);
   }
 
   PrintParams createPrintParams(ScorePageRenderer renderer)
@@ -179,7 +173,7 @@ Parameters:
   Return: content byte for random-access writing into PDF
 ------------------------------------------------------------------------*/
 
-  com.lowagie.text.Document outPDF;
+  Document                  outPDF;
   PdfWriter                 writer;
 
   PdfContentByte initPDF(OutputStream outs)
@@ -266,17 +260,11 @@ Parameters:
       {
         if (renderer[vnum].size()>0)
           {
-            String vname=((RenderList)renderer[vnum].get(0)).getVoiceData().getName();
-            float  namexsize=StaffNameFont.getWidthPoint(vname,PP.StaffNameFONTSIZE),
-                   nameysize=StaffNameFont.getAscentPoint(vname,PP.StaffNameFONTSIZE);
+            if(vnum != 0) {
+              newPageForParts();
+            }
 
-            cb.beginText();
-            cb.setFontAndSize(StaffNameFont,PP.StaffNameFONTSIZE);
-            cb.setTextMatrix(0,1,-1,0, /* rotate text 90 degrees */
-                             PP.XMARGIN-nameysize,
-                             cury-PP.STAFFYSCALE*2-namexsize/2);
-            cb.showText(vname);
-            cb.endText();
+            addVoiceNameToPart(renderer, cb, vnum);
           }
 
         for (Iterator i=renderer[vnum].iterator(); i.hasNext();)
@@ -299,10 +287,47 @@ Parameters:
 
             cb.endText();
 
-            cury-=PP.STAFFYSPACE;
+            if(cury-PP.STAFFYSPACE <= PP.YMARGIN)
+            {
+              newPageForParts();
+              /* Add current voice name to each new page */
+              addVoiceNameToPart(renderer, cb, vnum);
+            }
+            else
+            {
+              cury-=PP.STAFFYSPACE;
+            }
           }
       }
   }
+
+private void addVoiceNameToPart(ArrayList[] renderer, PdfContentByte cb,
+		int vnum) {
+	String vname=((RenderList)renderer[vnum].get(0)).getVoiceData().getName();
+	float  namexsize=StaffNameFont.getWidthPoint(vname,PP.StaffNameFONTSIZE),
+	       nameysize=StaffNameFont.getAscentPoint(vname,PP.StaffNameFONTSIZE);
+
+	cb.beginText();
+	cb.setFontAndSize(StaffNameFont,PP.StaffNameFONTSIZE);
+	cb.setTextMatrix(0,1,-1,0, /* rotate text 90 degrees */
+	                 PP.XMARGIN-nameysize,
+	                 cury-PP.STAFFYSCALE*2-namexsize/2);
+	cb.showText(vname);
+	cb.endText();
+}
+
+private void newPageForParts() {
+	try {
+	    /* Start every voice on a new page */
+	    outPDF.newPage();
+	  } catch (Exception e) {
+	    System.err.println("Error adding new page to PDF: "+e);
+	  }
+	  /* Reset page parameters*/
+	  cury=PP.PAGEYSIZE-(PP.YMARGIN+PP.STAFFYSCALE*3);
+	  XEVENTSPACE_SCALE=PP.STAFFXSIZE/PartsWin.getDefaultSTAFFXSIZE();
+	  lastNoteX=0f;
+}
 
 /*------------------------------------------------------------------------
 Method:  void drawScore(ScorePageRenderer renderer,PdfContentByte cb)
