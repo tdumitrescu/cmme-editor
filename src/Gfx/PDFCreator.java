@@ -664,7 +664,7 @@ Parameters:
               cb.setLineWidth(PP.STEMWIDTH);
 
               EventShapeImg evsimg=(EventShapeImg)evimg;
-              float basex=curx+PP.LINEXADJUST,basey=cury-PP.STAFFYSIZE+evimg.staffypos*PP.STAFFYPOSSCALE;
+              float basex=curx+new PrintParams(PrintParams.DEFAULT_BookExample1).LINEXADJUST,basey=cury-PP.STAFFYSIZE+evimg.staffypos*PP.STAFFYPOSSCALE;
               cb.moveTo(basex+evsimg.printshapex[0]*PP.XYSCALE,basey+evsimg.printshapey[0]*PP.XYSCALE);
 
               for (int psi=1; psi<evsimg.printshapex.length; psi++)
