@@ -34,9 +34,11 @@ package Gfx;
 
 import java.io.*;
 import java.util.*;
+
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.Document;
 
 import DataStruct.*;
 
@@ -171,7 +173,7 @@ Parameters:
   Return: content byte for random-access writing into PDF
 ------------------------------------------------------------------------*/
 
-  com.lowagie.text.Document outPDF;
+  Document                  outPDF;
   PdfWriter                 writer;
 
   PdfContentByte initPDF(OutputStream outs)
@@ -259,8 +261,12 @@ Parameters:
         if (renderer[vnum].size()>0)
           {
             if(vnum != 0) {
-              /* Start every voice on a new page */
-              outPDF.newPage();
+              try {
+                /* Start every voice on a new page */
+                outPDF.newPage();
+              } catch (Exception e) {
+                System.err.println("Error adding new page to PDF: "+e);
+              }
               /* Reset page parameters*/
               cury=PP.PAGEYSIZE-(PP.YMARGIN+PP.STAFFYSCALE*3);
               XEVENTSPACE_SCALE=PP.STAFFXSIZE/PartsWin.getDefaultSTAFFXSIZE();
