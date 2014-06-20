@@ -261,29 +261,10 @@ Parameters:
         if (renderer[vnum].size()>0)
           {
             if(vnum != 0) {
-              try {
-                /* Start every voice on a new page */
-                outPDF.newPage();
-              } catch (Exception e) {
-                System.err.println("Error adding new page to PDF: "+e);
-              }
-              /* Reset page parameters*/
-              cury=PP.PAGEYSIZE-(PP.YMARGIN+PP.STAFFYSCALE*3);
-              XEVENTSPACE_SCALE=PP.STAFFXSIZE/PartsWin.getDefaultSTAFFXSIZE();
-              lastNoteX=0f;
+              newPageForParts();
             }
 
-            String vname=((RenderList)renderer[vnum].get(0)).getVoiceData().getName();
-            float  namexsize=StaffNameFont.getWidthPoint(vname,PP.StaffNameFONTSIZE),
-                   nameysize=StaffNameFont.getAscentPoint(vname,PP.StaffNameFONTSIZE);
-
-            cb.beginText();
-            cb.setFontAndSize(StaffNameFont,PP.StaffNameFONTSIZE);
-            cb.setTextMatrix(0,1,-1,0, /* rotate text 90 degrees */
-                             PP.XMARGIN-nameysize,
-                             cury-PP.STAFFYSCALE*2-namexsize/2);
-            cb.showText(vname);
-            cb.endText();
+            addVoiceNameToPart(renderer, cb, vnum);
           }
 
         for (Iterator i=renderer[vnum].iterator(); i.hasNext();)
@@ -306,10 +287,47 @@ Parameters:
 
             cb.endText();
 
-            cury-=PP.STAFFYSPACE;
+            if(cury-PP.STAFFYSPACE <= PP.YMARGIN)
+            {
+              newPageForParts();
+              /* Add current voice name to each new page */
+              addVoiceNameToPart(renderer, cb, vnum);
+            }
+            else
+            {
+              cury-=PP.STAFFYSPACE;
+            }
           }
       }
   }
+
+private void addVoiceNameToPart(ArrayList[] renderer, PdfContentByte cb,
+		int vnum) {
+	String vname=((RenderList)renderer[vnum].get(0)).getVoiceData().getName();
+	float  namexsize=StaffNameFont.getWidthPoint(vname,PP.StaffNameFONTSIZE),
+	       nameysize=StaffNameFont.getAscentPoint(vname,PP.StaffNameFONTSIZE);
+
+	cb.beginText();
+	cb.setFontAndSize(StaffNameFont,PP.StaffNameFONTSIZE);
+	cb.setTextMatrix(0,1,-1,0, /* rotate text 90 degrees */
+	                 PP.XMARGIN-nameysize,
+	                 cury-PP.STAFFYSCALE*2-namexsize/2);
+	cb.showText(vname);
+	cb.endText();
+}
+
+private void newPageForParts() {
+	try {
+	    /* Start every voice on a new page */
+	    outPDF.newPage();
+	  } catch (Exception e) {
+	    System.err.println("Error adding new page to PDF: "+e);
+	  }
+	  /* Reset page parameters*/
+	  cury=PP.PAGEYSIZE-(PP.YMARGIN+PP.STAFFYSCALE*3);
+	  XEVENTSPACE_SCALE=PP.STAFFXSIZE/PartsWin.getDefaultSTAFFXSIZE();
+	  lastNoteX=0f;
+}
 
 /*------------------------------------------------------------------------
 Method:  void drawScore(ScorePageRenderer renderer,PdfContentByte cb)

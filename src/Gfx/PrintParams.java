@@ -58,7 +58,7 @@ public class PrintParams
 
         /* DEFAULT_A4PartLandscape */
       new PrintParams(
-        841.95f,595.35f,    /* PAGE[X|Y]SIZE (210x297 mm) */
+        841.95f,595.35f,    /* PAGE[X|Y]SIZE (297x210 mm) */
         70.8696f,70.8696f,  /* [X|Y]MARGIN (25x25 mm) */
         .4336f,.2f,           /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
