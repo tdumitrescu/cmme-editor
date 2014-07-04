@@ -1260,7 +1260,7 @@ Parameters:
     ViewMenuEdCommentary=new JCheckBoxMenuItem("Mark editorial commentary");
     ViewMenuDisplayligbrackets.setSelected(true);
     ViewMenuEdCommentary.setSelected(true);
-    ViewMenuViewParts=new JMenuItem("View parts window");
+    ViewMenuViewParts=new JMenuItem("Original parts window");
     ViewMenuViewParts.setMnemonic(KeyEvent.VK_P);
     ViewMenuPrintPreviews=new JMenu("Print Previews");
 
@@ -2011,7 +2011,7 @@ Parameters:
       setTexting(false,false);
 
     else if (item==ViewMenuViewParts)
-      openPartsLayout(true);
+      openPartsLayout(false);
     else if (item==VMPPParts)
       openPartsLayout(true);
     else if (item==VMPPScore)
