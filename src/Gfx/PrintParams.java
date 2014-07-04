@@ -54,13 +54,13 @@ public class PrintParams
         .4336f,3,           /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
         .75f,               /* STEMWIDTH */
-        22,7,7,7,8,24,20),   /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
+        22,7,7,7,8,24,20),  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
 
-        /* DEFAULT_A4PartLandscape */
+      /* DEFAULT_A4PartLandscape */
       new PrintParams(
         841.95f,595.35f,    /* PAGE[X|Y]SIZE (297x210 mm) */
         70.8696f,70.8696f,  /* [X|Y]MARGIN (25x25 mm) */
-        .4336f,.2f,           /* STAFFLINEWIDTH, LINEXADJUST */
+        .4336f,.2f,         /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
         .75f,               /* STEMWIDTH */
         22,7,7,7,8,24,20)   /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
