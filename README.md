@@ -6,7 +6,7 @@ NB: This is some legacy-ass Java code, cobbled together over many years. I hope 
 
 ## Building
 
-Use ANT. The default task in build.xml compiles JARs into the `dist/` directory.
+Use [ANT](http://ant.apache.org/). The default task in build.xml compiles JARs into the `dist/` directory.
 
 ## Running
 
