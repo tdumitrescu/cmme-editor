@@ -6,7 +6,15 @@ NB: This is some legacy-ass Java code, cobbled together over many years. I hope 
 
 ## Building
 
-Use ANT. The default task in build.xml compiles JARs into the dist/ directory.
+Use ANT. The default task in build.xml compiles JARs into the `dist/` directory.
+
+## Running
+
+The `editor` and `viewer` scripts execute the JAR files built in the `dist/` directory by ANT. When the program is run this way, the default location for CMME music files is `dist/data/music`. The sample music data included with the code can be copied over from the `build/` dir. A more extensive collection of music files is available in the [cmme-music](https://github.com/tdumitrescu/cmme-music) Git repository. To use these scores with the distribution version of the software, place the `cmme-music` repo in the `dist/data/music` directory:
+
+```sh
+git clone git@github.com:tdumitrescu/cmme-music.git dist/data/music
+```
 
 ## Tests
 
