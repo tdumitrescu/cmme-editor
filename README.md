@@ -8,6 +8,13 @@ NB: This is some legacy-ass Java code, cobbled together over many years. I hope 
 
 Use [ANT](http://ant.apache.org/). The default task in build.xml compiles JARs into the `dist/` directory.
 
+Signing JARs (I hate Java):
+- put new .pfx in `dist/cert`
+- update `dist/cmme.properties` with .pfx name and alias (list aliases with `keytool -list -keystore dist/cert/<PFXFILE> -storetype pkcs12`, change alias with `keytool -changealias -alias '<ORIGINAL_ALIAS>' -destalias '<NEW_ALIAS>' -keystore dist/cert/<PFXFILE> -storetype pkcs12`)
+- `ant generate-keystore`
+- `ant sign-libs`
+- `ant dist-applet`
+
 ## Running
 
 The `editor` and `viewer` scripts execute the JAR files built in the `dist/` directory by ANT. When the program is run this way, the default location for CMME music files is `dist/data/music`. The sample music data included with the code can be copied over from the `build/` dir. A more extensive collection of music files is available in the [cmme-music](https://github.com/tdumitrescu/cmme-music) Git repository. To use these scores with the distribution version of the software, place the `cmme-music` repo in the `dist/data/music` directory:
