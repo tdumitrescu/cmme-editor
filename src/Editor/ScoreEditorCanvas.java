@@ -679,8 +679,7 @@ Parameters:
     checkVariant(snum,vnum,eventnum);
     repaint();
     parentEditorWin.fileModified();
-    hl_anchor=eventnum;
-    highlightItems(snum,vnum,eventnum,eventnum);
+    moveCursor(snum, vnum, eventnum + 1);
 
     return eventnum;
   }
@@ -815,15 +814,24 @@ Parameters:
 
   public void setEventProportion(Proportion p)
   {
-    if (!Cursor.oneItemHighlighted())
+    setEventProportion(0, p);
+  }
+
+  public void setEventProportion(int eventOffset, Proportion p)
+  {
+    if (eventOffset == 0 && !Cursor.oneItemHighlighted())
       System.err.println("Error: more than one item highlighted");
 
     int snum=Cursor.getSectionNum(),
         vnum=Cursor.getVoiceNum(),
-        eventnum=Cursor.getEventNum();
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
 
     /* save old proportion to check for file modification */
-    Event      origEvent=getCurEvent().getEvent();
+    Event      origEvent=re.getEvent();
     Proportion oldp;
     if (origEvent.geteventtype()==Event.EVENT_PROPORTION)
       oldp=((ProportionEvent)origEvent).getproportion();
@@ -856,16 +864,14 @@ Parameters:
     checkVariant(snum,vnum,eventnum);
     repaint();
 
-    /* check for file modification 
-    Proportion newp;
-    if (e.geteventtype()==Event.EVENT_PROPORTION)
-      newp=((ProportionEvent)e).getproportion();
-    else
-      newp=new Proportion(e.getLength());*/
     parentEditorWin.fileModified();
 
-    hl_anchor=eventnum;
-    highlightItems(snum,vnum,eventnum,eventnum);
+    if (eventOffset == 0) {
+      hl_anchor=eventnum;
+      highlightItems(snum,vnum,eventnum,eventnum);
+    } else {
+      moveCursor(snum, vnum, eventnum - eventOffset);
+    }
   }
 
 /*------------------------------------------------------------------------
@@ -1616,12 +1622,17 @@ Parameters:
   Return: -
 ------------------------------------------------------------------------*/
 
-  void modifyEventPitch(int offset)
+  void modifyEventPitch(int eventOffset, int offset)
   {
     int   snum=Cursor.getSectionNum(),
           vnum=Cursor.getVoiceNum(),
-          eventnum=Cursor.getEventNum();
-    Event orige=getCurEvent().getEvent(),
+          eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re=getCurEvent(eventOffset);
+
+    if (re == null) {
+      return;
+    }
+    Event orige = re.getEvent(),
           e=getEventForModification(snum,vnum,eventnum);
 
     e.modifyPitch(offset);
@@ -1629,18 +1640,7 @@ Parameters:
 
     if (e.geteventtype()==Event.EVENT_CLEF)
       {
-/*        ModernKeySignature oldSig=null;
-        int                startei=-1;
-        if (e.hasSignatureClef())
-          {
-            oldSig=e.getClefSet().getKeySig();
-            startei=firstEventNumAfterClefSet(snum,vnum,eventnum+1,e.getClefSet());
-          }*/
-
         curVersionMusicData.getSection(snum).getVoice(vnum).recalcEventParams();
-
-/*        if (oldSig!=null)
-          updateNoteAccidentals(snum,vnum,startei,oldSig,e.getClefSet().getKeySig());*/
       }
     else if (e.geteventtype()==Event.EVENT_NOTE)
       {
@@ -1652,7 +1652,9 @@ Parameters:
     checkVariant(snum,vnum,eventnum);
     repaint();
     parentEditorWin.fileModified();
-    highlightItems(snum,vnum,eventnum,eventnum);
+    if (eventOffset == 0) {
+      highlightItems(snum,vnum,eventnum,eventnum);
+    }
   }
 
   void modifyEventPitch(char nl)
@@ -1813,12 +1815,21 @@ Parameters:
 
   void modifyNoteType(int nt)
   {
+    modifyNoteType(0, nt);
+  }
+
+  void modifyNoteType(int eventOffset, int nt)
+  {
     int snum=Cursor.getSectionNum(),
         vnum=Cursor.getVoiceNum(),
-        eventnum=Cursor.getEventNum();
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
 
     Cursor.hideCursor();
-    Event orige=getCurEvent().getEvent(),
+    Event orige=re.getEvent(),
           e=getEventForModification(snum,vnum,eventnum);
 
     int     oldnt=e.getnotetype();
@@ -1834,7 +1845,8 @@ Parameters:
     if (e.getnotetype()!=oldnt || e.isflagged()!=oldf)
       parentEditorWin.fileModified();
     hl_anchor=eventnum;
-    highlightItems(snum,vnum,eventnum,eventnum);
+    if (eventOffset == 0)
+      highlightItems(snum,vnum,eventnum,eventnum);
   }
 
 /*------------------------------------------------------------------------
@@ -1871,11 +1883,20 @@ Parameters:
 
   void perfectNote()
   {
-    int   snum=Cursor.getSectionNum(),
-          vnum=Cursor.getVoiceNum(),
-          eventnum=Cursor.getEventNum();
-    Event e=getCurEvent().getEvent();
+    perfectNote(0);
+  }
 
+  void perfectNote(int eventOffset)
+  {
+    int snum=Cursor.getSectionNum(),
+        vnum=Cursor.getVoiceNum(),
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
+
+    Event e=re.getEvent();
     if (e.geteventtype()!=Event.EVENT_NOTE)
       return;
 
@@ -1884,7 +1905,7 @@ Parameters:
     if (!ne.canBePerfect(curmens))
       return;
 
-    setEventProportion(new Proportion(NoteEvent.getTypeLength(ne.getnotetype(),curmens)));
+    setEventProportion(eventOffset, new Proportion(NoteEvent.getTypeLength(ne.getnotetype(),curmens)));
   }
 
 /*------------------------------------------------------------------------
@@ -1898,11 +1919,20 @@ Parameters:
 
   void imperfectNote()
   {
-    int   snum=Cursor.getSectionNum(),
-          vnum=Cursor.getVoiceNum(),
-          eventnum=Cursor.getEventNum();
-    Event e=getCurEvent().getEvent();
+    imperfectNote(0);
+  }
 
+  void imperfectNote(int eventOffset)
+  {
+    int snum=Cursor.getSectionNum(),
+        vnum=Cursor.getVoiceNum(),
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
+
+    Event e=re.getEvent();
     if (e.geteventtype()!=Event.EVENT_NOTE)
       return;
 
@@ -1913,7 +1943,7 @@ Parameters:
 
     Proportion newlength=NoteEvent.getTypeLength(ne.getnotetype(),curmens);
     newlength.multiply(2,3);
-    setEventProportion(newlength);
+    setEventProportion(eventOffset, newlength);
   }
 
 /*------------------------------------------------------------------------
@@ -1927,11 +1957,20 @@ Parameters:
 
   void alterNote()
   {
-    int   snum=Cursor.getSectionNum(),
-          vnum=Cursor.getVoiceNum(),
-          eventnum=Cursor.getEventNum();
-    Event e=getCurEvent().getEvent();
+    alterNote(0);
+  }
 
+  void alterNote(int eventOffset)
+  {
+    int snum=Cursor.getSectionNum(),
+        vnum=Cursor.getVoiceNum(),
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
+
+    Event e=re.getEvent();
     if (e.geteventtype()!=Event.EVENT_NOTE)
       return;
 
@@ -1942,7 +1981,7 @@ Parameters:
 
     Proportion newlength=NoteEvent.getTypeLength(ne.getnotetype(),curmens);
     newlength.multiply(2,1);
-    setEventProportion(newlength);
+    setEventProportion(eventOffset, newlength);
   }
 
 /*------------------------------------------------------------------------
@@ -4742,6 +4781,27 @@ Parameters:
     editorColorationType=colType;
   }
 
+  public void moveEventVertical(int eventOffset, int dir, boolean largeShift)
+  {
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
+    Event e = re.getEvent();
+
+    if (e.getPitch()!=null)
+      modifyEventPitch(eventOffset, largeShift ? 7 * dir : dir);
+    else if (e.geteventtype()==Event.EVENT_BARLINE)
+      if (largeShift)
+        changeBarlineLength(dir);
+      else
+        moveBarline(dir);
+    else if (e.geteventtype()==Event.EVENT_CLEF)
+      modifyClefLocation(dir);
+    else
+      modifyHighlightedEventLocations(dir);
+  }
+
 /*------------------------------------------------------------------------
 Method:     void keyPressed(KeyEvent e)
 Implements: KeyListener.keyPressed
@@ -4760,6 +4820,15 @@ Parameters:
       {
         switch (e.getKeyCode())
           {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_KP_UP:
+              moveEventVertical(-1, 1, e.isShiftDown());
+              break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_KP_DOWN:
+              moveEventVertical(-1, -1, e.isShiftDown());
+              break;
+
             case KeyEvent.VK_A:
               highlightAll();
               break;
@@ -4772,8 +4841,6 @@ Parameters:
               break;
             case KeyEvent.VK_L:
               if (Cursor.getHighlightBegin()==-1)
-/*                addLacuna(NoteEvent.getTypeLength(parentEditorWin.getSelectedNoteVal(),
-                          getCurMensInfo()));*/
                 addLacuna();
               else
                 transformHighlightedIntoLacuna();
@@ -4821,7 +4888,7 @@ Parameters:
             case KeyEvent.VK_PERIOD:
               showCurrentVariants();
               break;
-            case KeyEvent.VK_1:
+            case KeyEvent.VK_COMMA:
               toggleVariantError();
               break;
             case KeyEvent.VK_9:
@@ -4836,6 +4903,29 @@ Parameters:
               if (e.isShiftDown())
                 deleteAllVariantReadings();
               break;
+            default:
+              RenderedEvent prevre = getCurEvent(-1);
+              if (prevre == null) {
+                break;
+              }
+              Event preve = prevre.getEvent();
+              char keych=Character.toUpperCase(e.getKeyChar());
+              if (preve.geteventtype()==Event.EVENT_NOTE ||
+                  preve.geteventtype()==Event.EVENT_REST)
+                {
+                  if (keych>='1' && keych<='8')
+                    {
+                      parentEditorWin.selectNVButton(keych-'1');
+                      modifyNoteType(-1, parentEditorWin.getSelectedNoteVal());
+                    }
+                  else if (preve.getLength()!=null)
+                    if (e.getKeyCode()==KeyEvent.VK_1 && e.isShiftDown())
+                      imperfectNote(-1);
+                    else if (e.getKeyCode()==KeyEvent.VK_2 && e.isShiftDown())
+                      alterNote(-1);
+                    else if (e.getKeyCode()==KeyEvent.VK_3 && e.isShiftDown())
+                      perfectNote(-1);
+                }
           }
 
        /* move between events within a multi-event */
@@ -4861,7 +4951,7 @@ Parameters:
               else if (keych=='[')
                 shiftSignumVertical(-1);
             }
-      }
+      } // isControlDown
 
     /* ------------------------ ONE ITEM HIGHLIGHTED ------------------------ */
     else if (Cursor.oneItemHighlighted())
@@ -4888,49 +4978,11 @@ Parameters:
               break;
             case KeyEvent.VK_UP:
             case KeyEvent.VK_KP_UP:
-              if (he.getPitch()!=null)
-                modifyEventPitch(e.isShiftDown() ? 7 : 1);
-              else if (he.geteventtype()==Event.EVENT_BARLINE)
-                if (e.isShiftDown())
-                  changeBarlineLength(1);
-                else
-                  moveBarline(1);
-              else if (he.geteventtype()==Event.EVENT_CLEF)
-                modifyClefLocation(1);
-              else
-                modifyHighlightedEventLocations(1);
-/*              else if (he.geteventtype()==Event.EVENT_DOT)
-                modifyDotLocation(1);
-              else if (he.geteventtype()==Event.EVENT_REST)
-                modifyRestLocation(1);
-              else if (he.geteventtype()==Event.EVENT_MENS)
-                modifyMensLocation(1);
-              else if (he.geteventtype()==Event.EVENT_ANNOTATIONTEXT)
-                modifyAnnotationLocation(1);*/
+              moveEventVertical(0, 1, e.isShiftDown());
               break;
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_KP_DOWN:
-              if (he.getPitch()!=null)
-                modifyEventPitch(e.isShiftDown() ? -7 : -1);
-              else if (he.geteventtype()==Event.EVENT_BARLINE)
-                if (e.isShiftDown())
-                  changeBarlineLength(-1);
-                else
-                  moveBarline(-1);
-              else if (he.geteventtype()==Event.EVENT_CLEF)
-                modifyClefLocation(-1);
-              else
-                modifyHighlightedEventLocations(-1);
-/*              else if (he.geteventtype()==Event.EVENT_DOT)
-                modifyDotLocation(-1);
-              else if (he.geteventtype()==Event.EVENT_REST)
-                modifyRestLocation(-1);
-              else if (he.geteventtype()==Event.EVENT_CLEF)
-                modifyClefLocation(-1);
-              else if (he.geteventtype()==Event.EVENT_MENS)
-                modifyMensLocation(-1);
-              else if (he.geteventtype()==Event.EVENT_ANNOTATIONTEXT)
-                modifyAnnotationLocation(-1);*/
+              moveEventVertical(0, -1, e.isShiftDown());
               break;
             case KeyEvent.VK_END:
               moveCursorToEnd();
