@@ -1703,11 +1703,23 @@ Parameters:
 
   void changeNoteAccidental(int dir)
   {
+    changeNoteAccidental(0, dir);
+  }
+
+  void changeNoteAccidental(int eventOffset, int dir)
+  {
     int snum=Cursor.getSectionNum(),
         vnum=Cursor.getVoiceNum(),
-        eventnum=Cursor.getEventNum();
+        eventnum=Cursor.getEventNum() + eventOffset;
+    RenderedEvent re = getCurEvent(eventOffset);
+    if (re == null) {
+      return;
+    }
+    Event orige=re.getEvent();
+    if (orige.geteventtype() != Event.EVENT_NOTE) {
+      return;
+    }
 
-    Event orige=getCurEvent().getEvent();
     NoteEvent ne=(NoteEvent)getEventForModification(snum,vnum,eventnum);
 
 /*    ModernKeySignature keySig=getCurModernKeySig(snum,vnum,eventnum);
@@ -1725,7 +1737,8 @@ Parameters:
     repaint();
     parentEditorWin.fileModified();
     hl_anchor=eventnum;
-    highlightItems(snum,vnum,eventnum,eventnum);
+    if (eventOffset == 0)
+      highlightItems(snum,vnum,eventnum,eventnum);
   }
 
 /*------------------------------------------------------------------------
@@ -5350,6 +5363,14 @@ Parameters:
             break;*/
           case KeyEvent.VK_SPACE:
             addNote(parentEditorWin.getSelectedNoteVal()); /* repeat pitch of last note */
+            break;
+
+          case KeyEvent.VK_PLUS:
+          case KeyEvent.VK_EQUALS:
+            changeNoteAccidental(-1, 1);
+            break;
+          case KeyEvent.VK_MINUS:
+            changeNoteAccidental(-1, -1);
             break;
 
           /* add note/change attributes */
