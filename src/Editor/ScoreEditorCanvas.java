@@ -2443,14 +2443,20 @@ Parameters:
 
   void ligateNoteToLast()
   {
+    ligateNoteToLast(-1);
+  }
+
+  void ligateNoteToLast(int eventOffset)
+  {
     int snum=Cursor.getSectionNum(),
         vnum=Cursor.getVoiceNum(),
-        eventnum=Cursor.getEventNum(),
-        lastneNum=getNeighboringEventNumOfType(Event.EVENT_NOTE,snum,vnum,eventnum-1,-1),
-        origNEplace=getCurEvent().getEvent().getListPlace(!inVariantVersion());
+        eventnum=Cursor.getEventNum() + eventOffset,
+        lastneNum=getNeighboringEventNumOfType(Event.EVENT_NOTE,snum,vnum,eventnum-1,-1);
+    RenderedEvent re = getCurEvent(eventOffset);
 
-    if (lastneNum==-1)
+    if (lastneNum==-1 || re == null)
       return;
+    int origNEplace=re.getEvent().getListPlace(!inVariantVersion());
 
     NoteEvent origLastNE=(NoteEvent)renderedSections[snum].eventinfo[vnum].getEvent(lastneNum).getEvent(),
               lastne=getNoteEventForLigation(snum,vnum,lastneNum,eventnum);
@@ -5326,7 +5332,11 @@ Parameters:
             addModernKeySignature();
             break;
           case KeyEvent.VK_L:
-            addColorChange();
+            if (e.isShiftDown()) {
+              addColorChange();
+            } else {
+              ligateNoteToLast(-1);
+            }
             break;
           case KeyEvent.VK_M:
             addMensurationSign();
