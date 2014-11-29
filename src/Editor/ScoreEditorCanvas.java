@@ -1461,7 +1461,17 @@ Parameters:
         vnum=Cursor.getVoiceNum(),
         eventnum1=Cursor.getHighlightBegin(),
         eventnum2=Cursor.getHighlightEnd(),
-        eventsAdded=0,firstEventNum=eventnum1;
+        eventsAdded=0;
+
+    if (eventnum1 == -1) {
+      eventnum1 = Cursor.getEventNum() - 1;
+      if (eventnum1 < 0) {
+        return;
+      }
+      eventnum2 = eventnum1;
+    }
+
+    int firstEventNum=eventnum1;
 
     for (int i=eventnum1; i<=eventnum2; i++)
       {
@@ -1508,7 +1518,8 @@ Parameters:
     checkVariant(snum,vnum,eventnum1);
     repaint();
     parentEditorWin.fileModified();
-    highlightItems(snum,vnum,eventnum1,eventnum2);
+    if (Cursor.getHighlightBegin() != -1)
+      highlightItems(snum,vnum,eventnum1,eventnum2);
   }
 
 /*------------------------------------------------------------------------
@@ -4843,11 +4854,13 @@ Parameters:
           {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_KP_UP:
-              moveEventVertical(-1, 1, e.isShiftDown());
+              if (Cursor.getHighlightBegin() == -1)
+                moveEventVertical(-1, 1, e.isShiftDown());
               break;
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_KP_DOWN:
-              moveEventVertical(-1, -1, e.isShiftDown());
+              if (Cursor.getHighlightBegin() == -1)
+                moveEventVertical(-1, -1, e.isShiftDown());
               break;
 
             case KeyEvent.VK_A:
