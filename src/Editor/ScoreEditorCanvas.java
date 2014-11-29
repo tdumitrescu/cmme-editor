@@ -1860,6 +1860,8 @@ Parameters:
     hl_anchor=eventnum;
     if (eventOffset == 0)
       highlightItems(snum,vnum,eventnum,eventnum);
+    else
+      moveCursor(snum, vnum, eventnum - eventOffset);
   }
 
 /*------------------------------------------------------------------------
