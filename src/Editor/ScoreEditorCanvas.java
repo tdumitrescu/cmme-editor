@@ -4945,21 +4945,21 @@ Parameters:
               Event preve = prevre.getEvent();
               char keych=Character.toUpperCase(e.getKeyChar());
               if (preve.geteventtype()==Event.EVENT_NOTE ||
-                  preve.geteventtype()==Event.EVENT_REST)
-                {
-                  if (keych>='1' && keych<='8')
-                    {
-                      parentEditorWin.selectNVButton(keych-'1');
-                      modifyNoteType(-1, parentEditorWin.getSelectedNoteVal());
-                    }
-                  else if (preve.getLength()!=null)
-                    if (e.getKeyCode()==KeyEvent.VK_1 && e.isShiftDown())
+                  preve.geteventtype()==Event.EVENT_REST) {
+                if (e.isShiftDown()) {
+                  if (preve.getLength()!=null) {
+                    if (e.getKeyCode()==KeyEvent.VK_1)
                       imperfectNote(-1);
-                    else if (e.getKeyCode()==KeyEvent.VK_2 && e.isShiftDown())
+                    else if (e.getKeyCode()==KeyEvent.VK_2)
                       alterNote(-1);
-                    else if (e.getKeyCode()==KeyEvent.VK_3 && e.isShiftDown())
+                    else if (e.getKeyCode()==KeyEvent.VK_3)
                       perfectNote(-1);
+                  }
+                } else if (keych>='1' && keych<='8') {
+                  parentEditorWin.selectNVButton(keych-'1');
+                  modifyNoteType(-1, parentEditorWin.getSelectedNoteVal());
                 }
+              }
           }
 
        /* move between events within a multi-event */
