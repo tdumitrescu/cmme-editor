@@ -54,7 +54,7 @@ public class PrintParams
         .4336f,3,           /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
         .75f,               /* STEMWIDTH */
-        22,7,7,7,8,24,20),  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
+        22,7,9,7,8,24,20),  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
 
       /* DEFAULT_A4PartLandscape */
       new PrintParams(
@@ -66,7 +66,7 @@ public class PrintParams
         22,7,7,7,8,24,20)   /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
     };
 
-/*----------------------------------------------------------------------*/         
+/*----------------------------------------------------------------------*/
 /* Instance variables */
 
   public float

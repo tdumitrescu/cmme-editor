@@ -193,8 +193,14 @@ Parameters:
           Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+MusicFont.PrintFontFileName,
           BaseFont.CP1252,BaseFont.EMBEDDED);
         PlainFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-        TextFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-        TextItalicFont=BaseFont.createFont(BaseFont.HELVETICA_OBLIQUE,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+        TextFont=BaseFont.createFont(
+          Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+"FreeSerif.ttf",
+          BaseFont.IDENTITY_H,BaseFont.EMBEDDED
+        );
+        TextItalicFont=BaseFont.createFont(
+          Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+"FreeSerifItalic.ttf",
+          BaseFont.IDENTITY_H,BaseFont.EMBEDDED
+        );
         StaffNameFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         ScoreAnnotationFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         TitleFont=BaseFont.createFont(BaseFont.TIMES_ITALIC,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
@@ -717,7 +723,7 @@ Parameters:
 
               /* display string without special symbols */
               if (e.getEvent().geteventtype()==Event.EVENT_NOTE)
-                cb.setFontAndSize(evsimg.fontStyle==java.awt.Font.ITALIC ? 
+                cb.setFontAndSize(evsimg.fontStyle==java.awt.Font.ITALIC ?
                                     TextItalicFont : TextFont,
                                   PP.TextFONTSIZE);
               else
