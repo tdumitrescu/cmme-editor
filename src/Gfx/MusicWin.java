@@ -1868,7 +1868,7 @@ Parameters:
     else
       {
         renderedPages=new ScorePageRenderer(
-          musicData,optSet,
+          ViewScr.getMusicData(),optSet,
           new Dimension(ScorePagePreviewWin.STAFFXSIZE,ScorePagePreviewWin.DRAWINGSPACEY),
           ScorePagePreviewWin.STAFFSCALE,ScorePagePreviewWin.CANVASYSCALE);
         pdfName=windowFileName.replaceFirst("cmme\\.xml","pdf");
