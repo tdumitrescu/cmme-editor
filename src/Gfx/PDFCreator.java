@@ -161,7 +161,7 @@ Parameters:
 
   PrintParams createPrintParams(ScorePageRenderer renderer)
   {
-    return new PrintParams(PrintParams.DEFAULT_A4ScorePortrait);
+    return new PrintParams(PrintParams.DEFAULT_LetterScorePortrait);
   }
 
 /*------------------------------------------------------------------------
@@ -203,8 +203,14 @@ Parameters:
         );
         StaffNameFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
         ScoreAnnotationFont=BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-        TitleFont=BaseFont.createFont(BaseFont.TIMES_ITALIC,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-        SubtitleFont=BaseFont.createFont(BaseFont.TIMES_ROMAN,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+        TitleFont=BaseFont.createFont(
+          Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+"FreeSerif.ttf",
+          BaseFont.IDENTITY_H,BaseFont.EMBEDDED
+        );
+        SubtitleFont=BaseFont.createFont(
+          Util.AppContext.BaseDataDir+MusicFont.FontRelativeDir+"FreeSerif.ttf",
+          BaseFont.IDENTITY_H,BaseFont.EMBEDDED
+        );
       }
     catch (Exception e)
       {
@@ -446,7 +452,7 @@ Parameters:
   void drawScoreTitle(PdfContentByte cb)
   {
     float baseY=PP.PAGEYSIZE-PP.YMARGIN,
-          subtextYadd=TitleFont.getAscentPoint(musicData.getTitle(),PP.TitleFONTSIZE)*1.5f;
+          subtextYadd=TitleFont.getAscentPoint(musicData.getTitle(),PP.TitleFONTSIZE);
 
     cb.setFontAndSize(TitleFont,PP.TitleFONTSIZE);
 
@@ -486,7 +492,7 @@ Parameters:
     cb.setFontAndSize(PlainFont,PP.PlainFONTSIZE);
     cb.showTextAligned(PdfContentByte.ALIGN_RIGHT,
                        CMME_PDF_INFO_STRING,
-                       PP.PAGEXSIZE-PP.XMARGIN,PP.YMARGIN,0);
+                       PP.PAGEXSIZE-PP.XMARGIN,PP.YMARGIN-PP.STAFFYSCALE,0);
   }
 
 /*------------------------------------------------------------------------
@@ -988,7 +994,7 @@ Parameters:
       {
         cb.beginText();
         cb.setFontAndSize(PlainFont,PP.PlainFONTSIZE);
-        cb.setTextMatrix(xloc-PP.STAFFYSCALE,yloc+PP.STAFFYSCALE*3);
+        cb.setTextMatrix(xloc-PP.STAFFYSCALE*2,yloc+PP.STAFFYSCALE*2);
         cb.showText(String.valueOf(curSystem.startMeasure+1));
         cb.endText();
       }

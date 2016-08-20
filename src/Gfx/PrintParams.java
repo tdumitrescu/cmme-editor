@@ -32,9 +32,10 @@ public class PrintParams
 /*----------------------------------------------------------------------*/
 /* Class variables */
 
-  public static final int DEFAULT_BookExample1=   0,
-                          DEFAULT_A4ScorePortrait=1,
-                          DEFAULT_A4PartLandscape=2;
+  public static final int DEFAULT_BookExample1=       0,
+                          DEFAULT_A4ScorePortrait=    1,
+                          DEFAULT_A4PartLandscape=    2,
+                          DEFAULT_LetterScorePortrait=3;
 
   private static final PrintParams DEFAULTS[]=new PrintParams[]
     {
@@ -54,7 +55,7 @@ public class PrintParams
         .4336f,3,           /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
         .75f,               /* STEMWIDTH */
-        22,7,9,7,8,24,20),  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
+        22,7,10,7,8,24,20), /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
 
       /* DEFAULT_A4PartLandscape */
       new PrintParams(
@@ -63,7 +64,16 @@ public class PrintParams
         .4336f,.2f,         /* STAFFLINEWIDTH, LINEXADJUST */
         4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
         .75f,               /* STEMWIDTH */
-        22,7,7,7,8,24,20)   /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
+        22,7,7,7,8,24,20),  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
+
+      /* LetterScorePortrait */
+      new PrintParams(
+        8.5f*72,11.0f*72,   /* PAGE[X|Y]SIZE (8.5x11") */
+        0.9f*72,0.9f*72,    /* [X|Y]MARGIN */
+        .4336f,3,           /* STAFFLINEWIDTH, LINEXADJUST */
+        4.668f,50f,         /* STAFFYSCALE, STAFFYSPACE */
+        .75f,               /* STEMWIDTH */
+        22,7,10,7,8,24,20)  /* [Music|Plain|Text|StaffName|ScoreAnnotation|Title|Subtitle]FONTSIZE */
     };
 
 /*----------------------------------------------------------------------*/
