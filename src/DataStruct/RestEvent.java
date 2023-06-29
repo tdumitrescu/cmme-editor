@@ -173,14 +173,14 @@ Parameters:
                 endMeasurePos=Proportion.sum(measurePos,measureLength),
                 noPropEndMeasurePos=new Proportion(measurePos.i1+measureMinims,measurePos.i2);
 
-/*System.out.println("REST MMNS tp="+timePos+" resttime="+restTime+
-                   " emp="+endMeasurePos+" timeprop="+timeProp);*/
+// System.out.println("REST MMNS timePos="+timePos+" restTime="+restTime+
+//                    " endMeasurePos="+endMeasurePos+" timeProp="+timeProp);
 
 if (!measureProp.equals(mensInfo.tempoChange))
 {
   noPropEndMeasurePos=Proportion.sum(measurePos,
     new Proportion(measureMinims*measureProp.i2*mensInfo.tempoChange.i1,measureProp.i1*mensInfo.tempoChange.i2));
-//System.out.println(" NPEMP="+noPropEndMeasurePos);
+// System.out.println(" NPEMP="+noPropEndMeasurePos);
 }
 
     while (restTime.i1>0)
@@ -189,24 +189,35 @@ if (!measureProp.equals(mensInfo.tempoChange))
                      Proportion.difference(endMeasurePos,timePos),
                      mensInfo.tempoChange);
 
-//System.out.println("  left in m="+noPropTimeLeftInMeasure);
-//Proportion.product(Proportion.difference(noPropEndMeasurePos,timePos),measureProp).toDouble());
+// System.out.println("  left in m="+noPropTimeLeftInMeasure);
+// Proportion.product(Proportion.difference(noPropEndMeasurePos,timePos),measureProp).toDouble());
 
-        re.notetype=RestEvent.calcLargestRestType(
-          Math.min(restTime.toDouble(),//Proportion.product(restTime,timeProp).toDouble(),
-                   noPropTimeLeftInMeasure.toDouble()),
-/*                   Proportion.product(
-                     Proportion.difference(noPropEndMeasurePos,timePos),
-                     measureProp).toDouble()),*///Proportion.product(Proportion.difference(endMeasurePos,timePos),timeProp).toDouble()),
-          mensInfo);
-//System.out.println("  rest type="+NoteEvent.NoteTypeNames[re.notetype]);
-        re.setLength(NoteEvent.getTypeLength(re.notetype,mensInfo));
-        if (Proportion.quotient(re.getLength(),timeProp).greaterThan(restTime))
-          re.setLength(Proportion.product(new Proportion(restTime),timeProp));
+//         re.notetype=RestEvent.calcLargestRestType(
+//           Math.min(restTime.toDouble(),//Proportion.product(restTime,timeProp).toDouble(),
+//                    noPropTimeLeftInMeasure.toDouble()),
+// /*                   Proportion.product(
+//                      Proportion.difference(noPropEndMeasurePos,timePos),
+//                      measureProp).toDouble()),*///Proportion.product(Proportion.difference(endMeasurePos,timePos),timeProp).toDouble()),
+//           mensInfo);
+        re.calcModernRestTypeAndLength(
+          restTime,timeProp,noPropTimeLeftInMeasure,Mensuration.DEFAULT_MENSURATION
+        );
+
+        // re.setLength(NoteEvent.getTypeLength(re.notetype,mensInfo));
+        // if (Proportion.quotient(re.getLength(),timeProp).greaterThan(restTime))
+        //   re.setLength(Proportion.product(new Proportion(restTime),timeProp));
+// System.out.println("  rest type="+NoteEvent.NoteTypeNames[re.notetype]);
         el.add(re);
 
-        restTime.subtract(Proportion.quotient(re.getLength(),timeProp));
-        timePos.add(Proportion.quotient(re.getLength(),timeProp));
+// System.out.println("  re.getLength(): " + re.getLength());
+// System.out.println("  1restTime: " + restTime);
+        restTime.subtract(re.getLength());
+// System.out.println("  re.getLength(): " + re.getLength());
+// System.out.println("  mensInfo.tempoChange: " + mensInfo.tempoChange);
+// System.out.println("  Proportion.quotient(re.getLength(),mensInfo.tempoChange): " + Proportion.quotient(re.getLength(),mensInfo.tempoChange));
+// System.out.println("  2restTime: " + restTime);
+        timePos.add(Proportion.quotient(re.getLength(),mensInfo.tempoChange));
+        
         if (timePos.greaterThanOrEqualTo(endMeasurePos))
           {
             timePos=new Proportion(endMeasurePos);
@@ -214,29 +225,59 @@ if (!measureProp.equals(mensInfo.tempoChange))
           }
 
         re=makeNextRest();
-//System.out.println("  rt="+restTime+" tp="+timePos+" emp="+endMeasurePos);
+// System.out.println("  rt="+restTime+" tp="+timePos+" emp="+endMeasurePos);
       }
 
-/*    int newNoteType=NT_DoubleWhole;
+/*    int newRestType=NT_DoubleWhole;
     switch (re.notetype)
       {
         case NT_Semibrevis:
-          newNoteType=NT_Whole;
+          newRestType=NT_Whole;
           break;
         case NT_Minima:
-          newNoteType=NT_Half;
+          newRestType=NT_Half;
           break;
         case NT_Semiminima:
-          newNoteType=NT_Quarter;
+          newRestType=NT_Quarter;
           break;
         case NT_Fusa:
         case NT_Semifusa:
-          newNoteType=NT_Flagged;
+          newRestType=NT_Flagged;
           break;
       }
-    ne.notetype=newNoteType;*/
+    ne.notetype=newRestType;*/
 
     return el;
+  }
+
+  /* cribbed straight from NoteEvent... */
+  void calcModernRestTypeAndLength(
+    Proportion restTime,Proportion timeProp,
+    Proportion timeLeftInMeasure,
+    Mensuration m)
+  {
+    // Mensuration mensInfo=this.getBaseMensInfo();//Mensuration.DEFAULT_MENSURATION;
+/*    Proportion timeInMeasure=Proportion.quotient(
+      Proportion.quotient(Proportion.difference(endMeasurePos,timePos),timeProp),
+      mensInfo.tempoChange),*/
+//    Proportion timeLeftInMeasure=Proportion.difference(endMeasurePos,timePos),
+//               maxTime=Proportion.min(Proportion.product(restTime,timeProp),timeLeftInMeasure);
+    Proportion maxTime=Proportion.min(restTime,timeLeftInMeasure);
+//System.out.print(" MaxT="+maxTime+" ");
+/*if (!mensInfo.tempoChange.equals(Proportion.EQUALITY))
+System.out.print(" TLIM="+timeLeftInMeasure);*/
+    int nt=NoteEvent.NT_Maxima;
+    while (nt>=NoteEvent.NT_Fusa && NoteEvent.getTypeLength(nt,m).greaterThan(maxTime))
+      nt--;
+    this.notetype=nt;
+
+    this.colored=false;
+    this.colorscheme=Coloration.DEFAULT_COLORATION;
+    // this.selectNoteheadStyle();
+
+//    this.setLength(NoteEvent.getTypeLength(this.notetype,m));
+    this.setLength(new Proportion(maxTime));
+//System.out.print("L="+this.getLength());
   }
 
   RestEvent makeNextRest()
